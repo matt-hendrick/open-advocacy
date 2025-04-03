@@ -1,1 +1,7 @@
 README.md
+.env.development
+.env.production
+**/__pycache__
+**/.vscode
+**/env
+**/.ruff_cache

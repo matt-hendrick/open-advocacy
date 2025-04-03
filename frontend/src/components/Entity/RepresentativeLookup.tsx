@@ -16,6 +16,8 @@ import {
   Link,
   Divider,
   Box,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
@@ -23,55 +25,35 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import PublicIcon from '@mui/icons-material/Public';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Entity } from '../../types';
-
-// Mock data for now
-const mockRepresentatives: Entity[] = [
-  {
-    id: '1',
-    name: 'Jane Doe',
-    title: 'City Council Member',
-    entity_type: 'alderman',
-    jurisdiction_id: 'ward-1',
-    location_module_id: 'chicago',
-    contact_info: {
-      email: 'jane.doe@citycouncil.gov',
-      phone: '(312) 555-1234',
-      website: 'https://www.citycouncil.gov/janedoe',
-      address: '121 N LaSalle St, Chicago, IL 60602',
-    },
-  },
-  {
-    id: '2',
-    name: 'John Smith',
-    title: 'State Representative',
-    entity_type: 'state_rep',
-    jurisdiction_id: 'district-5',
-    location_module_id: 'illinois',
-    contact_info: {
-      email: 'john.smith@ilga.gov',
-      phone: '(217) 782-5678',
-      website: 'https://www.ilga.gov/house/johnsmith',
-      address: '301 S 2nd St, Springfield, IL 62707',
-    },
-  },
-];
+import { representativeService } from '../../services/representatives';
 
 const RepresentativeLookup: React.FC = () => {
   const [address, setAddress] = useState<string>('');
   const [representatives, setRepresentatives] = useState<Entity[]>([]);
   const [searched, setSearched] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // In a real app, we would call the API here
-    setRepresentatives(mockRepresentatives);
-    setSearched(true);
-  };
+    setLoading(true);
+    setError(null);
 
+    try {
+      const response = await representativeService.findByAddress(address);
+      setRepresentatives(response.data);
+      setSearched(true);
+    } catch (err) {
+      setError('Failed to find representatives. Please try again.');
+      console.error('Error fetching representatives:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -95,6 +77,7 @@ const RepresentativeLookup: React.FC = () => {
                   onChange={handleAddressChange}
                   placeholder="123 Main St, City, IL 60601"
                   required
+                  disabled={loading}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -104,8 +87,9 @@ const RepresentativeLookup: React.FC = () => {
                   color="primary"
                   fullWidth
                   sx={{ height: '56px' }}
+                  disabled={loading}
                 >
-                  Search
+                  {loading ? <CircularProgress size={24} /> : 'Search'}
                 </Button>
               </Grid>
             </Grid>
@@ -113,7 +97,13 @@ const RepresentativeLookup: React.FC = () => {
         </CardContent>
       </Card>
 
-      {searched && (
+      {error && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      )}
+
+      {searched && !loading && (
         <>
           <Typography variant="h5" gutterBottom>
             Your Representatives

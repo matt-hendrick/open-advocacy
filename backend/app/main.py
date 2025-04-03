@@ -14,9 +14,14 @@ app = FastAPI(
 )
 
 # Add CORS middleware for development
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",  # Default Vite dev server port
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React app's location
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,16 +33,6 @@ async def root():
     return {"message": "Welcome to Open Advocacy API"}
 
 
-# Import and include API routers
-# from app.api.routes import projects, groups, entities
-
-# Will uncomment these when we create them
-# app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
-# app.include_router(groups.router, prefix="/api/groups", tags=["groups"])
-# app.include_router(entities.router, prefix="/api/entities", tags=["entities"])
-
-
-# Add routers to the app
 app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
 app.include_router(location.router, prefix="/api/location", tags=["location"])
 

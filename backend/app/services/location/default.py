@@ -34,6 +34,18 @@ class DefaultLocationModule(LocationModule):
                     address="456 Capitol Ave, City, State 12345",
                 ),
             ),
+            Entity(
+                name="Bob James",
+                title="Alderman",
+                entity_type="default_alder",
+                jurisdiction_id="default-jurisdiction",
+                contact_info=ContactInfo(
+                    email="bob.james@example.gov",
+                    phone="555-12e-4567",
+                    website="https://example.gov/bobjames",
+                    address="124 Government St, City, State 12345",
+                ),
+            ),
         ]
 
     async def get_jurisdiction_boundaries(self) -> dict[str, Any]:
@@ -62,7 +74,7 @@ class DefaultLocationModule(LocationModule):
 
     def get_entity_types(self) -> list[str]:
         """Returns the available entity types for this module."""
-        return ["default_rep", "default_sen"]
+        return ["default_rep", "default_sen", "default_alder"]
 
     def validate_address(self, address: str) -> bool:
         """Validates the address format - accepts anything in the default implementation."""

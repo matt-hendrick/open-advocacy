@@ -1,4 +1,3 @@
-// src/components/Project/ProjectList.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -19,14 +18,18 @@ import {
   Select,
   FormControl,
   InputLabel,
+  CircularProgress,
   SelectChangeEvent,
 } from '@mui/material';
+
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { projectService } from '../../services/projects';
 import { Project, ProjectStatus } from '../../types';
+import ErrorDisplay from '../common/ErrorDisplay';
+import { transformProjectFromApi } from '../../utils/dataTransformers';
 
 const getStatusColor = (status: ProjectStatus): 'success' | 'default' | 'info' | 'secondary' => {
   switch (status) {
@@ -56,19 +59,24 @@ const ProjectList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await projectService.getProjects();
-        setProjects(response.data);
-        setFilteredProjects(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Error loading projects');
-        setLoading(false);
-      }
-    };
+  const fetchProjects = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await projectService.getProjects();
+      // Transform data if needed
+      const transformedProjects = response.data.map(transformProjectFromApi);
+      setProjects(transformedProjects);
+      setFilteredProjects(transformedProjects);
+    } catch (err) {
+      console.error('Error fetching projects:', err);
+      setError('Failed to load projects. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProjects();
   }, []);
 
@@ -95,14 +103,16 @@ const ProjectList: React.FC = () => {
   if (loading)
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography>Loading projects...</Typography>
+        <Box display="flex" justifyContent="center" py={8}>
+          <CircularProgress />
+        </Box>
       </Container>
     );
 
   if (error)
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography color="error">{error}</Typography>
+        <ErrorDisplay message={error} onRetry={fetchProjects} />
       </Container>
     );
 
