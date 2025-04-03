@@ -1,10 +1,25 @@
 // src/components/Project/ProjectList.tsx
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, Typography, Card, CardContent, 
-  CardActions, Button, Grid, Chip, Box, Divider,
-  useTheme, Paper, InputBase, IconButton, MenuItem,
-  Select, FormControl, InputLabel, SelectChangeEvent,
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Grid,
+  Chip,
+  Box,
+  Divider,
+  useTheme,
+  Paper,
+  InputBase,
+  IconButton,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -13,13 +28,18 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { projectService } from '../../services/projects';
 import { Project, ProjectStatus } from '../../types';
 
-const getStatusColor = (status: ProjectStatus): "success" | "default" | "info" | "secondary" => {
+const getStatusColor = (status: ProjectStatus): 'success' | 'default' | 'info' | 'secondary' => {
   switch (status) {
-    case ProjectStatus.ACTIVE: return 'success';
-    case ProjectStatus.DRAFT: return 'default';
-    case ProjectStatus.COMPLETED: return 'info';
-    case ProjectStatus.ARCHIVED: return 'secondary';
-    default: return 'default';
+    case ProjectStatus.ACTIVE:
+      return 'success';
+    case ProjectStatus.DRAFT:
+      return 'default';
+    case ProjectStatus.COMPLETED:
+      return 'info';
+    case ProjectStatus.ARCHIVED:
+      return 'secondary';
+    default:
+      return 'default';
   }
 };
 
@@ -54,8 +74,10 @@ const ProjectList: React.FC = () => {
 
   useEffect(() => {
     const filtered = projects.filter(project => {
-      const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           (project.description?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
+      const matchesSearch =
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        false;
       const matchesStatus = statusFilter === 'all' || project.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -70,49 +92,45 @@ const ProjectList: React.FC = () => {
     setStatusFilter(event.target.value);
   };
 
-  if (loading) return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography>Loading projects...</Typography>
-    </Container>
-  );
-  
-  if (error) return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography color="error">{error}</Typography>
-    </Container>
-  );
+  if (loading)
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Typography>Loading projects...</Typography>
+      </Container>
+    );
+
+  if (error)
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Typography color="error">{error}</Typography>
+      </Container>
+    );
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box mb={4}>
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          fontWeight="700" 
-          color="text.primary"
-          gutterBottom
-        >
+        <Typography variant="h4" component="h1" fontWeight="700" color="text.primary" gutterBottom>
           Advocacy Projects
         </Typography>
         <Typography variant="body1" color="text.secondary" mb={4}>
           Browse projects, check their status, and find ways to support causes you care about.
         </Typography>
-        
-        <Box 
-          display="flex" 
-          flexDirection={{ xs: 'column', md: 'row' }} 
+
+        <Box
+          display="flex"
+          flexDirection={{ xs: 'column', md: 'row' }}
           gap={2}
           alignItems={{ xs: 'stretch', md: 'center' }}
           sx={{ mb: 4 }}
         >
           <Paper
-            sx={{ 
-              p: '2px 4px', 
-              display: 'flex', 
-              alignItems: 'center', 
+            sx={{
+              p: '2px 4px',
+              display: 'flex',
+              alignItems: 'center',
               flexGrow: 1,
               boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-              borderRadius: theme.shape.borderRadius
+              borderRadius: theme.shape.borderRadius,
             }}
           >
             <IconButton sx={{ p: '10px' }} aria-label="search">
@@ -126,7 +144,7 @@ const ProjectList: React.FC = () => {
               onChange={handleSearchChange}
             />
           </Paper>
-          
+
           <FormControl variant="outlined" sx={{ minWidth: 180 }}>
             <InputLabel id="status-filter-label">Filter by Status</InputLabel>
             <Select
@@ -146,7 +164,7 @@ const ProjectList: React.FC = () => {
           </FormControl>
         </Box>
       </Box>
-      
+
       {filteredProjects.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: 'center', borderRadius: theme.shape.borderRadius }}>
           <Typography variant="h6" color="text.secondary">
@@ -158,9 +176,9 @@ const ProjectList: React.FC = () => {
         </Paper>
       ) : (
         <Grid container spacing={3}>
-          {filteredProjects.map((project) => (
+          {filteredProjects.map(project => (
             <Grid item xs={12} md={6} lg={4} key={project.id}>
-              <Card 
+              <Card
                 sx={{
                   height: '100%',
                   display: 'flex',
@@ -169,38 +187,28 @@ const ProjectList: React.FC = () => {
                   '&:hover': {
                     transform: 'translateY(-4px)',
                     boxShadow: '0 12px 20px -10px rgba(0,0,0,0.1)',
-                  }
+                  },
                 }}
               >
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography 
-                      variant="h6" 
-                      component="h2" 
-                      fontWeight="600"
-                      color="text.primary"
-                    >
+                    <Typography variant="h6" component="h2" fontWeight="600" color="text.primary">
                       {project.title}
                     </Typography>
-                    <Chip 
-                      label={getStatusLabel(project.status)} 
-                      color={getStatusColor(project.status)} 
-                      size="small" 
+                    <Chip
+                      label={getStatusLabel(project.status)}
+                      color={getStatusColor(project.status)}
+                      size="small"
                       sx={{ fontWeight: 500 }}
                     />
                   </Box>
-                  
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
-                    paragraph
-                    sx={{ mb: 3 }}
-                  >
+
+                  <Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 3 }}>
                     {project.description}
                   </Typography>
-                  
+
                   <Divider sx={{ mb: 2 }} />
-                  
+
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Box display="flex" alignItems="center">
                       <HowToVoteIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
@@ -217,15 +225,15 @@ const ProjectList: React.FC = () => {
                   </Box>
                 </CardContent>
                 <CardActions sx={{ px: 2, pb: 2 }}>
-                  <Button 
-                    size="small" 
-                    variant="outlined" 
+                  <Button
+                    size="small"
+                    variant="outlined"
                     color="primary"
                     sx={{ mr: 1, borderRadius: theme.shape.borderRadius }}
                   >
                     View Details
                   </Button>
-                  <Button 
+                  <Button
                     size="small"
                     variant="contained"
                     color="primary"

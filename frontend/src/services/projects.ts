@@ -31,16 +31,16 @@ export const projectService = {
   async createProject(project: ProjectCreateData): Promise<{ data: Project }> {
     if (USE_MOCK_DATA) {
       // Simulate a server response
-      return Promise.resolve({ 
-        data: { 
-          ...project, 
+      return Promise.resolve({
+        data: {
+          ...project,
           id: Math.random().toString(36).substring(2, 15),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           vote_count: 0,
           status: project.status || ProjectStatus.DRAFT,
           active: project.active ?? true,
-        } as Project 
+        } as Project,
       });
     }
     return api.post<Project>('/projects', project);
@@ -49,16 +49,16 @@ export const projectService = {
   async updateProject(id: string, project: ProjectCreateData): Promise<{ data: Project }> {
     if (USE_MOCK_DATA) {
       // Simulate a server response
-      return Promise.resolve({ 
-        data: { 
-          ...project, 
-          id, 
+      return Promise.resolve({
+        data: {
+          ...project,
+          id,
           updated_at: new Date().toISOString(),
           status: project.status || ProjectStatus.DRAFT,
           active: project.active ?? true,
           created_at: new Date().toISOString(),
-          vote_count: 0
-        } as Project 
+          vote_count: 0,
+        } as Project,
       });
     }
     return api.put<Project>(`/projects/${id}`, project);
@@ -69,5 +69,5 @@ export const projectService = {
       return Promise.resolve({ data: true });
     }
     return api.delete<boolean>(`/projects/${id}`);
-  }
+  },
 };

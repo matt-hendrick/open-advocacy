@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
-import { 
-  Container, Typography, TextField, Button, 
-  Card, CardContent, CardActions, Grid, 
-  List, ListItem, ListItemText, ListItemAvatar,
-  Avatar, Link, Divider, Box
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Link,
+  Divider,
+  Box,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
@@ -15,33 +27,33 @@ import { Entity } from '../../types';
 // Mock data for now
 const mockRepresentatives: Entity[] = [
   {
-    id: "1",
-    name: "Jane Doe",
-    title: "City Council Member",
-    entity_type: "alderman",
-    jurisdiction_id: "ward-1",
-    location_module_id: "chicago",
+    id: '1',
+    name: 'Jane Doe',
+    title: 'City Council Member',
+    entity_type: 'alderman',
+    jurisdiction_id: 'ward-1',
+    location_module_id: 'chicago',
     contact_info: {
-      email: "jane.doe@citycouncil.gov",
-      phone: "(312) 555-1234",
-      website: "https://www.citycouncil.gov/janedoe",
-      address: "121 N LaSalle St, Chicago, IL 60602"
-    }
+      email: 'jane.doe@citycouncil.gov',
+      phone: '(312) 555-1234',
+      website: 'https://www.citycouncil.gov/janedoe',
+      address: '121 N LaSalle St, Chicago, IL 60602',
+    },
   },
   {
-    id: "2",
-    name: "John Smith",
-    title: "State Representative",
-    entity_type: "state_rep",
-    jurisdiction_id: "district-5",
-    location_module_id: "illinois",
+    id: '2',
+    name: 'John Smith',
+    title: 'State Representative',
+    entity_type: 'state_rep',
+    jurisdiction_id: 'district-5',
+    location_module_id: 'illinois',
     contact_info: {
-      email: "john.smith@ilga.gov",
-      phone: "(217) 782-5678",
-      website: "https://www.ilga.gov/house/johnsmith",
-      address: "301 S 2nd St, Springfield, IL 62707"
-    }
-  }
+      email: 'john.smith@ilga.gov',
+      phone: '(217) 782-5678',
+      website: 'https://www.ilga.gov/house/johnsmith',
+      address: '301 S 2nd St, Springfield, IL 62707',
+    },
+  },
 ];
 
 const RepresentativeLookup: React.FC = () => {
@@ -65,13 +77,13 @@ const RepresentativeLookup: React.FC = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Find Your Representatives
       </Typography>
-      
+
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="body1" paragraph>
             Enter your address to find representatives who serve your area.
           </Typography>
-          
+
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>
@@ -86,9 +98,9 @@ const RepresentativeLookup: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <Button 
-                  type="submit" 
-                  variant="contained" 
+                <Button
+                  type="submit"
+                  variant="contained"
                   color="primary"
                   fullWidth
                   sx={{ height: '56px' }}
@@ -100,16 +112,16 @@ const RepresentativeLookup: React.FC = () => {
           </form>
         </CardContent>
       </Card>
-      
+
       {searched && (
         <>
           <Typography variant="h5" gutterBottom>
             Your Representatives
           </Typography>
-          
+
           {representatives.length > 0 ? (
             <Grid container spacing={3}>
-              {representatives.map((rep) => (
+              {representatives.map(rep => (
                 <Grid item xs={12} md={6} key={rep.id}>
                   <Card>
                     <CardContent>
@@ -124,9 +136,9 @@ const RepresentativeLookup: React.FC = () => {
                           </Typography>
                         </div>
                       </Box>
-                      
+
                       <Divider sx={{ mb: 2 }} />
-                      
+
                       <List dense>
                         {rep.contact_info.email && (
                           <ListItem>
@@ -135,17 +147,17 @@ const RepresentativeLookup: React.FC = () => {
                                 <EmailIcon fontSize="small" />
                               </Avatar>
                             </ListItemAvatar>
-                            <ListItemText 
-                              primary="Email" 
+                            <ListItemText
+                              primary="Email"
                               secondary={
                                 <Link href={`mailto:${rep.contact_info.email}`}>
                                   {rep.contact_info.email}
                                 </Link>
-                              } 
+                              }
                             />
                           </ListItem>
                         )}
-                        
+
                         {rep.contact_info.phone && (
                           <ListItem>
                             <ListItemAvatar>
@@ -153,17 +165,17 @@ const RepresentativeLookup: React.FC = () => {
                                 <PhoneIcon fontSize="small" />
                               </Avatar>
                             </ListItemAvatar>
-                            <ListItemText 
-                              primary="Phone" 
+                            <ListItemText
+                              primary="Phone"
                               secondary={
                                 <Link href={`tel:${rep.contact_info.phone}`}>
                                   {rep.contact_info.phone}
                                 </Link>
-                              } 
+                              }
                             />
                           </ListItem>
                         )}
-                        
+
                         {rep.contact_info.website && (
                           <ListItem>
                             <ListItemAvatar>
@@ -171,17 +183,21 @@ const RepresentativeLookup: React.FC = () => {
                                 <PublicIcon fontSize="small" />
                               </Avatar>
                             </ListItemAvatar>
-                            <ListItemText 
-                              primary="Website" 
+                            <ListItemText
+                              primary="Website"
                               secondary={
-                                <Link href={rep.contact_info.website} target="_blank" rel="noopener noreferrer">
+                                <Link
+                                  href={rep.contact_info.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
                                   {rep.contact_info.website}
                                 </Link>
-                              } 
+                              }
                             />
                           </ListItem>
                         )}
-                        
+
                         {rep.contact_info.address && (
                           <ListItem>
                             <ListItemAvatar>
@@ -189,10 +205,7 @@ const RepresentativeLookup: React.FC = () => {
                                 <LocationOnIcon fontSize="small" />
                               </Avatar>
                             </ListItemAvatar>
-                            <ListItemText 
-                              primary="Office" 
-                              secondary={rep.contact_info.address} 
-                            />
+                            <ListItemText primary="Office" secondary={rep.contact_info.address} />
                           </ListItem>
                         )}
                       </List>
