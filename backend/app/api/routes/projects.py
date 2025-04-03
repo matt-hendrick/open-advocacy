@@ -3,7 +3,9 @@ from uuid import UUID
 
 from app.models.pydantic.models import Project, ProjectCreate, ProjectStatus
 from app.db.base import InMemoryProvider
-from app.db.dependencies import get_projects_provider
+from app.db.dependencies import get_projects_provider, get_status_records_provider
+from app.utils.status import calculate_status_distribution
+
 
 router = APIRouter()
 
@@ -14,11 +16,25 @@ async def list_projects(
     limit: int = 100,
     status: ProjectStatus | None = None,
     projects_provider: InMemoryProvider[Project, UUID] = Depends(get_projects_provider),
+    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
 ):
     projects = await projects_provider.list(skip=skip, limit=limit)
 
     if status:
         projects = [p for p in projects if p.status == status]
+
+    # If we've found some projects associated with the selected status
+    if projects:
+        # Calculate status distribution for each of them
+        status_records = await status_records_provider.list()
+        for project in projects:
+            project_id = project.id
+            project_status_records = [
+                sr for sr in status_records if sr.project_id == project_id
+            ]
+            project.status_distribution = calculate_status_distribution(
+                project_status_records
+            )
 
     return projects
 
@@ -35,10 +51,19 @@ async def create_project(
 async def get_project(
     project_id: UUID,
     projects_provider: InMemoryProvider[Project, UUID] = Depends(get_projects_provider),
+    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
 ):
     project = await projects_provider.get(project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+
+    # Calculate status distribution
+    status_records = await status_records_provider.list()
+    project_status_records = [
+        sr for sr in status_records if sr.project_id == project_id
+    ]
+    project.status_distribution = calculate_status_distribution(project_status_records)
+
     return project
 
 

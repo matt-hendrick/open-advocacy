@@ -1,35 +1,44 @@
 [
-    {
-      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "title": "Local Park Renovation",
-      "description": "Advocating for the renovation of Lincoln Park with improved playground equipment and better accessibility features.",
-      "status": "active",
-      "active": true,
-      "created_by": "admin",
-      "created_at": "2023-01-15T10:00:00",
-      "updated_at": "2023-01-20T14:30:00",
-      "vote_count": 352
-    },
-    {
-      "id": "6d4ec78e-edc1-4c85-b3e8-42c886f971fb",
-      "title": "Public Library Funding",
-      "description": "Supporting increased funding for public libraries to expand digital services and educational programs.",
-      "status": "active",
-      "active": true,
-      "created_by": "admin",
-      "created_at": "2023-02-05T09:15:00",
-      "updated_at": "2023-02-10T11:45:00",
-      "vote_count": 289
-    },
-    {
-      "id": "9c8f6e5d-4b3a-2c1d-0e9f-8a7b6c5d4e3f",
-      "title": "Traffic Calming Measures",
-      "description": "Advocating for speed bumps and improved signage to reduce speeding in residential neighborhoods.",
-      "status": "draft",
-      "active": true,
-      "created_by": "admin",
-      "created_at": "2023-03-01T16:20:00",
-      "updated_at": "2023-03-01T16:20:00",
-      "vote_count": 0
-    }
-  ]
+  {
+    "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "Local Park Renovation",
+    "description": "Advocating for the renovation of Lincoln Park with improved playground equipment and better accessibility features.",
+    "status": "active",
+    "active": true,
+    "link": "https://example.com/park-renovation",
+    "preferred_status": "solid_approval",
+    "template_response": "I am writing to express my strong support for the Lincoln Park renovation project. Our community desperately needs updated playground equipment and improved accessibility features. This project would benefit residents of all ages and abilities. I urge you to support funding for this important community improvement.",
+    "jurisdictions": ["f47ac10b-58cc-4372-a567-0e02b2c3d479", "d9b15a33-fe8b-4adb-a1c5-2e7e85635d02"],
+    "created_by": "admin",
+    "created_at": "2023-01-15T10:00:00",
+    "updated_at": "2023-01-20T14:30:00"
+  },
+  {
+    "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "Public Library Funding",
+    "description": "Supporting increased funding for public libraries to expand digital services and educational programs.",
+    "status": "active",
+    "active": true,
+    "link": "https://example.com/library-funding",
+    "preferred_status": "solid_approval",
+    "template_response": "I am writing to urge you to support increased funding for our public libraries. Libraries are essential community resources that provide access to information, technology, and educational opportunities for all residents. The proposed funding would allow our libraries to expand digital services and offer more educational programs to serve our diverse community.",
+    "jurisdictions": ["f47ac10b-58cc-4372-a567-0e02b2c3d479", "b6a8f7c9-70e1-4f25-9d69-8a17b36cf24c"],
+    "created_by": "admin",
+    "created_at": "2023-02-05T09:15:00",
+    "updated_at": "2023-02-10T11:45:00"
+  },
+  {
+    "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "Traffic Calming Measures",
+    "description": "Advocating for speed bumps and improved signage to reduce speeding in residential neighborhoods.",
+    "status": "draft",
+    "active": true,
+    "link": "https://example.com/traffic-calming",
+    "preferred_status": "leaning_approval",
+    "template_response": "I am writing regarding the concerning issue of speeding in our residential neighborhood. The safety of our children, pedestrians, and cyclists is at risk. I support the implementation of traffic calming measures, including speed bumps and improved signage, to address this problem. These measures have proven effective in similar neighborhoods and would greatly improve safety in our community.",
+    "jurisdictions": ["f47ac10b-58cc-4372-a567-0e02b2c3d479"],
+    "created_by": "admin",
+    "created_at": "2023-03-01T16:20:00",
+    "updated_at": "2023-03-01T16:20:00"
+  }
+]

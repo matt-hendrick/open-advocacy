@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from typing import Any
 
 from app.models.pydantic.models import Entity, AddressLookupRequest
 from app.services.location.factory import get_location_module, list_available_modules
@@ -30,3 +31,10 @@ async def get_entity_types(module_id: str = "default"):
     """Get a list of entity types for a specific location module."""
     location_module = get_location_module(module_id)
     return location_module.get_entity_types()
+
+
+@router.get("/jurisdiction-boundaries", response_model=dict[str, Any])
+async def get_boundaries(module_id: str = "default"):
+    """Get boundary data for the jurisdictions in a location module."""
+    location_module = get_location_module(module_id)
+    return await location_module.get_jurisdiction_boundaries()

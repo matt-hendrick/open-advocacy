@@ -11,7 +11,6 @@ export const mockProjects: Project[] = [
     created_by: 'admin',
     created_at: '2023-01-15T10:00:00',
     updated_at: '2023-01-20T14:30:00',
-    vote_count: 352,
   },
   {
     id: '6d4ec78e-edc1-4c85-b3e8-42c886f971fb',
@@ -23,7 +22,6 @@ export const mockProjects: Project[] = [
     created_by: 'admin',
     created_at: '2023-02-05T09:15:00',
     updated_at: '2023-02-10T11:45:00',
-    vote_count: 289,
   },
   {
     id: '9c8f6e5d-4b3a-2c1d-0e9f-8a7b6c5d4e3f',
@@ -35,6 +33,5 @@ export const mockProjects: Project[] = [
     created_by: 'admin',
     created_at: '2023-03-01T16:20:00',
     updated_at: '2023-03-01T16:20:00',
-    vote_count: 0,
   },
 ];

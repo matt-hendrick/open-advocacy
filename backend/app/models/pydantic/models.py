@@ -11,10 +11,88 @@ class ProjectStatus(str, Enum):
     ARCHIVED = "archived"
 
 
+class EntityStatus(str, Enum):
+    SOLID_APPROVAL = "solid_approval"
+    LEANING_APPROVAL = "leaning_approval"
+    NEUTRAL = "neutral"
+    LEANING_DISAPPROVAL = "leaning_disapproval"
+    SOLID_DISAPPROVAL = "solid_disapproval"
+
+
 class GroupStance(str, Enum):
     PRO = "pro"
     CON = "con"
     NEUTRAL = "neutral"
+
+
+class ContactInfo(BaseModel):
+    email: str | None = None
+    phone: str | None = None
+    website: str | None = None
+    address: str | None = None
+
+
+class EntityBase(BaseModel):
+    name: str
+    title: str | None = None
+    entity_type: str  # e.g., "alderman", "state_rep", "mayor"
+    contact_info: ContactInfo = Field(default_factory=ContactInfo)
+
+
+class EntityCreate(EntityBase):
+    jurisdiction_id: str
+    location_module_id: str = "default"
+
+
+class Entity(EntityBase):
+    id: UUID = Field(default_factory=uuid4)
+    jurisdiction_id: str
+    location_module_id: str = "default"
+
+    class Config:
+        from_attributes = True
+
+
+class JurisdictionBase(BaseModel):
+    name: str
+    description: str | None = None
+    level: str  # city, state, federal
+    parent_jurisdiction_id: str | None = None
+
+
+class JurisdictionCreate(JurisdictionBase):
+    pass
+
+
+class Jurisdiction(JurisdictionBase):
+    id: UUID = Field(default_factory=uuid4)
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    class Config:
+        from_attributes = True
+
+
+class EntityStatusRecord(BaseModel):
+    id: UUID = Field(default_factory=uuid4)
+    entity_id: UUID
+    project_id: UUID
+    status: EntityStatus = EntityStatus.NEUTRAL
+    notes: str | None = None
+    updated_at: datetime = Field(default_factory=datetime.now)
+    updated_by: str
+
+    class Config:
+        from_attributes = True
+
+
+class StatusDistribution(BaseModel):
+    solid_approval: int = 0
+    leaning_approval: int = 0
+    neutral: int = 0
+    leaning_disapproval: int = 0
+    solid_disapproval: int = 0
+    unknown: int = 0
+    total: int = 0
 
 
 class GroupBase(BaseModel):
@@ -41,47 +119,23 @@ class ProjectBase(BaseModel):
     description: str | None = None
     status: ProjectStatus = ProjectStatus.DRAFT
     active: bool = True
+    link: str | None = None
+    preferred_status: EntityStatus = EntityStatus.SOLID_APPROVAL
+    template_response: str | None = None
 
 
 class ProjectCreate(ProjectBase):
-    pass
+    jurisdictions: list[str] = []  # IDs of jurisdictions
 
 
 class Project(ProjectBase):
     id: UUID = Field(default_factory=uuid4)
+    jurisdictions: list[str] = []
     created_by: str | None = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
-    vote_count: int = 0
     groups: list[Group] = []
-
-    class Config:
-        from_attributes = True
-
-
-class ContactInfo(BaseModel):
-    email: str | None = None
-    phone: str | None = None
-    website: str | None = None
-    address: str | None = None
-
-
-class EntityBase(BaseModel):
-    name: str
-    title: str | None = None
-    entity_type: str  # e.g., "alderman", "state_rep", "mayor"
-    contact_info: ContactInfo = Field(default_factory=ContactInfo)
-
-
-class EntityCreate(EntityBase):
-    jurisdiction_id: str
-    location_module_id: str = "default"
-
-
-class Entity(EntityBase):
-    id: UUID = Field(default_factory=uuid4)
-    jurisdiction_id: str
-    location_module_id: str = "default"
+    status_distribution: StatusDistribution | None = None
 
     class Config:
         from_attributes = True

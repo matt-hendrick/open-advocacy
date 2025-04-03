@@ -1,0 +1,44 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a9b8c7d",
+    "name": "Jane Smith",
+    "title": "Alderperson",
+    "entity_type": "alderman",
+    "contact_info": {
+      "email": "jane.smith@chicago.gov",
+      "phone": "(312) 555-1234",
+      "website": "https://www.chicago.gov/ward1",
+      "address": "121 N LaSalle St, Chicago, IL 60602"
+    },
+    "jurisdiction_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "location_module_id": "chicago"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-5b6c-0d1e-3f2a4b5c6d7e",
+    "name": "John Doe",
+    "title": "State Representative",
+    "entity_type": "state_rep",
+    "contact_info": {
+      "email": "john.doe@ilga.gov",
+      "phone": "(217) 782-5678",
+      "website": "https://www.ilga.gov/house/rep1",
+      "address": "301 S 2nd St, Springfield, IL 62707"
+    },
+    "jurisdiction_id": "b6a8f7c9-70e1-4f25-9d69-8a17b36cf24c",
+    "location_module_id": "illinois"
+  },
+  {
+    "id": "c3d4e5f6-7a8b-6c7d-1e2f-4a5b6c7d8e9f",
+    "name": "Sarah Johnson",
+    "title": "County Commissioner",
+    "entity_type": "commissioner",
+    "contact_info": {
+      "email": "sarah.johnson@cookcountyil.gov",
+      "phone": "(312) 603-6400",
+      "website": "https://www.cookcountyil.gov/person/sarah-johnson",
+      "address": "118 N Clark St, Chicago, IL 60602"
+    },
+    "jurisdiction_id": "d9b15a33-fe8b-4adb-a1c5-2e7e85635d02",
+    "location_module_id": "cook_county"
+  }
+]

@@ -1,0 +1,289 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Chip,
+  Divider,
+  Grid,
+  Card,
+  CardContent,
+  Link,
+  CircularProgress,
+  Paper,
+  Tabs,
+  Tab,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LinkIcon from '@mui/icons-material/Link';
+import EditIcon from '@mui/icons-material/Edit';
+import { projectService } from '../services/projects';
+import { statusService } from '../services/status';
+import { jurisdictionService } from '../services/jurisdictions';
+import { Project, EntityStatus, Jurisdiction, Entity, EntityStatusRecord } from '../types';
+import StatusDistribution from '../components/Status/StatusDistribution';
+import EntityStatusManager from '../components/Entity/EntityStatusManager';
+import ErrorDisplay from '../components/common/ErrorDisplay';
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+const TabPanel = (props: TabPanelProps) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+};
+
+const ProjectDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [project, setProject] = useState<Project | null>(null);
+  const [jurisdictions, setJurisdictions] = useState<Jurisdiction[]>([]);
+  const [entities, setEntities] = useState<Entity[]>([]);
+  const [statusRecords, setStatusRecords] = useState<EntityStatusRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tabValue, setTabValue] = useState(0);
+  const isAdmin = true; // TODO: Replace with actual admin check
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!id) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Fetch project
+        const projectResponse = await projectService.getProject(id);
+        setProject(projectResponse.data);
+
+        // Fetch jurisdictions
+        const jurisdictionsResponse = await jurisdictionService.getJurisdictions();
+        setJurisdictions(jurisdictionsResponse.data);
+
+        // Fetch status records for this project
+        const statusResponse = await statusService.getStatusRecords(id);
+        setStatusRecords(statusResponse.data);
+
+        // TODO: Actually tetch entities fetch entities based on the project's jurisdictions
+        setEntities([]);
+      } catch (err) {
+        console.error('Error fetching project data:', err);
+        setError('Failed to load project details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const refreshStatusRecords = async () => {
+    if (!id) return;
+
+    try {
+      const statusResponse = await statusService.getStatusRecords(id);
+      setStatusRecords(statusResponse.data);
+    } catch (err) {
+      console.error('Error refreshing status records:', err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box display="flex" justifyContent="center" py={8}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error || !project) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <ErrorDisplay
+          message={error || 'Project not found'}
+          onRetry={() => navigate('/projects')}
+        />
+      </Container>
+    );
+  }
+
+  const projectJurisdictions = jurisdictions.filter(j => project.jurisdictions.includes(j.id));
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box mb={4}>
+        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/projects')} sx={{ mb: 2 }}>
+          Back to Projects
+        </Button>
+
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box>
+            <Typography variant="h4" component="h1" fontWeight="700" color="text.primary">
+              {project.title}
+            </Typography>
+
+            <Box display="flex" alignItems="center" gap={1} my={1}>
+              <Chip
+                label={project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                color={project.status === 'active' ? 'success' : 'default'}
+                size="small"
+              />
+
+              {project.link && (
+                <Link href={project.link} target="_blank" rel="noopener noreferrer">
+                  <Chip
+                    icon={<LinkIcon />}
+                    label="Project Website"
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                    clickable
+                  />
+                </Link>
+              )}
+            </Box>
+          </Box>
+
+          {isAdmin && (
+            <Button
+              variant="outlined"
+              startIcon={<EditIcon />}
+              onClick={() => navigate(`/projects/${id}/edit`)}
+            >
+              Edit Project
+            </Button>
+          )}
+        </Box>
+
+        <Typography variant="body1" color="text.secondary" paragraph mt={2}>
+          {project.description}
+        </Typography>
+
+        {projectJurisdictions.length > 0 && (
+          <Box mt={2}>
+            <Typography variant="subtitle2" gutterBottom>
+              Jurisdictions:
+            </Typography>
+            <Box display="flex" gap={1} flexWrap="wrap">
+              {projectJurisdictions.map(jurisdiction => (
+                <Chip
+                  key={jurisdiction.id}
+                  label={jurisdiction.name}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+          </Box>
+        )}
+
+        <Box mt={3}>
+          <Typography variant="subtitle1" gutterBottom fontWeight="600">
+            Status Distribution
+          </Typography>
+
+          {project.status_distribution ? (
+            <StatusDistribution
+              distribution={project.status_distribution}
+              size="large"
+              showPercentages
+            />
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No status data available yet
+            </Typography>
+          )}
+        </Box>
+
+        <Divider sx={{ my: 4 }} />
+
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={tabValue} onChange={handleTabChange} aria-label="project tabs">
+              <Tab label="Entities" id="tab-0" />
+              <Tab label="Preferred Response" id="tab-1" />
+            </Tabs>
+          </Box>
+
+          <TabPanel value={tabValue} index={0}>
+            {entities.length === 0 ? (
+              <Paper sx={{ p: 4, textAlign: 'center' }}>
+                <Typography variant="h6" color="text.secondary">
+                  No entities found for the selected jurisdictions
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mt={1}>
+                  Entities will appear here once they're associated with the project's jurisdictions
+                </Typography>
+              </Paper>
+            ) : (
+              <Grid container spacing={3}>
+                {entities.map(entity => {
+                  const statusRecord = statusRecords.find(
+                    sr => sr.entity_id === entity.id && sr.project_id === project.id
+                  );
+
+                  return (
+                    <Grid item xs={12} key={entity.id}>
+                      <EntityStatusManager
+                        entity={entity}
+                        project={project}
+                        existingStatus={statusRecord}
+                        onStatusUpdated={refreshStatusRecords}
+                        isAdmin={isAdmin}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            )}
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={1}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Preferred Response Template
+                </Typography>
+
+                {project.template_response ? (
+                  <Typography variant="body1" whiteSpace="pre-wrap">
+                    {project.template_response}
+                  </Typography>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No template response has been provided for this project
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </TabPanel>
+        </Box>
+      </Box>
+    </Container>
+  );
+};
+
+export default ProjectDetail;

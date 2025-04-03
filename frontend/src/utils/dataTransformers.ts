@@ -1,4 +1,3 @@
-// src/utils/dataTransformers.ts
 import { Project, Entity, ProjectStatus } from '../types';
 
 export const transformProjectFromApi = (project: any): Project => {
@@ -8,11 +7,22 @@ export const transformProjectFromApi = (project: any): Project => {
     description: project.description || '',
     status: project.status as ProjectStatus,
     active: project.active,
+    link: project.link || '',
+    preferred_status: project.preferred_status || EntityStatus.SOLID_APPROVAL,
+    template_response: project.template_response || '',
+    jurisdictions: project.jurisdictions || [],
     created_by: project.created_by || '',
     created_at: project.created_at,
     updated_at: project.updated_at,
-    vote_count: project.vote_count,
-    groups: project.groups || [],
+    status_distribution: project.status_distribution || {
+      solid_approval: 0,
+      leaning_approval: 0,
+      neutral: 0,
+      leaning_disapproval: 0,
+      solid_disapproval: 0,
+      unknown: 0,
+      total: 0,
+    },
   };
 };
 

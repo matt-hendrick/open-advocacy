@@ -1,5 +1,4 @@
-// src/theme/themes.ts
-import { ThemeOptions, PaletteOptions } from '@mui/material';
+import { PaletteOptions } from '@mui/material';
 
 export interface ThemeConfig {
   name: string;

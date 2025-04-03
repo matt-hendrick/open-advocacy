@@ -21,15 +21,16 @@ import {
   CircularProgress,
   SelectChangeEvent,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { projectService } from '../../services/projects';
 import { Project, ProjectStatus } from '../../types';
 import ErrorDisplay from '../common/ErrorDisplay';
 import { transformProjectFromApi } from '../../utils/dataTransformers';
+import StatusDistribution from '../Status/StatusDistribution';
 
 const getStatusColor = (status: ProjectStatus): 'success' | 'default' | 'info' | 'secondary' => {
   switch (status) {
@@ -58,6 +59,8 @@ const ProjectList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const navigate = useNavigate();
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -119,9 +122,15 @@ const ProjectList: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box mb={4}>
-        <Typography variant="h4" component="h1" fontWeight="700" color="text.primary" gutterBottom>
-          Advocacy Projects
-        </Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4" component="h1" fontWeight="700" color="text.primary">
+            Advocacy Projects
+          </Typography>
+
+          <Button variant="contained" color="primary" onClick={() => navigate('/projects/create')}>
+            Create Project
+          </Button>
+        </Box>
         <Typography variant="body1" color="text.secondary" mb={4}>
           Browse projects, check their status, and find ways to support causes you care about.
         </Typography>
@@ -202,7 +211,20 @@ const ProjectList: React.FC = () => {
               >
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography variant="h6" component="h2" fontWeight="600" color="text.primary">
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      fontWeight="600"
+                      color="text.primary"
+                      sx={{
+                        cursor: 'pointer',
+                        '&:hover': {
+                          color: theme.palette.primary.main,
+                          textDecoration: 'underline',
+                        },
+                      }}
+                      onClick={() => navigate(`/projects/${project.id}`)}
+                    >
                       {project.title}
                     </Typography>
                     <Chip
@@ -213,6 +235,16 @@ const ProjectList: React.FC = () => {
                     />
                   </Box>
 
+                  {project.status_distribution && (
+                    <Box mt={2} mb={2}>
+                      <StatusDistribution
+                        distribution={project.status_distribution}
+                        size="small"
+                        showLabels={true}
+                      />
+                    </Box>
+                  )}
+
                   <Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 3 }}>
                     {project.description}
                   </Typography>
@@ -220,12 +252,6 @@ const ProjectList: React.FC = () => {
                   <Divider sx={{ mb: 2 }} />
 
                   <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Box display="flex" alignItems="center">
-                      <HowToVoteIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {project.vote_count} votes
-                      </Typography>
-                    </Box>
                     <Box display="flex" alignItems="center">
                       <AccessTimeIcon fontSize="small" color="action" sx={{ mr: 0.5 }} />
                       <Typography variant="caption" color="text.secondary">
@@ -240,6 +266,7 @@ const ProjectList: React.FC = () => {
                     variant="outlined"
                     color="primary"
                     sx={{ mr: 1, borderRadius: theme.shape.borderRadius }}
+                    onClick={() => navigate(`/projects/${project.id}`)}
                   >
                     View Details
                   </Button>
