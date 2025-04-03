@@ -1,4 +1,3 @@
-README.md
 .env.development
 .env.production
 **/__pycache__
