@@ -46,10 +46,10 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Static data integration for initial testing
 
 ### Phase 2: Core Feature Enhancement (IN PROGRESS)
-- ⏳ Entity status management system
-- ⏳ Project-jurisdiction associations
-- ⏳ Status distribution visualizations
-- ⏳ Admin interfaces for status updates
+- ✅ Entity status management system
+- ✅ Project-jurisdiction associations
+- ✅ Status distribution visualizations
+- ✅ Admin interfaces for status updates
 
 ### Phase 3: Database Integration (PLANNED)
 - Design database abstraction layer to support multiple providers
@@ -62,100 +62,12 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Use a small static dataset of Chicago wards and representatives
 - Test switching between "default" and "Chicago" modules
 
-## 5. Development Setup
+### Phase 5: Cleanup Existing Implementation (PLANNED)
+- Add district to entity
+- Ensure status distribution visualizations always reflect entities displayed
+- Add some basic frontend/backend tests
 
-### Backend Structure (FastAPI)
-
-```
-backend/
-├── app/
-│   ├── main.py                # Application entry point
-│   ├── api/
-│   │   ├── routes/            # API endpoints by resource
-│   │   └── dependencies.py    # Shared dependencies
-│   ├── core/                  # Configuration and security
-│   ├── db/                    # Database abstraction
-│   ├── models/                # Data models
-│   ├── services/              # Business logic
-│   │   └── location/          # Location modules
-│   └── utils/                 # Utility functions
-├── data/                      # Static data files
-├── tests/                     # Test directory
-└── pyproject.toml             # Project dependencies
-```
-
-### Frontend Structure (TypeScript + Vite)
-
-```
-frontend/
-├── src/
-│   ├── components/            # UI building blocks
-│   │   ├── Project/
-│   │   ├── Group/
-│   │   ├── Entity/
-│   │   └── common/
-│   ├── pages/                 # Main application views
-│   ├── services/              # API client functions
-│   ├── data/                  # Mock data files
-│   ├── utils/                 # Utility functions
-│   ├── types/                 # TypeScript type definitions
-│   ├── theme/                 # Theme configuration
-│   └── App.tsx                # Application root
-├── public/                    # Static assets
-└── package.json               # Frontend dependencies
-```
-
-## 6. Enhanced Data Models
-
-### Projects
-```typescript
-interface Project {
-  id: string;
-  title: string;
-  description?: string;
-  status: ProjectStatus;
-  active: boolean;
-  link?: string;
-  preferredStatus: EntityStatus;
-  templateResponse?: string;
-  jurisdictions: string[];  // IDs of associated jurisdictions
-  created_by?: string;
-  created_at: string;
-  updated_at: string;
-}
-```
-
-### Entity Status
-```typescript
-enum EntityStatus {
-  SOLID_APPROVAL = "solid_approval",
-  LEANING_APPROVAL = "leaning_approval",
-  NEUTRAL = "neutral",
-  LEANING_DISAPPROVAL = "leaning_disapproval",
-  SOLID_DISAPPROVAL = "solid_disapproval"
-}
-
-interface EntityStatusRecord {
-  entity_id: string;
-  project_id: string;
-  status: EntityStatus;
-  notes?: string;
-  updated_at: string;
-  updated_by: string;
-}
-
-interface StatusDistribution {
-  solid_approval: number;
-  leaning_approval: number;
-  neutral: number;
-  leaning_disapproval: number;
-  solid_disapproval: number;
-  unknown: number;
-  total: number;
-}
-```
-
-## 7. MVB Implementation Steps
+## 5. MVB Implementation Steps
 
 1. **Update Data Models** (Next Step)
    - Add jurisdictions field to projects
