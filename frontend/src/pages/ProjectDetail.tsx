@@ -19,13 +19,15 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LinkIcon from '@mui/icons-material/Link';
 import EditIcon from '@mui/icons-material/Edit';
+import { entityService } from '../services/entities';
 import { projectService } from '../services/projects';
 import { statusService } from '../services/status';
 import { jurisdictionService } from '../services/jurisdictions';
-import { Project, EntityStatus, Jurisdiction, Entity, EntityStatusRecord } from '../types';
+import { Project, Jurisdiction, Entity, EntityStatusRecord } from '../types';
 import StatusDistribution from '../components/Status/StatusDistribution';
 import EntityStatusManager from '../components/Entity/EntityStatusManager';
 import ErrorDisplay from '../components/common/ErrorDisplay';
+import { transformEntityFromApi } from '../utils/dataTransformers';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,6 +57,7 @@ const ProjectDetail: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [jurisdictions, setJurisdictions] = useState<Jurisdiction[]>([]);
   const [entities, setEntities] = useState<Entity[]>([]);
+  const [loadingEntities, setLoadingEntities] = useState(false);
   const [statusRecords, setStatusRecords] = useState<EntityStatusRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,9 +83,6 @@ const ProjectDetail: React.FC = () => {
         // Fetch status records for this project
         const statusResponse = await statusService.getStatusRecords(id);
         setStatusRecords(statusResponse.data);
-
-        // TODO: Actually tetch entities fetch entities based on the project's jurisdictions
-        setEntities([]);
       } catch (err) {
         console.error('Error fetching project data:', err);
         setError('Failed to load project details');
@@ -93,6 +93,29 @@ const ProjectDetail: React.FC = () => {
 
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    const fetchEntities = async () => {
+      if (!project || !project.jurisdictions.length) return;
+
+      setLoadingEntities(true);
+      try {
+        const response = await entityService.getEntitiesByJurisdictions(project.jurisdictions);
+        const transformedEntities = response.data.map(transformEntityFromApi);
+        console.log('response', response);
+        console.log('transformedEntities', transformedEntities);
+        setEntities(transformedEntities);
+        console.log('Rendering with entities:', entities);
+        console.log('Project jurisdictions:', project.jurisdictions);
+      } catch (err) {
+        console.error('Failed to fetch entities:', err);
+      } finally {
+        setLoadingEntities(false);
+      }
+    };
+
+    fetchEntities();
+  }, [project?.jurisdictions]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -229,34 +252,44 @@ const ProjectDetail: React.FC = () => {
           </Box>
 
           <TabPanel value={tabValue} index={0}>
-            {entities.length === 0 ? (
+            {loadingEntities ? (
+              <Box display="flex" justifyContent="center" py={4}>
+                <CircularProgress />
+              </Box>
+            ) : entities.length === 0 ? (
               <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="h6" color="text.secondary">
-                  No entities found for the selected jurisdictions
+                  No entities found for the selected jurisdictions:{' '}
+                  {JSON.stringify(project.jurisdictions)}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" mt={1}>
-                  Entities will appear here once they're associated with the project's jurisdictions
+                  Available entities have jurisdictions:{' '}
+                  {entities.map(e => e.jurisdiction_id).join(', ')}
                 </Typography>
               </Paper>
             ) : (
+              // <Paper sx={{ p: 4, textAlign: 'center' }}>
+              //   <Typography variant="h6" color="text.secondary">
+              //     No entities found for the selected jurisdictions
+              //   </Typography>
+              //   <Typography variant="body2" color="text.secondary" mt={1}>
+              //     Entities will appear here once they're associated with the project's jurisdictions
+              //   </Typography>
+              // </Paper>
               <Grid container spacing={3}>
-                {entities.map(entity => {
-                  const statusRecord = statusRecords.find(
-                    sr => sr.entity_id === entity.id && sr.project_id === project.id
-                  );
-
-                  return (
-                    <Grid item xs={12} key={entity.id}>
-                      <EntityStatusManager
-                        entity={entity}
-                        project={project}
-                        existingStatus={statusRecord}
-                        onStatusUpdated={refreshStatusRecords}
-                        isAdmin={isAdmin}
-                      />
-                    </Grid>
-                  );
-                })}
+                {entities.map(entity => (
+                  <Grid item xs={12} key={entity.id}>
+                    <EntityStatusManager
+                      entity={entity}
+                      project={project}
+                      existingStatus={statusRecords.find(
+                        sr => sr.entity_id === entity.id && sr.project_id === project.id
+                      )}
+                      onStatusUpdated={refreshStatusRecords}
+                      isAdmin={isAdmin}
+                    />
+                  </Grid>
+                ))}
               </Grid>
             )}
           </TabPanel>

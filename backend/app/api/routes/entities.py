@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from uuid import UUID
 
 from app.models.pydantic.models import Entity, EntityCreate
@@ -25,6 +25,18 @@ async def list_entities(
         entities = [e for e in entities if e.entity_type == entity_type]
 
     return entities
+
+
+@router.get("/by-jurisdictions", response_model=list[Entity])
+async def get_entities_by_jurisdictions(
+    jurisdiction_ids: list[str] = Query(...),
+    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+):
+    entities = await entities_provider.list()
+    filtered_entities = [
+        entity for entity in entities if entity.jurisdiction_id in jurisdiction_ids
+    ]
+    return filtered_entities
 
 
 @router.post("/", response_model=Entity)

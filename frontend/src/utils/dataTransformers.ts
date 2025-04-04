@@ -1,4 +1,4 @@
-import { Project, Entity, ProjectStatus } from '../types';
+import { Project, Entity, EntityStatus, ProjectStatus } from '../types';
 
 export const transformProjectFromApi = (project: any): Project => {
   return {
