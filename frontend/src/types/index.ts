@@ -74,7 +74,7 @@ export interface Project {
   link?: string;
   preferred_status: EntityStatus;
   template_response?: string;
-  jurisdictions: string[];
+  jurisdiction_id: string;
   created_by?: string;
   created_at: string;
   updated_at: string;

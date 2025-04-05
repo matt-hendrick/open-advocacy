@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
 from app.models.pydantic.models import Group, GroupCreate, GroupStance
-from app.db.base import InMemoryProvider
+from app.db.base import DatabaseProvider
 from app.db.dependencies import get_groups_provider, get_projects_provider
 
 router = APIRouter()
@@ -12,7 +12,7 @@ router = APIRouter()
 async def list_groups(
     project_id: UUID | None = None,
     stance: GroupStance | None = None,
-    groups_provider: InMemoryProvider = Depends(get_groups_provider),
+    groups_provider: DatabaseProvider = Depends(get_groups_provider),
 ):
     groups = await groups_provider.list()
 
@@ -30,8 +30,8 @@ async def list_groups(
 @router.post("/", response_model=Group)
 async def create_group(
     group: GroupCreate,
-    groups_provider: InMemoryProvider = Depends(get_groups_provider),
-    projects_provider: InMemoryProvider = Depends(get_projects_provider),
+    groups_provider: DatabaseProvider = Depends(get_groups_provider),
+    projects_provider: DatabaseProvider = Depends(get_projects_provider),
 ):
     # Verify project exists
     project = await projects_provider.get(group.project_id)
@@ -43,7 +43,7 @@ async def create_group(
 
 @router.get("/{group_id}", response_model=Group)
 async def get_group(
-    group_id: UUID, groups_provider: InMemoryProvider = Depends(get_groups_provider)
+    group_id: UUID, groups_provider: DatabaseProvider = Depends(get_groups_provider)
 ):
     group = await groups_provider.get(group_id)
     if not group:
@@ -55,7 +55,7 @@ async def get_group(
 async def update_group(
     group_id: UUID,
     group: GroupCreate,
-    groups_provider: InMemoryProvider = Depends(get_groups_provider),
+    groups_provider: DatabaseProvider = Depends(get_groups_provider),
 ):
     existing_group = await groups_provider.get(group_id)
     if not existing_group:
@@ -66,7 +66,7 @@ async def update_group(
 
 @router.delete("/{group_id}", response_model=bool)
 async def delete_group(
-    group_id: UUID, groups_provider: InMemoryProvider = Depends(get_groups_provider)
+    group_id: UUID, groups_provider: DatabaseProvider = Depends(get_groups_provider)
 ):
     existing_group = await groups_provider.get(group_id)
     if not existing_group:

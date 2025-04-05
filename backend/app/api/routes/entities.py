@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from uuid import UUID
 
 from app.models.pydantic.models import Entity, EntityCreate
-from app.db.base import InMemoryProvider
+from app.db.base import DatabaseProvider
 from app.db.dependencies import get_entities_provider, get_jurisdictions_provider
 
 router = APIRouter()
@@ -12,7 +12,7 @@ router = APIRouter()
 async def list_entities(
     jurisdiction_id: str | None = None,
     entity_type: str | None = None,
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     entities = await entities_provider.list()
 
@@ -30,7 +30,7 @@ async def list_entities(
 @router.get("/by-jurisdictions", response_model=list[Entity])
 async def get_entities_by_jurisdictions(
     jurisdiction_ids: list[str] = Query(...),
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     entities = await entities_provider.list()
     filtered_entities = [
@@ -42,8 +42,8 @@ async def get_entities_by_jurisdictions(
 @router.post("/", response_model=Entity)
 async def create_entity(
     entity: EntityCreate,
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
-    jurisdictions_provider: InMemoryProvider = Depends(get_jurisdictions_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
 ):
     # Verify jurisdiction exists
     jurisdiction = await jurisdictions_provider.get(entity.jurisdiction_id)
@@ -56,7 +56,7 @@ async def create_entity(
 @router.get("/{entity_id}", response_model=Entity)
 async def get_entity(
     entity_id: UUID,
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     entity = await entities_provider.get(entity_id)
     if not entity:
@@ -68,7 +68,7 @@ async def get_entity(
 async def update_entity(
     entity_id: UUID,
     entity: EntityCreate,
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     existing_entity = await entities_provider.get(entity_id)
     if not existing_entity:
@@ -80,7 +80,7 @@ async def update_entity(
 @router.delete("/{entity_id}", response_model=bool)
 async def delete_entity(
     entity_id: UUID,
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     existing_entity = await entities_provider.get(entity_id)
     if not existing_entity:

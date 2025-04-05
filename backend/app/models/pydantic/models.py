@@ -40,13 +40,13 @@ class EntityBase(BaseModel):
 
 
 class EntityCreate(EntityBase):
-    jurisdiction_id: str
+    jurisdiction_id: UUID
     location_module_id: str = "default"
 
 
 class Entity(EntityBase):
     id: UUID = Field(default_factory=uuid4)
-    jurisdiction_id: str
+    jurisdiction_id: UUID
     location_module_id: str = "default"
 
     class Config:
@@ -57,11 +57,7 @@ class JurisdictionBase(BaseModel):
     name: str
     description: str | None = None
     level: str  # city, state, federal
-    parent_jurisdiction_id: str | None = None
-
-
-class JurisdictionCreate(JurisdictionBase):
-    pass
+    parent_jurisdiction_id: UUID | None = None
 
 
 class Jurisdiction(JurisdictionBase):
@@ -122,15 +118,11 @@ class ProjectBase(BaseModel):
     link: str | None = None
     preferred_status: EntityStatus = EntityStatus.SOLID_APPROVAL
     template_response: str | None = None
-
-
-class ProjectCreate(ProjectBase):
-    jurisdictions: list[str] = []  # IDs of jurisdictions
+    jurisdiction_id: UUID | None = None
 
 
 class Project(ProjectBase):
     id: UUID = Field(default_factory=uuid4)
-    jurisdictions: list[str] = []
     created_by: str | None = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)

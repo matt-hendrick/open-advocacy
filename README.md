@@ -57,14 +57,22 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Create SQLAlchemy models matching validated data structure
 - Build dependency injection system for database providers
 
-### Phase 4: Location Module Proof of Concept (PLANNED)
+### Phase 4: Add Basic Critical Path Tests (Planned)
+- Add some core tests to help validate that ensure future changes don't break anything
+- At least a few integration tests.
+- Some frontend and backend tests.
+
+### Phase 5: Location Module Proof of Concept (PLANNED)
+- Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 - Create a minimal Chicago module that demonstrates the pluggable concept
 - Use a small static dataset of Chicago wards and representatives
 - Test switching between "default" and "Chicago" modules
 
-### Phase 5: Cleanup Existing Implementation (PLANNED)
+### Phase 6: Cleanup Existing Implementation (PLANNED)
 - Add district to entity
 - Ensure status distribution visualizations always reflect entities displayed
+- Replace various magic strings with enums
+- Clean up dead/unnecessary code (location)
 - Add some basic frontend/backend tests
 
 ## 5. MVB Implementation Steps
@@ -104,4 +112,5 @@ Potential next steps (with rough prioritization)
 4. Additional UI polish
 5. Template response generation
 6. Deployment infrastructure
+7. Containerize things
 

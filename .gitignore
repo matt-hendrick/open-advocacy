@@ -1,6 +1,9 @@
 .env.development
 .env.production
+**.env
 **/__pycache__
 **/.vscode
 **/env
 **/.ruff_cache
+**.log
+**.db

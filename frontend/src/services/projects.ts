@@ -9,7 +9,7 @@ interface ProjectCreateData {
   link?: string;
   preferred_status?: EntityStatus;
   template_response?: string;
-  jurisdictions?: string[];
+  jurisdiction_id?: string;
 }
 
 export const projectService = {
@@ -25,7 +25,7 @@ export const projectService = {
     return api.post<Project>('/projects', {
       ...project,
       preferred_status: project.preferred_status || EntityStatus.SOLID_APPROVAL,
-      jurisdictions: project.jurisdictions || [],
+      jurisdiction_id: project.jurisdiction_id || null,
     });
   },
 

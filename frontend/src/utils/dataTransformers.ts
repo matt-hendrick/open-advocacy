@@ -10,7 +10,7 @@ export const transformProjectFromApi = (project: any): Project => {
     link: project.link || '',
     preferred_status: project.preferred_status || EntityStatus.SOLID_APPROVAL,
     template_response: project.template_response || '',
-    jurisdictions: project.jurisdictions || [],
+    jurisdiction_id: project.jurisdiction_id,
     created_by: project.created_by || '',
     created_at: project.created_at,
     updated_at: project.updated_at,
@@ -23,6 +23,7 @@ export const transformProjectFromApi = (project: any): Project => {
       unknown: 0,
       total: 0,
     },
+    groups: project.groups || [],
   };
 };
 

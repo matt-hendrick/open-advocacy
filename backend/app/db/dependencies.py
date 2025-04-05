@@ -1,4 +1,4 @@
-from app.db.base import InMemoryProvider
+from app.db.provider_factory import ProviderFactory
 from app.models.pydantic.models import (
     Project,
     Group,
@@ -6,32 +6,34 @@ from app.models.pydantic.models import (
     EntityStatusRecord,
     Jurisdiction,
 )
-from uuid import UUID
-
-# Global providers
-project_provider = InMemoryProvider[Project, UUID](Project)
-group_provider = InMemoryProvider[Group, UUID](Group)
-entity_provider = InMemoryProvider[Entity, UUID](Entity)
-status_records_provider = InMemoryProvider[EntityStatusRecord, UUID](EntityStatusRecord)
-jurisdictions_provider = InMemoryProvider[Jurisdiction, UUID](Jurisdiction)
+from app.models.orm import models as orm_models
 
 
-# Dependency functions
 def get_projects_provider():
-    return project_provider
+    return ProviderFactory.get_provider(
+        pydantic_model=Project, orm_model=orm_models.Project
+    )
 
 
 def get_groups_provider():
-    return group_provider
+    return ProviderFactory.get_provider(
+        pydantic_model=Group, orm_model=orm_models.Group
+    )
 
 
 def get_entities_provider():
-    return entity_provider
+    return ProviderFactory.get_provider(
+        pydantic_model=Entity, orm_model=orm_models.Entity
+    )
 
 
 def get_status_records_provider():
-    return status_records_provider
+    return ProviderFactory.get_provider(
+        pydantic_model=EntityStatusRecord, orm_model=orm_models.EntityStatusRecord
+    )
 
 
 def get_jurisdictions_provider():
-    return jurisdictions_provider
+    return ProviderFactory.get_provider(
+        pydantic_model=Jurisdiction, orm_model=orm_models.Jurisdiction
+    )

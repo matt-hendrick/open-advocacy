@@ -1,25 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import projects, groups, entities, status, jurisdictions, location
-from app.utils.data_loader import load_data_into_provider
-from app.models.pydantic.models import (
-    Project,
-    Group,
-    Entity,
-    Jurisdiction,
-    EntityStatusRecord,
-)
-from app.db.dependencies import (
-    project_provider,
-    group_provider,
-    entity_provider,
-    jurisdictions_provider,
-    status_records_provider,
-)
-import os
 import logging
 import time
-from fastapi import Request
+
+from app.core.config import settings
+from app.db.session import create_tables
 
 
 logging.basicConfig(
@@ -96,35 +82,11 @@ app.include_router(location.router, prefix="/api/location", tags=["location"])
 
 @app.on_event("startup")
 async def startup_event():
-    """Load sample data on startup."""
-    # Get the project root directory
-    project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-    # Load projects data
-    projects_file = os.path.join(project_dir, "data", "dummy_projects.json")
-    if os.path.exists(projects_file):
-        await load_data_into_provider(project_provider, Project, projects_file)
-
-    # Load other sample data files if they exist
-    groups_file = os.path.join(project_dir, "data", "dummy_groups.json")
-    if os.path.exists(groups_file):
-        await load_data_into_provider(group_provider, Group, groups_file)
-
-    entities_file = os.path.join(project_dir, "data", "dummy_entities.json")
-    if os.path.exists(entities_file):
-        await load_data_into_provider(entity_provider, Entity, entities_file)
-
-    jurisdictions_file = os.path.join(project_dir, "data", "dummy_jurisdictions.json")
-    if os.path.exists(jurisdictions_file):
-        await load_data_into_provider(
-            jurisdictions_provider, Jurisdiction, jurisdictions_file
-        )
-
-    status_records_file = os.path.join(project_dir, "data", "dummy_status_records.json")
-    if os.path.exists(status_records_file):
-        await load_data_into_provider(
-            status_records_provider, EntityStatusRecord, status_records_file
-        )
+    """Initialize database and load sample data on startup."""
+    logger.info(
+        f"Starting application with {settings.DATABASE_PROVIDER} database provider"
+    )
+    await create_tables()
 
 
 if __name__ == "__main__":

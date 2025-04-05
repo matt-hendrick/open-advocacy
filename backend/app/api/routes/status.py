@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
 from app.models.pydantic.models import EntityStatusRecord
-from app.db.base import InMemoryProvider
+from app.db.base import DatabaseProvider
 from app.db.dependencies import (
     get_status_records_provider,
     get_projects_provider,
@@ -16,7 +16,7 @@ router = APIRouter()
 async def list_status_records(
     project_id: UUID | None = None,
     entity_id: UUID | None = None,
-    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
+    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
 ):
     status_records = await status_records_provider.list()
 
@@ -34,9 +34,9 @@ async def list_status_records(
 @router.post("/", response_model=EntityStatusRecord)
 async def create_status_record(
     status_record: EntityStatusRecord,
-    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
-    projects_provider: InMemoryProvider = Depends(get_projects_provider),
-    entities_provider: InMemoryProvider = Depends(get_entities_provider),
+    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
+    projects_provider: DatabaseProvider = Depends(get_projects_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     # Verify project exists
     project = await projects_provider.get(status_record.project_id)
@@ -67,7 +67,7 @@ async def create_status_record(
 @router.get("/{record_id}", response_model=EntityStatusRecord)
 async def get_status_record(
     record_id: UUID,
-    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
+    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
 ):
     record = await status_records_provider.get(record_id)
     if not record:
@@ -79,7 +79,7 @@ async def get_status_record(
 async def update_status_record(
     record_id: UUID,
     status_record: EntityStatusRecord,
-    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
+    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
 ):
     existing_record = await status_records_provider.get(record_id)
     if not existing_record:
@@ -91,7 +91,7 @@ async def update_status_record(
 @router.delete("/{record_id}", response_model=bool)
 async def delete_status_record(
     record_id: UUID,
-    status_records_provider: InMemoryProvider = Depends(get_status_records_provider),
+    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
 ):
     existing_record = await status_records_provider.get(record_id)
     if not existing_record:
