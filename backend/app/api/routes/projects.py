@@ -84,9 +84,9 @@ async def get_project(
         sr for sr in status_records if sr.project_id == project_id
     ]
     project.status_distribution = calculate_status_distribution(project_status_records)
-    
+
     jurisdiction_id = project.jurisdiction_id
-    jurisdiction : Jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+    jurisdiction: Jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
     if jurisdiction and jurisdiction.name:
         project.jurisdiction_name = jurisdiction.name
 

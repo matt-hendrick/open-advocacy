@@ -7,6 +7,7 @@ interface StatusBarProps {
   size?: 'small' | 'medium' | 'large';
   showLabels?: boolean;
   showPercentages?: boolean;
+  showCounts?: boolean;
 }
 
 const getStatusColor = (status: EntityStatus): string => {
@@ -48,9 +49,9 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
   size = 'medium',
   showLabels = false,
   showPercentages = false,
+  showCounts = false,
 }) => {
-  const total = distribution.total || 1; // Avoid division by zero
-
+  const total = distribution.total || 1;
   const barHeight = size === 'small' ? 8 : size === 'medium' ? 16 : 24;
   const fontSize = size === 'small' ? 10 : size === 'medium' ? 12 : 14;
 
@@ -82,7 +83,6 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
       >
         {sections.map((section, index) => {
           if (section.count === 0) return null;
-
           const percentage = (section.count / total) * 100;
           return (
             <Tooltip
@@ -114,6 +114,32 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
           No status data available
         </Typography>
+      )}
+
+      {showCounts && distribution.total > 0 && (
+        <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          {sections.map((section, index) => {
+            if (section.count === 0) return null;
+            return (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Box
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: '2px',
+                    bgcolor: getStatusColor(section.status),
+                  }}
+                />
+                <Typography variant="body2" component="span">
+                  {getStatusTooltip(section.status)}: {section.count}
+                </Typography>
+              </Box>
+            );
+          })}
+          <Typography variant="body2" component="span" fontWeight="bold">
+            Total: {distribution.total}
+          </Typography>
+        </Box>
       )}
     </Box>
   );

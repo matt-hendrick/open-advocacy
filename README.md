@@ -10,8 +10,10 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ **Frontend**: React+TypeScript+Vite application with UI components
 - ✅ **Core Components**: Project listing and representative lookup functionality
 - ✅ **Data Flow**: Initial implementation of frontend-backend connection
-- ⏳ **Database**: Still using in-memory storage (SQLite integration pending)
-- ⏳ **Admin Features**: Basic structure created, functionality pending
+- ✅ **Database**: Setup flexible database provider system that supports Sqlite or postgres
+- ⏳ **Representative Lookup Feature**: Functionality pending
+- ⏳ **Auth and Admin User Features**: Functionality pending
+- ⏳ **Deployment Process Setup**: Pending
 
 ## 3. Core Concepts & Data Model
 
@@ -45,35 +47,37 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Basic UI components for projects and representatives
 - ✅ Static data integration for initial testing
 
-### Phase 2: Core Feature Enhancement (IN PROGRESS)
+### Phase 2: Core Feature Enhancement (COMPLETED)
 - ✅ Entity status management system
 - ✅ Project-jurisdiction associations
 - ✅ Status distribution visualizations
 - ✅ Admin interfaces for status updates
 
-### Phase 3: Database Integration (PLANNED)
-- Design database abstraction layer to support multiple providers
-- Implement SQLite adapter for local development
-- Create SQLAlchemy models matching validated data structure
-- Build dependency injection system for database providers
+### Phase 3: Database Integration (COMPLETED)
+- ✅ Design database abstraction layer to support multiple providers
+- ✅ Implement SQLite adapter for local development
+- ✅ Create SQLAlchemy models matching validated data structure
+- ✅ Build dependency injection system for database providers
 
-### Phase 4: Add Basic Critical Path Tests (Planned)
-- Add some core tests to help validate that ensure future changes don't break anything
-- At least a few integration tests.
-- Some frontend and backend tests.
+### Phase 4: Ensure Current System Works As Intended and Clean up Frontend (IN PROGRESS)
+- Update dummy data to avoid orphan status
+- Ensure status updates updates status display. 
+- Display status counts along with colored distribution
+- Populate with a little more test data
 
-### Phase 5: Location Module Proof of Concept (PLANNED)
-- Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
-- Create a minimal Chicago module that demonstrates the pluggable concept
-- Use a small static dataset of Chicago wards and representatives
-- Test switching between "default" and "Chicago" modules
+### Phase 5: Features to Add (PLANNED)
+- Ability to update/display a project timeline and current status (bill timeline)
+- Add district to entity
+- Pull in real data for Chicago
+- Either cut location module system or integrate with jurisdictions/entities
 
 ### Phase 6: Cleanup Existing Implementation (PLANNED)
-- Add district to entity
-- Ensure status distribution visualizations always reflect entities displayed
 - Replace various magic strings with enums
 - Clean up dead/unnecessary code (location)
 - Add some basic frontend/backend tests
+- Add some core tests to help validate that ensure future changes don't break anything
+- At least a few integration tests.
+
 
 ## 5. MVB Implementation Steps
 

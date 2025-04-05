@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
 from app.models.pydantic.models import Entity, EntityCreate

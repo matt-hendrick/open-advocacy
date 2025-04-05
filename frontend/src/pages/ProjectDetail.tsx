@@ -125,10 +125,15 @@ const ProjectDetail: React.FC = () => {
     if (!id) return;
 
     try {
+      // Fetch raw status records
       const statusResponse = await statusService.getStatusRecords(id);
       setStatusRecords(statusResponse.data);
+
+      // Also refresh the project to get updated status distribution
+      const projectResponse = await projectService.getProject(id);
+      setProject(projectResponse.data);
     } catch (err) {
-      console.error('Error refreshing status records:', err);
+      console.error('Error refreshing project data:', err);
     }
   };
 
@@ -209,26 +214,24 @@ const ProjectDetail: React.FC = () => {
               Jurisdictions:
             </Typography>
             <Box display="flex" gap={1} flexWrap="wrap">
-                <Chip
-                  key={project.jurisdiction_id}
-                  label={project.jurisdiction_name || project.jurisdiction_id}
-                  size="small"
-                  variant="outlined"
-                />
+              <Chip
+                key={project.jurisdiction_id}
+                label={project.jurisdiction_name || project.jurisdiction_id}
+                size="small"
+                variant="outlined"
+              />
             </Box>
           </Box>
         )}
 
         <Box mt={3}>
-          <Typography variant="subtitle1" gutterBottom fontWeight="600">
-            Status Distribution
-          </Typography>
-
           {project.status_distribution ? (
             <StatusDistribution
               distribution={project.status_distribution}
               size="large"
               showPercentages
+              showCounts
+              showLabels
             />
           ) : (
             <Typography variant="body2" color="text.secondary">
