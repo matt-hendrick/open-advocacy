@@ -72,15 +72,15 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Clean up display of entity list (should be more compact)
 - ✅ Clean up display of project list
 
-### Phase 6: Location Module Proof of Concept (PLANNED)
-- Pull in real data for Chicago alders
+### Phase 6: Get Better Example Data and Allow Creating/Editing Projects (IN PROGRESS)
+- ✅ Pull in real data for Chicago alders
+- Ensure that creating/editing a project works as intended
+
+### Phase 7: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 - Create a minimal Chicago module that demonstrates the pluggable concept
 - Test switching between "default" and "Chicago" modules
 - Get real address lookup working (need to get geojson for Chicago wards)
-
-### Phase 7: Edit/Create Project Functionality (IN PROGRESS)
-- Ensure that creating/editing a project works as intended
 
 ### Phase 8: Validate Postgres Provider Works as Intended (PLANNED)
 - Setup postgres locally
