@@ -67,10 +67,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Display status counts along with colored distribution
 
 ### Phase 5: Ensure Entities have Correct Data and Display Correctly (PLANNED)
-- Add district to entity
-- Ensure entity contact info is saved correctly and displayed
+- ✅ Add district to entity
+- ✅ Ensure entity contact info is saved correctly and displayed
 - Clean up display of entity list (should be more compact)
-- Either cut location module system or integrate with jurisdictions/entities
 
 ### Phase 6: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)

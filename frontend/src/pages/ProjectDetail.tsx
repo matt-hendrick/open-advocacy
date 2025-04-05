@@ -26,6 +26,7 @@ import { jurisdictionService } from '../services/jurisdictions';
 import { Project, Jurisdiction, Entity, EntityStatusRecord } from '../types';
 import StatusDistribution from '../components/Status/StatusDistribution';
 import EntityStatusManager from '../components/Entity/EntityStatusManager';
+import CompactEntityList from '../components/Entity/CompactEntityList';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { transformEntityFromApi } from '../utils/dataTransformers';
 
@@ -258,30 +259,17 @@ const ProjectDetail: React.FC = () => {
             ) : entities.length === 0 ? (
               <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="h6" color="text.secondary">
-                  No entities found for the selected jurisdiction:{' '}
-                  {JSON.stringify(project.jurisdiction_name || project.jurisdiction_id)}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" mt={1}>
-                  Available entities have jurisdictions:{' '}
-                  {entities.map(e => e.jurisdiction_id).join(', ')}
+                  No entities found for the selected jurisdiction
                 </Typography>
               </Paper>
             ) : (
-              <Grid container spacing={3}>
-                {entities.map(entity => (
-                  <Grid item xs={12} key={entity.id}>
-                    <EntityStatusManager
-                      entity={entity}
-                      project={project}
-                      existingStatus={statusRecords.find(
-                        sr => sr.entity_id === entity.id && sr.project_id === project.id
-                      )}
-                      onStatusUpdated={refreshStatusRecords}
-                      isAdmin={isAdmin}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              <CompactEntityList
+                entities={entities}
+                project={project}
+                statusRecords={statusRecords}
+                onStatusUpdated={refreshStatusRecords}
+                isAdmin={isAdmin}
+              />
             )}
           </TabPanel>
 

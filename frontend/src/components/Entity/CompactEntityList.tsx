@@ -1,0 +1,594 @@
+import React, { useState, useMemo } from 'react';
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Toolbar,
+  Typography,
+  IconButton,
+  TextField,
+  InputAdornment,
+  Chip,
+  Collapse,
+  Grid,
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Link,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import PublicIcon from '@mui/icons-material/Public';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+
+import { Entity, Project, EntityStatus, EntityStatusRecord } from '../../types';
+import { statusService } from '../../services/status';
+
+// Type for sort orders
+type Order = 'asc' | 'desc';
+
+interface CompactEntityListProps {
+  entities: Entity[];
+  project: Project;
+  statusRecords: EntityStatusRecord[];
+  onStatusUpdated: () => void;
+  isAdmin: boolean;
+}
+
+// Helper functions from your existing code
+const getStatusColor = (status: EntityStatus | undefined): string => {
+  switch (status) {
+    case EntityStatus.SOLID_APPROVAL:
+      return '#2e7d32'; // Dark green
+    case EntityStatus.LEANING_APPROVAL:
+      return '#66bb6a'; // Light green
+    case EntityStatus.NEUTRAL:
+      return '#ffb74d'; // Orange
+    case EntityStatus.LEANING_DISAPPROVAL:
+      return '#ef5350'; // Light red
+    case EntityStatus.SOLID_DISAPPROVAL:
+      return '#c62828'; // Dark red
+    default:
+      return '#9e9e9e'; // Grey
+  }
+};
+
+const getStatusLabel = (status: EntityStatus | undefined): string => {
+  switch (status) {
+    case EntityStatus.SOLID_APPROVAL:
+      return 'Solid Approval';
+    case EntityStatus.LEANING_APPROVAL:
+      return 'Leaning Approval';
+    case EntityStatus.NEUTRAL:
+      return 'Neutral';
+    case EntityStatus.LEANING_DISAPPROVAL:
+      return 'Leaning Disapproval';
+    case EntityStatus.SOLID_DISAPPROVAL:
+      return 'Solid Disapproval';
+    default:
+      return 'No Status';
+  }
+};
+
+// Row component that handles expansion
+const EntityRow = ({
+  entity,
+  project,
+  statusRecord,
+  onStatusUpdated,
+  isAdmin,
+}: {
+  entity: Entity;
+  project: Project;
+  statusRecord?: EntityStatusRecord;
+  onStatusUpdated: () => void;
+  isAdmin: boolean;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<EntityStatus>(statusRecord?.status || EntityStatus.NEUTRAL);
+  const [notes, setNotes] = useState<string>(statusRecord?.notes || '');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleStatusChange = (event: SelectChangeEvent<EntityStatus>) => {
+    setStatus(event.target.value as EntityStatus);
+  };
+
+  const handleNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNotes(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!isAdmin) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (statusRecord) {
+        // Update existing status
+        await statusService.updateStatusRecord(statusRecord.id, {
+          entity_id: entity.id,
+          project_id: project.id,
+          status,
+          notes,
+          updated_by: 'admin', // TODO: Replace with actual user
+        });
+      } else {
+        // Create new status
+        await statusService.createStatusRecord({
+          entity_id: entity.id,
+          project_id: project.id,
+          status,
+          notes,
+          updated_by: 'admin', // TODO: Replace with actual user
+        });
+      }
+
+      onStatusUpdated();
+    } catch (err) {
+      console.error('Error updating status:', err);
+      setError('Failed to update status');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <TableRow
+        hover
+        sx={{
+          '& > *': { borderBottom: 'unset' },
+          cursor: 'pointer',
+          '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
+        }}
+        onClick={() => setOpen(!open)}
+      >
+        <TableCell padding="checkbox">
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={e => {
+              e.stopPropagation();
+              setOpen(!open);
+            }}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+
+        <TableCell component="th" scope="row">
+          <Box display="flex" alignItems="center" gap={1}>
+            <Chip
+              size="small"
+              sx={{
+                bgcolor: getStatusColor(statusRecord?.status),
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+              }}
+            />
+            <Typography variant="body1" fontWeight={500}>
+              {entity.name}
+            </Typography>
+          </Box>
+        </TableCell>
+
+        <TableCell>{entity.title || ''}</TableCell>
+
+        <TableCell>{entity.district || entity.entity_type}</TableCell>
+
+        <TableCell align="right">
+          <Chip
+            label={getStatusLabel(statusRecord?.status)}
+            size="small"
+            sx={{
+              bgcolor: getStatusColor(statusRecord?.status),
+              color: '#fff',
+              fontWeight: 500,
+            }}
+          />
+        </TableCell>
+      </TableRow>
+
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 2 }}>
+              <Grid container spacing={3}>
+                {/* Contact Information */}
+                <Grid item xs={12} md={6}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 2,
+                      bgcolor: 'rgba(0,0,0,0.02)',
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="subtitle2" gutterBottom>
+                      Contact Information
+                    </Typography>
+                    <Box display="flex" flexDirection="column" gap={1} mt={1}>
+                      {entity.email && (
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <EmailIcon fontSize="small" color="action" />
+                          <Link href={`mailto:${entity.email}`}>{entity.email}</Link>
+                        </Box>
+                      )}
+
+                      {entity.phone && (
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <PhoneIcon fontSize="small" color="action" />
+                          <Link href={`tel:${entity.phone}`}>{entity.phone}</Link>
+                        </Box>
+                      )}
+
+                      {entity.website && (
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <PublicIcon fontSize="small" color="action" />
+                          <Link href={entity.website} target="_blank" rel="noopener">
+                            Website
+                          </Link>
+                        </Box>
+                      )}
+
+                      {entity.address && (
+                        <Box display="flex" alignItems="flex-start" gap={1}>
+                          <LocationOnIcon fontSize="small" color="action" sx={{ mt: 0.3 }} />
+                          <Typography variant="body2">{entity.address}</Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  </Paper>
+                </Grid>
+
+                {/* Status Controls */}
+                <Grid item xs={12} md={6}>
+                  {isAdmin ? (
+                    <>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Update Status
+                      </Typography>
+
+                      <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id={`status-select-label-${entity.id}`}>Status</InputLabel>
+                        <Select
+                          labelId={`status-select-label-${entity.id}`}
+                          id={`status-select-${entity.id}`}
+                          value={status}
+                          label="Status"
+                          onChange={handleStatusChange}
+                          disabled={loading}
+                        >
+                          <MenuItem value={EntityStatus.SOLID_APPROVAL}>
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Box
+                                width={12}
+                                height={12}
+                                borderRadius="50%"
+                                bgcolor={getStatusColor(EntityStatus.SOLID_APPROVAL)}
+                              />
+                              Strong Support
+                            </Box>
+                          </MenuItem>
+                          <MenuItem value={EntityStatus.LEANING_APPROVAL}>
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Box
+                                width={12}
+                                height={12}
+                                borderRadius="50%"
+                                bgcolor={getStatusColor(EntityStatus.LEANING_APPROVAL)}
+                              />
+                              Tentative Support
+                            </Box>
+                          </MenuItem>
+                          <MenuItem value={EntityStatus.NEUTRAL}>
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Box
+                                width={12}
+                                height={12}
+                                borderRadius="50%"
+                                bgcolor={getStatusColor(EntityStatus.NEUTRAL)}
+                              />
+                              Undecided
+                            </Box>
+                          </MenuItem>
+                          <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Box
+                                width={12}
+                                height={12}
+                                borderRadius="50%"
+                                bgcolor={getStatusColor(EntityStatus.LEANING_DISAPPROVAL)}
+                              />
+                              Tentative Opposition
+                            </Box>
+                          </MenuItem>
+                          <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Box
+                                width={12}
+                                height={12}
+                                borderRadius="50%"
+                                bgcolor={getStatusColor(EntityStatus.SOLID_DISAPPROVAL)}
+                              />
+                              Strong Opposition
+                            </Box>
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+
+                      <TextField
+                        fullWidth
+                        label="Notes"
+                        multiline
+                        rows={3}
+                        value={notes}
+                        onChange={handleNotesChange}
+                        disabled={loading}
+                        sx={{ mb: 2 }}
+                      />
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        sx={{ minWidth: 120 }}
+                      >
+                        {loading ? 'Saving...' : statusRecord ? 'Update' : 'Save'}
+                      </Button>
+
+                      {error && (
+                        <Typography color="error" sx={{ mt: 1 }}>
+                          {error}
+                        </Typography>
+                      )}
+                    </>
+                  ) : (
+                    statusRecord && (
+                      <>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Current Status
+                        </Typography>
+                        <Box
+                          p={2}
+                          sx={{
+                            bgcolor: 'rgba(0,0,0,0.02)',
+                            borderRadius: 1,
+                            border: `1px solid ${getStatusColor(statusRecord.status)}`,
+                          }}
+                        >
+                          <Typography fontWeight="600" color={getStatusColor(statusRecord.status)}>
+                            {getStatusLabel(statusRecord.status)}
+                          </Typography>
+
+                          {statusRecord.notes && (
+                            <>
+                              <Divider sx={{ my: 1.5 }} />
+                              <Typography variant="body2">{statusRecord.notes}</Typography>
+                            </>
+                          )}
+
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            mt={1}
+                          >
+                            Last updated: {new Date(statusRecord.updated_at).toLocaleString()}
+                          </Typography>
+                        </Box>
+                      </>
+                    )
+                  )}
+                </Grid>
+              </Grid>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
+};
+
+const CompactEntityList: React.FC<CompactEntityListProps> = ({
+  entities,
+  project,
+  statusRecords,
+  onStatusUpdated,
+  isAdmin,
+}) => {
+  // State for filtering and sorting
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Entity>('name');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterTypeOpen, setFilterTypeOpen] = useState(false);
+
+  // Get unique entity types for filtering
+  const entityTypes = useMemo(() => {
+    const types = new Set<string>();
+    entities.forEach(entity => {
+      types.add(entity.entity_type);
+    });
+    return Array.from(types);
+  }, [entities]);
+
+  // Sort entities based on orderBy and order
+  const sortedEntities = useMemo(() => {
+    const comparator = (a: Entity, b: Entity, orderBy: keyof Entity) => {
+      if (b[orderBy] < a[orderBy]) {
+        return order === 'desc' ? -1 : 1;
+      }
+      if (b[orderBy] > a[orderBy]) {
+        return order === 'desc' ? 1 : -1;
+      }
+      return 0;
+    };
+
+    return [...entities].sort((a, b) => comparator(a, b, orderBy));
+  }, [entities, order, orderBy]);
+
+  // Filter entities based on search term and filter settings
+  const filteredEntities = useMemo(() => {
+    return sortedEntities.filter(entity => {
+      // Filter by search term
+      const matchesSearch =
+        searchTerm === '' ||
+        entity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (entity.title && entity.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (entity.district && entity.district.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      // Filter by status
+      if (filterStatus !== 'all') {
+        const statusRecord = statusRecords.find(
+          sr => sr.entity_id === entity.id && sr.project_id === project.id
+        );
+        const entityStatus = statusRecord?.status || EntityStatus.NEUTRAL;
+        if (entityStatus !== filterStatus) {
+          return false;
+        }
+      }
+
+      return matchesSearch;
+    });
+  }, [sortedEntities, searchTerm, filterStatus, statusRecords, project.id]);
+
+  const handleRequestSort = (property: keyof Entity) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%', mb: 2, borderRadius: 2, overflow: 'hidden' }}>
+        <Toolbar
+          sx={{
+            pl: { sm: 2 },
+            pr: { xs: 1, sm: 1 },
+          }}
+        >
+          <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+            Entities
+          </Typography>
+
+          <Box display="flex" alignItems="center" gap={2}>
+            <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+              <InputLabel id="status-filter-label">Status</InputLabel>
+              <Select
+                labelId="status-filter-label"
+                id="status-filter"
+                value={filterStatus}
+                onChange={e => setFilterStatus(e.target.value)}
+                label="Status"
+              >
+                <MenuItem value="all">All Statuses</MenuItem>
+                <MenuItem value={EntityStatus.SOLID_APPROVAL}>Strong Support</MenuItem>
+                <MenuItem value={EntityStatus.LEANING_APPROVAL}>Tentative Support</MenuItem>
+                <MenuItem value={EntityStatus.NEUTRAL}>Undecided</MenuItem>
+                <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>Tentative Opposition</MenuItem>
+                <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>Strong Opposition</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              size="small"
+              variant="outlined"
+              placeholder="Search entities..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        </Toolbar>
+
+        <TableContainer>
+          <Table aria-labelledby="tableTitle" size="medium">
+            <TableHead>
+              <TableRow>
+                <TableCell padding="checkbox" />
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'name'}
+                    direction={orderBy === 'name' ? order : 'asc'}
+                    onClick={() => handleRequestSort('name')}
+                  >
+                    Name
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'title'}
+                    direction={orderBy === 'title' ? order : 'asc'}
+                    onClick={() => handleRequestSort('title')}
+                  >
+                    Title
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'district'}
+                    direction={orderBy === 'district' ? order : 'asc'}
+                    onClick={() => handleRequestSort('district')}
+                  >
+                    District
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="right">Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredEntities.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
+                    <Typography variant="body1" color="text.secondary">
+                      No entities found matching your criteria
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredEntities.map(entity => (
+                  <EntityRow
+                    key={entity.id}
+                    entity={entity}
+                    project={project}
+                    statusRecord={statusRecords.find(
+                      sr => sr.entity_id === entity.id && sr.project_id === project.id
+                    )}
+                    onStatusUpdated={onStatusUpdated}
+                    isAdmin={isAdmin}
+                  />
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Box>
+  );
+};
+
+export default CompactEntityList;
