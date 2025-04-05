@@ -13,10 +13,41 @@ interface ProjectCreateData {
   group_id?: string;
 }
 
+interface ProjectFilterParams {
+  status?: ProjectStatus;
+  group_id?: string;
+  skip?: number;
+  limit?: number;
+  include_archived?: boolean;
+}
+
 export const projectService = {
-  async getProjects(groupId?: string): Promise<{ data: Project[] }> {
-    const params = groupId ? `?group_id=${groupId}` : '';
-    return api.get<Project[]>(`/projects${params}`);
+  async getProjects(filters?: ProjectFilterParams): Promise<{ data: Project[] }> {
+    const queryParams = new URLSearchParams();
+
+    if (filters) {
+      if (filters.status) {
+        queryParams.append('status', filters.status);
+      }
+
+      if (filters.group_id) {
+        queryParams.append('group_id', filters.group_id);
+      }
+
+      // TODO: Implement pagination
+      if (filters.skip !== undefined) {
+        queryParams.append('skip', filters.skip.toString());
+      }
+
+      if (filters.limit !== undefined) {
+        queryParams.append('limit', filters.limit.toString());
+      }
+    }
+
+    const queryString = queryParams.toString();
+    const url = `/projects/${queryString ? `?${queryString}` : ''}`;
+
+    return api.get<Project[]>(url);
   },
 
   async getProject(id: string): Promise<{ data: Project }> {

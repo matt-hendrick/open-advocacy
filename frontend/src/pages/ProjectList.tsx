@@ -23,25 +23,45 @@ import { Project, ProjectStatus } from '../types';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { transformProjectFromApi } from '../utils/dataTransformers';
 import StatusDistribution from '../components/Status/StatusDistribution';
+import { useDebounce } from '../hooks/useDebounce';
 
 const ProjectList: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
+  // Debounce search term to avoid too many API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   const navigate = useNavigate();
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (status?: ProjectStatus, searchQuery?: string) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await projectService.getProjects();
+      const filters: any = {};
+
+      // Only add status filter if it's not "all"
+      if (status && status !== 'all') {
+        filters.status = status;
+      }
+
+      const response = await projectService.getProjects(filters);
       const transformedProjects = response.data.map(transformProjectFromApi);
-      setProjects(transformedProjects);
-      setFilteredProjects(transformedProjects);
+
+      // Filter by search term locally (since backend doesn't support text search)
+      let projects = transformedProjects;
+      if (searchQuery) {
+        projects = transformedProjects.filter(
+          project =>
+            project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            project.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      setProjects(projects);
     } catch (err) {
       console.error('Error fetching projects:', err);
       setError('Failed to load projects. Please try again later.');
@@ -50,21 +70,15 @@ const ProjectList: React.FC = () => {
     }
   };
 
+  // Fetch projects on initial load
   useEffect(() => {
     fetchProjects();
   }, []);
 
+  // Refetch when status filter changes
   useEffect(() => {
-    const filtered = projects.filter(project => {
-      const matchesSearch =
-        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        false;
-      const matchesStatus = statusFilter === 'all' || project.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-    setFilteredProjects(filtered);
-  }, [searchTerm, statusFilter, projects]);
+    fetchProjects(statusFilter as ProjectStatus, debouncedSearchTerm);
+  }, [statusFilter, debouncedSearchTerm]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -110,7 +124,7 @@ const ProjectList: React.FC = () => {
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <ErrorDisplay message={error} onRetry={fetchProjects} />
+        <ErrorDisplay message={error} onRetry={() => fetchProjects()} />
       </Container>
     );
   }
@@ -118,7 +132,7 @@ const ProjectList: React.FC = () => {
   const renderList = () => {
     return (
       <Box sx={{ width: '100%' }}>
-        {filteredProjects.length === 0 ? (
+        {projects.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="h6" color="text.secondary">
               No projects found matching your criteria
@@ -128,7 +142,7 @@ const ProjectList: React.FC = () => {
             </Typography>
           </Box>
         ) : (
-          filteredProjects.map(project => (
+          projects.map(project => (
             <Paper
               key={project.id}
               sx={{

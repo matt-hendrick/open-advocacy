@@ -32,13 +32,23 @@ async def list_projects(
 ):
     """List projects with optional filtering."""
     filters = {}
+    in_filters = {}
     if status:
         filters["status"] = status.value
+    else:
+        # Create a list of non-archived statuses
+        # We do this as "archived" projects are hidden unless explictly filtered for
+        non_archived_statuses = [
+            s.value for s in ProjectStatus if s != ProjectStatus.ARCHIVED
+        ]
+        in_filters["status"] = non_archived_statuses
+
     if group_id:
         filters["group_id"] = group_id
 
-    if filters:
-        projects = await projects_provider.filter(**filters)
+    # Get projects with appropriate filters
+    if filters or in_filters:
+        projects = await projects_provider.filter_multiple(filters, in_filters)
     else:
         projects = await projects_provider.list(skip=skip, limit=limit)
 
