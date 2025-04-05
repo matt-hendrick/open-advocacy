@@ -25,8 +25,7 @@ import { statusService } from '../services/status';
 import { jurisdictionService } from '../services/jurisdictions';
 import { Project, Jurisdiction, Entity, EntityStatusRecord } from '../types';
 import StatusDistribution from '../components/Status/StatusDistribution';
-import EntityStatusManager from '../components/Entity/EntityStatusManager';
-import CompactEntityList from '../components/Entity/CompactEntityList';
+import EntityList from '../components/Entity/EntityList';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { transformEntityFromApi } from '../utils/dataTransformers';
 
@@ -263,7 +262,7 @@ const ProjectDetail: React.FC = () => {
                 </Typography>
               </Paper>
             ) : (
-              <CompactEntityList
+              <EntityList
                 entities={entities}
                 project={project}
                 statusRecords={statusRecords}

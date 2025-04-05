@@ -40,7 +40,7 @@ import { statusService } from '../../services/status';
 // Type for sort orders
 type Order = 'asc' | 'desc';
 
-interface CompactEntityListProps {
+interface EntityListProps {
   entities: Entity[];
   project: Project;
   statusRecords: EntityStatusRecord[];
@@ -407,7 +407,7 @@ const EntityRow = ({
   );
 };
 
-const CompactEntityList: React.FC<CompactEntityListProps> = ({
+const EntityList: React.FC<EntityListProps> = ({
   entities,
   project,
   statusRecords,
@@ -607,4 +607,4 @@ const CompactEntityList: React.FC<CompactEntityListProps> = ({
   );
 };
 
-export default CompactEntityList;
+export default EntityList;
