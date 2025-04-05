@@ -62,6 +62,7 @@ async def create_project(
     project: ProjectBase,
     projects_provider: DatabaseProvider = Depends(get_projects_provider),
     groups_provider: DatabaseProvider = Depends(get_groups_provider),
+    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
 ):
     """Create a new project."""
     # Verify group exists if provided
@@ -70,6 +71,13 @@ async def create_project(
         if not group:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Group not found"
+            )
+    # Valid jurisdiction
+    if project.jurisdiction_id:
+        jurisdiction = await jurisdictions_provider.get(project.jurisdiction_id)
+        if not jurisdiction:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Jurisdiction not found"
             )
 
     return await projects_provider.create(project)
@@ -112,10 +120,27 @@ async def update_project(
     project_id: UUID,
     project: ProjectBase,
     projects_provider: DatabaseProvider = Depends(get_projects_provider),
+    groups_provider: DatabaseProvider = Depends(get_groups_provider),
+    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
 ):
     db_project = await projects_provider.get(project_id)
     if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")
+
+    # Verify group exists if provided
+    if project.group_id:
+        group = await groups_provider.get(project.group_id)
+        if not group:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Group not found"
+            )
+    # Valid jurisdiction
+    if project.jurisdiction_id:
+        jurisdiction = await jurisdictions_provider.get(project.jurisdiction_id)
+        if not jurisdiction:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Jurisdiction not found"
+            )
 
     updated_project = await projects_provider.update(project_id, project)
     return updated_project

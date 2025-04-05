@@ -1,19 +1,64 @@
-import React from 'react';
-import { Container, Typography, Box, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, Button, CircularProgress } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ProjectForm from '../components/Project/ProjectForm';
 import { Project } from '../types';
+import { projectService } from '../services/projects';
 
 const ProjectFormPage: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
+  const [project, setProject] = useState<Project | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(isEditing);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (project: Project) => {
-    // Navigate to the project details page after submission
-    navigate(`/projects/${project.id}`);
+  useEffect(() => {
+    // Fetch project data when editing
+    if (isEditing && id) {
+      setLoading(true);
+      projectService
+        .getProject(id)
+        .then(response => {
+          setProject(response.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching project:', err);
+          setError('Failed to load project data');
+          setLoading(false);
+        });
+    }
+  }, [id, isEditing]);
+
+  const handleSubmit = async (formData: Project) => {
+    try {
+      let response;
+
+      if (isEditing && id) {
+        response = await projectService.updateProject(id, formData);
+      } else {
+        response = await projectService.createProject(formData);
+      }
+
+      // Navigate to the project details page after successful submission
+      navigate(`/projects/${response.data.id}`);
+    } catch (err) {
+      console.error('Error submitting project:', err);
+      setError('Failed to save project');
+    }
   };
+
+  if (loading) {
+    return (
+      <Container
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -25,10 +70,16 @@ const ProjectFormPage: React.FC = () => {
         <Typography variant="h4" component="h1" fontWeight="700" color="text.primary" gutterBottom>
           {isEditing ? 'Edit Project' : 'Create New Project'}
         </Typography>
+
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
       </Box>
 
       <ProjectForm
-        project={undefined} // TODO: When editing, fetch and pass the project here
+        project={project}
         onSubmit={handleSubmit}
         onCancel={() => navigate('/projects')}
       />

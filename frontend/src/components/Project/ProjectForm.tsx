@@ -8,32 +8,20 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Chip,
-  OutlinedInput,
-  SelectChangeEvent,
   Paper,
   Grid,
+  FormHelperText,
 } from '@mui/material';
 import { ProjectStatus, EntityStatus, Project, Jurisdiction } from '../../types';
 import { projectService } from '../../services/projects';
 import { jurisdictionService } from '../../services/jurisdictions';
+import { groupService } from '../../services/groups';
 
 interface ProjectFormProps {
   project?: Project;
   onSubmit?: (project: Project) => void;
   onCancel?: () => void;
 }
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }) => {
   const [title, setTitle] = useState(project?.title || '');
@@ -44,35 +32,64 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
     project?.preferred_status || EntityStatus.SOLID_APPROVAL
   );
   const [templateResponse, setTemplateResponse] = useState(project?.template_response || '');
-  const [selectedJurisdictions, setSelectedJurisdictions] = useState<string[]>(
-    project?.jurisdictions || []
-  );
+  const [jurisdictionId, setJurisdictionId] = useState<string>(project?.jurisdiction_id || '');
+  const [groupId, setGroupId] = useState<string>(project?.group_id || '');
+
+  const [titleError, setTitleError] = useState('');
+  const [jurisdictionError, setJurisdictionError] = useState('');
 
   const [jurisdictions, setJurisdictions] = useState<Jurisdiction[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchJurisdictions = async () => {
+    const fetchData = async () => {
       try {
-        const response = await jurisdictionService.getJurisdictions();
-        setJurisdictions(response.data);
+        const [jurisdictionsResponse, groupsResponse] = await Promise.all([
+          jurisdictionService.getJurisdictions(),
+          groupService.getGroups(),
+        ]);
+        setJurisdictions(jurisdictionsResponse.data);
+        setGroups(groupsResponse.data);
       } catch (err) {
-        console.error('Error fetching jurisdictions:', err);
-        setError('Failed to load jurisdictions');
+        console.error('Error fetching form data:', err);
+        setError('Failed to load form data');
       }
     };
 
-    fetchJurisdictions();
+    fetchData();
   }, []);
 
-  const handleJurisdictionChange = (event: SelectChangeEvent<string[]>) => {
-    const value = event.target.value;
-    setSelectedJurisdictions(typeof value === 'string' ? [value] : value);
+  const validateForm = () => {
+    let isValid = true;
+
+    // Validate title
+    if (!title.trim()) {
+      setTitleError('Title is required');
+      isValid = false;
+    } else {
+      setTitleError('');
+    }
+
+    // Validate jurisdiction
+    if (!jurisdictionId) {
+      setJurisdictionError('Jurisdiction is required');
+      isValid = false;
+    } else {
+      setJurisdictionError('');
+    }
+
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -85,7 +102,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
         link,
         preferred_status: preferredStatus,
         template_response: templateResponse,
-        jurisdictions: selectedJurisdictions,
+        jurisdiction_id: jurisdictionId,
+        group_id: groupId || undefined,
       };
 
       let response;
@@ -122,6 +140,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               value={title}
               onChange={e => setTitle(e.target.value)}
               disabled={loading}
+              error={!!titleError}
+              helperText={titleError}
             />
           </Grid>
 
@@ -135,6 +155,47 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               onChange={e => setDescription(e.target.value)}
               disabled={loading}
             />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth error={!!jurisdictionError}>
+              <InputLabel>Jurisdiction</InputLabel>
+              <Select
+                value={jurisdictionId}
+                label="Jurisdiction"
+                onChange={e => setJurisdictionId(e.target.value)}
+                disabled={loading}
+                required
+              >
+                {jurisdictions.map(jurisdiction => (
+                  <MenuItem key={jurisdiction.id} value={jurisdiction.id}>
+                    {jurisdiction.name}
+                  </MenuItem>
+                ))}
+              </Select>
+              {jurisdictionError && <FormHelperText>{jurisdictionError}</FormHelperText>}
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel>Group</InputLabel>
+              <Select
+                value={groupId}
+                label="Group"
+                onChange={e => setGroupId(e.target.value)}
+                disabled={loading}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {groups.map(group => (
+                  <MenuItem key={group.id} value={group.id}>
+                    {group.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item xs={12} md={6}>
@@ -179,40 +240,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
                 <MenuItem value={EntityStatus.NEUTRAL}>Neutral</MenuItem>
                 <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>Leaning Disapproval</MenuItem>
                 <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>Solid Disapproval</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel>Jurisdictions</InputLabel>
-              <Select
-                multiple
-                value={selectedJurisdictions}
-                onChange={handleJurisdictionChange}
-                input={<OutlinedInput label="Jurisdictions" />}
-                renderValue={selected => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map(value => {
-                      const jurisdiction = jurisdictions.find(j => j.id === value);
-                      return (
-                        <Chip
-                          key={value}
-                          label={jurisdiction ? jurisdiction.name : value}
-                          size="small"
-                        />
-                      );
-                    })}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-                disabled={loading}
-              >
-                {jurisdictions.map(jurisdiction => (
-                  <MenuItem key={jurisdiction.id} value={jurisdiction.id}>
-                    {jurisdiction.name}
-                  </MenuItem>
-                ))}
               </Select>
             </FormControl>
           </Grid>
