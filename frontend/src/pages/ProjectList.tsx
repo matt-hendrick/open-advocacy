@@ -200,7 +200,7 @@ const ProjectList: React.FC = () => {
                     View Details
                   </Button>
                   <Button variant="contained" size="small" color="primary">
-                    Contact Reps
+                    Contact Your Rep about This
                   </Button>
                 </Box>
               </Box>

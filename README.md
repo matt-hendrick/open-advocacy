@@ -51,7 +51,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Entity status management system
 - ✅ Project-jurisdiction associations
 - ✅ Status distribution visualizations
-- ✅ Admin interfaces for status updates
+- ✅ Entity statuses can be updated
 
 ### Phase 3: Database Integration (COMPLETED)
 - ✅ Design database abstraction layer to support multiple providers
@@ -66,16 +66,20 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Ensure status updates updates status display. 
 - ✅ Display status counts along with colored distribution
 
-### Phase 5: Ensure Entities/Project have Correct Data and Display Correctly (PLANNED)
+### Phase 5: Ensure Entities/Project have Correct Data and Display Correctly (COMPLETED)
 - ✅ Add district to entity
 - ✅ Ensure entity contact info is saved correctly and displayed
 - ✅ Clean up display of entity list (should be more compact)
-- Clean up display of project list
+- ✅ Clean up display of project list
 
-### Phase 6: Edit/Create Project Functionality (PLANNED)
+### Phase 6: Edit/Create Project Functionality (IN PROGRESS)
 - Ensure that creating/editing a project works as intended
 
-### Phase 7: Location Module Proof of Concept (PLANNED)
+### Phase 7: Validate Postgres Provider Works as Intended (PLANNED)
+- Setup postgres locally
+- Test all workflows with a postgres and ensure things work
+
+### Phase 8: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 - Create a minimal Chicago module that demonstrates the pluggable concept
 - Use a small static dataset of Chicago wards and representatives
@@ -83,7 +87,13 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Pull in real data for Chicago
 - Get real address lookup working
 
-### Phase 7: Cleanup Existing Implementation (PLANNED)
+### Phase 9: Add Auth/Admin System (PLANNED)
+- Add authentication and roles system
+- Segment projects by group
+- Allow groups to hide some/all projects
+- Make projects shareable
+
+### Phase 10: Cleanup Existing Implementation (PLANNED)
 - Replace various magic strings with enums
 - Clean up data models (remove any unnecessary optionals or List/Dict)
 - Clean up logic fetching status/jurisdiction for projects (it is duplicated across a couple endpoints)
@@ -95,6 +105,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Features To Eventually Add
 - Ability to update/display a project timeline and current status (bill timeline)
 - Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
+- Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 
 
