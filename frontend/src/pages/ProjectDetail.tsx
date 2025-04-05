@@ -182,7 +182,7 @@ const ProjectDetail: React.FC = () => {
                 <Link href={project.link} target="_blank" rel="noopener noreferrer">
                   <Chip
                     icon={<LinkIcon />}
-                    label="Project Website"
+                    label="Project Link"
                     color="primary"
                     variant="outlined"
                     size="small"
