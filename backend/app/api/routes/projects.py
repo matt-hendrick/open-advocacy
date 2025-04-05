@@ -1,15 +1,24 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
 
-from app.models.pydantic.models import Project, ProjectBase, ProjectStatus, Jurisdiction
+from app.models.pydantic.models import (
+    Project,
+    ProjectBase,
+    ProjectStatus,
+    Jurisdiction,
+)
 from app.db.base import DatabaseProvider
 from app.db.dependencies import (
     get_projects_provider,
     get_status_records_provider,
     get_groups_provider,
     get_jurisdictions_provider,
+    get_entities_provider,
 )
-from app.utils.status import calculate_status_distribution
+from app.utils.project import (
+    get_project_status_distribution,
+    enrich_projects_with_status_distributions,
+)
 
 router = APIRouter()
 
@@ -23,6 +32,7 @@ async def list_projects(
     group_id: UUID | None = None,
     projects_provider: DatabaseProvider = Depends(get_projects_provider),
     status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     """List projects with optional filtering."""
     filters = {}
@@ -36,14 +46,13 @@ async def list_projects(
     else:
         projects = await projects_provider.list(skip=skip, limit=limit)
 
-    # Add status distribution data
+    # Add status distribution data using the new utility function
     if projects:
-        status_records = await status_records_provider.list()
-        for project in projects:
-            project_records = [
-                sr for sr in status_records if sr.project_id == project.id
-            ]
-            project.status_distribution = calculate_status_distribution(project_records)
+        projects = await enrich_projects_with_status_distributions(
+            projects=projects,
+            status_records_provider=status_records_provider,
+            entities_provider=entities_provider,
+        )
 
     return projects
 
@@ -66,29 +75,33 @@ async def create_project(
     return await projects_provider.create(project)
 
 
-# TODO: Add group filtering
 @router.get("/{project_id}", response_model=Project)
 async def get_project(
     project_id: UUID,
     projects_provider: DatabaseProvider[Project, UUID] = Depends(get_projects_provider),
     status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
     jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
+    """Get a project by ID with related jurisdiction and status information."""
+    # Get the project
     project = await projects_provider.get(project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    # Calculate status distribution
-    status_records = await status_records_provider.list()
-    project_status_records = [
-        sr for sr in status_records if sr.project_id == project_id
-    ]
-    project.status_distribution = calculate_status_distribution(project_status_records)
-
+    # Get jurisdiction name
     jurisdiction_id = project.jurisdiction_id
     jurisdiction: Jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
     if jurisdiction and jurisdiction.name:
         project.jurisdiction_name = jurisdiction.name
+
+    # Get status distribution using the new utility function
+    project.status_distribution = await get_project_status_distribution(
+        project_id=project_id,
+        project=project,
+        status_records_provider=status_records_provider,
+        entities_provider=entities_provider,
+    )
 
     return project
 

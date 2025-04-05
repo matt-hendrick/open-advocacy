@@ -1,5 +1,4 @@
 from typing import Type, TypeVar, Any
-from uuid import UUID
 
 from app.db.base import DatabaseProvider
 from app.db.sql import SQLProvider
@@ -16,7 +15,6 @@ class ProviderFactory:
     def get_provider(
         pydantic_model: Type[T],
         orm_model: Type[Any],
-        id_type: Type[ID] = UUID,
     ) -> DatabaseProvider[T, ID]:
         """Get the appropriate SQL database provider."""
 

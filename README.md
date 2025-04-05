@@ -74,6 +74,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 6: Cleanup Existing Implementation (PLANNED)
 - Replace various magic strings with enums
 - Clean up dead/unnecessary code (location)
+- Clean up data models (remove any unnecessary optionals or List/Dict)
 - Add some basic frontend/backend tests
 - Add some core tests to help validate that ensure future changes don't break anything
 - At least a few integration tests.

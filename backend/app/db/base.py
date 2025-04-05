@@ -32,3 +32,46 @@ class DatabaseProvider(ABC, Generic[T, ID]):
     async def delete(self, id: ID) -> bool:
         """Delete an item by ID."""
         pass
+
+    @abstractmethod
+    async def filter(self, **filters) -> list[T]:
+        """
+        Filter items by field equality.
+
+        Args:
+            **filters: Field-value pairs for equality filtering (field=value)
+
+        Returns:
+            List of items matching the filter criteria
+        """
+        pass
+
+    @abstractmethod
+    async def filter_in(self, field: str, values: list[Any]) -> list[T]:
+        """
+        Filter items where a field value is in a list of values.
+
+        Args:
+            field: The field to check
+            values: List of values to match against
+
+        Returns:
+            List of items where the field value is in the provided list
+        """
+        pass
+
+    @abstractmethod
+    async def filter_multiple(
+        self, filters: dict[str, Any], in_filters: dict[str, list[Any]] | None = None
+    ) -> List[T]:
+        """
+        Filter items by multiple conditions including both equality and IN clauses.
+
+        Args:
+            filters: Dict of field=value for equality filters
+            in_filters: Dict of field=[values] for IN filters
+
+        Returns:
+            List of items matching all the filter criteria
+        """
+        pass

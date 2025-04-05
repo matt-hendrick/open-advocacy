@@ -110,6 +110,45 @@ class SQLProvider(DatabaseProvider[T, UUID]):
             orm_models = result.scalars().all()
             return [self._to_pydantic(item) for item in orm_models]
 
+    async def filter_in(self, field: str, values: List[Any]) -> List[T]:
+        """Filter items where a field value is in a list of values."""
+        if not values:
+            return []
+
+        async with self.session_factory() as session:
+            query = select(self.orm_model).where(
+                getattr(self.orm_model, field).in_(values)
+            )
+            result = await session.execute(query)
+            orm_models = result.scalars().all()
+            return [self._to_pydantic(item) for item in orm_models]
+
+    async def filter_multiple(self, filters: dict, in_filters: dict = None) -> List[T]:
+        """
+        Filter items by multiple conditions including IN clauses.
+
+        Args:
+            filters: Dict of field=value for equality filters
+            in_filters: Dict of field=[values] for IN filters
+        """
+        async with self.session_factory() as session:
+            query = select(self.orm_model)
+
+            # Add equality filter conditions
+            for field, value in filters.items():
+                if hasattr(self.orm_model, field):
+                    query = query.where(getattr(self.orm_model, field) == value)
+
+            # Add IN filter conditions
+            if in_filters:
+                for field, values in in_filters.items():
+                    if values and hasattr(self.orm_model, field):
+                        query = query.where(getattr(self.orm_model, field).in_(values))
+
+            result = await session.execute(query)
+            orm_models = result.scalars().all()
+            return [self._to_pydantic(item) for item in orm_models]
+
     def _to_pydantic(self, db_obj: ModelType) -> T:
         """Convert ORM model to Pydantic model."""
         return self.pydantic_model.model_validate(db_obj)
