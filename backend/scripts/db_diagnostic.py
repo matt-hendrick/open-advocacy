@@ -639,10 +639,8 @@ async def main():
             jurisdictions = await create_and_retrieve_jurisdictions(session)
             projects = await create_and_retrieve_projects(session, jurisdictions)
             entities = await create_and_retrieve_entities(session, jurisdictions)
-            groups = await create_and_retrieve_groups(session, projects)
-            status_records = await create_and_retrieve_status_records(
-                session, entities, projects
-            )
+            _ = await create_and_retrieve_groups(session, projects)
+            _ = await create_and_retrieve_status_records(session, entities, projects)
 
             # Additional tests
             await test_updates_and_deletes(session, entities, projects)

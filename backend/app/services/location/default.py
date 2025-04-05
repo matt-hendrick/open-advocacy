@@ -1,4 +1,6 @@
 from typing import Any
+import uuid
+
 from app.services.location.base import LocationModule
 from app.models.pydantic.models import Entity
 
@@ -14,7 +16,7 @@ class DefaultLocationModule(LocationModule):
                 name="Jane Doe",
                 title="Representative",
                 entity_type="default_rep",
-                jurisdiction_id="default-jurisdiction",
+                jurisdiction_id=uuid.uuid4(),
                 email="jane.doe@example.gov",
                 phone="555-123-4567",
                 website="https://example.gov/janedoe",
@@ -24,7 +26,7 @@ class DefaultLocationModule(LocationModule):
                 name="John Smith",
                 title="Senator",
                 entity_type="default_sen",
-                jurisdiction_id="default-jurisdiction",
+                jurisdiction_id=uuid.uuid4(),
                 email="john.smith@example.gov",
                 phone="555-765-4321",
                 website="https://example.gov/johnsmith",
@@ -34,7 +36,7 @@ class DefaultLocationModule(LocationModule):
                 name="Bob James",
                 title="Alderman",
                 entity_type="default_alder",
-                jurisdiction_id="default-jurisdiction",
+                jurisdiction_id=uuid.uuid4(),
                 email="bob.james@example.gov",
                 phone="555-12e-4567",
                 website="https://example.gov/bobjames",

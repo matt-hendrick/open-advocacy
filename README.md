@@ -105,46 +105,22 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
-### Features To Eventually Add
+## 5. Features To Eventually Add
+- Create an entity detail page that display entity info + associated projects/status
 - Ability to update/display a project timeline and current status (bill timeline)
 - Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 - Add IL House/Senate jurisdictions
+- Create add entity page?
+- Create add jurisdiction pages?
 
 
-## 5. MVB Implementation Steps
-
-1. **Update Data Models** (Next Step)
-   - Add jurisdictions field to projects
-   - Create entity status records model
-   - Link entities to jurisdictions
-
-2. **Implement Status Management**
-   - Create admin interface for updating entity statuses
-   - Build status distribution visualizations
-   - Add color-coding for status indicators
-
-3. **Enhance Project Views**
-   - Show jurisdiction associations
-   - Display status distribution charts
-   - Add filtering by jurisdiction
-
-4. **Build Admin Features**
-   - Admin-only routes for status updates
-   - Project management interfaces
-   - Status history tracking
-
-5. **Implement Database Storage**
-   - Move from in-memory to SQLite
-   - Create database migration system
-   - Implement proper joins for related data
-
-## 8. Next Steps After Validation
+## 6. Next Steps After Validation
 
 Potential next steps (with rough prioritization)
 
-1. Complete Chicago/Illinois specific location module
+1. Complete Illinois specific location module
 2. Authentication and authorization system
 3. Additional UI polish
 4. Template response generation
