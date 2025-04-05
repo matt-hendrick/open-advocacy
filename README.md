@@ -89,8 +89,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Add some basic frontend/backend tests
 - Add some core tests to help validate that ensure future changes don't break anything
 - At least a few integration tests.
+- Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
-### Features To Eventually Addd
+### Features To Eventually Add
 - Ability to update/display a project timeline and current status (bill timeline)
 - Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.

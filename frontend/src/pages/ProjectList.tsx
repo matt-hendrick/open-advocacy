@@ -2,57 +2,29 @@ import React, { useState, useEffect } from 'react';
 import {
   Container,
   Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Grid,
-  Chip,
   Box,
-  Divider,
-  useTheme,
   Paper,
   InputBase,
-  IconButton,
-  MenuItem,
-  Select,
   FormControl,
-  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  Button,
   CircularProgress,
   SelectChangeEvent,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
 import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+
 import { projectService } from '../services/projects';
 import { Project, ProjectStatus } from '../types';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { transformProjectFromApi } from '../utils/dataTransformers';
 import StatusDistribution from '../components/Status/StatusDistribution';
 
-const getStatusColor = (status: ProjectStatus): 'success' | 'default' | 'info' | 'secondary' => {
-  switch (status) {
-    case ProjectStatus.ACTIVE:
-      return 'success';
-    case ProjectStatus.DRAFT:
-      return 'default';
-    case ProjectStatus.COMPLETED:
-      return 'info';
-    case ProjectStatus.ARCHIVED:
-      return 'secondary';
-    default:
-      return 'default';
-  }
-};
-
-const getStatusLabel = (status: ProjectStatus): string => {
-  return status.charAt(0).toUpperCase() + status.slice(1);
-};
-
 const ProjectList: React.FC = () => {
-  const theme = useTheme();
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -67,7 +39,6 @@ const ProjectList: React.FC = () => {
     setError(null);
     try {
       const response = await projectService.getProjects();
-      // Transform data if needed
       const transformedProjects = response.data.map(transformProjectFromApi);
       setProjects(transformedProjects);
       setFilteredProjects(transformedProjects);
@@ -103,7 +74,30 @@ const ProjectList: React.FC = () => {
     setStatusFilter(event.target.value);
   };
 
-  if (loading)
+  const renderStatusChip = (status: ProjectStatus) => {
+    let color: 'success' | 'default' | 'warning' | 'secondary' = 'default';
+
+    switch (status) {
+      case ProjectStatus.ACTIVE:
+        color = 'success';
+        break;
+      case ProjectStatus.DRAFT:
+        color = 'default';
+        break;
+      case ProjectStatus.COMPLETED:
+        color = 'secondary';
+        break;
+      case ProjectStatus.ARCHIVED:
+        color = 'warning';
+        break;
+    }
+
+    return (
+      <Chip label={status.charAt(0).toUpperCase() + status.slice(1)} color={color} size="small" />
+    );
+  };
+
+  if (loading) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box display="flex" justifyContent="center" py={8}>
@@ -111,13 +105,111 @@ const ProjectList: React.FC = () => {
         </Box>
       </Container>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <ErrorDisplay message={error} onRetry={fetchProjects} />
       </Container>
     );
+  }
+
+  const renderList = () => {
+    return (
+      <Box sx={{ width: '100%' }}>
+        {filteredProjects.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="h6" color="text.secondary">
+              No projects found matching your criteria
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mt={1}>
+              Try adjusting your search or filter settings
+            </Typography>
+          </Box>
+        ) : (
+          filteredProjects.map(project => (
+            <Paper
+              key={project.id}
+              sx={{
+                p: 3,
+                mb: 3,
+                borderRadius: 2,
+                transition: 'box-shadow 0.2s ease-in-out',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                },
+              }}
+            >
+              <Box>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Typography
+                      variant="h6"
+                      fontWeight="600"
+                      sx={{ cursor: 'pointer' }}
+                      onClick={() => navigate(`/projects/${project.id}`)}
+                    >
+                      {project.title}
+                    </Typography>
+                    {renderStatusChip(project.status)}
+                  </Box>
+                </Box>
+
+                <Typography variant="body2" color="text.secondary" mb={2}>
+                  {project.description}
+                </Typography>
+
+                {project.status_distribution && (
+                  <Box mb={2}>
+                    <StatusDistribution
+                      distribution={project.status_distribution}
+                      size="small"
+                      showCounts={true}
+                      showLabels={true}
+                    />
+                  </Box>
+                )}
+
+                <Box display="flex" alignItems="center" gap={2} mb={2}>
+                  {project.jurisdiction_name && (
+                    <Chip label={project.jurisdiction_name} size="small" variant="outlined" />
+                  )}
+
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <PeopleIcon fontSize="small" color="action" />
+                    <Typography variant="body2" color="text.secondary">
+                      {project.status_distribution?.total || 0} Representatives
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    <AccessTimeIcon fontSize="small" color="action" />
+                    <Typography variant="body2" color="text.secondary">
+                      Updated: {new Date(project.updated_at).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box display="flex" gap={1}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                  >
+                    View Details
+                  </Button>
+                  <Button variant="contained" size="small" color="primary">
+                    Contact Reps
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
+          ))
+        )}
+      </Box>
+    );
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -131,159 +223,88 @@ const ProjectList: React.FC = () => {
             Create Project
           </Button>
         </Box>
+
         <Typography variant="body1" color="text.secondary" mb={4}>
           Browse projects, check their status, and find ways to support causes you care about.
         </Typography>
 
         <Box
           display="flex"
-          flexDirection={{ xs: 'column', md: 'row' }}
+          alignItems="center"
           gap={2}
-          alignItems={{ xs: 'stretch', md: 'center' }}
-          sx={{ mb: 4 }}
+          mb={4}
+          sx={{
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+          }}
         >
-          <Paper
+          <Box
             sx={{
-              p: '2px 4px',
-              display: 'flex',
-              alignItems: 'center',
-              flexGrow: 1,
-              boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-              borderRadius: theme.shape.borderRadius,
+              position: 'relative',
+              width: '100%',
             }}
           >
-            <IconButton sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
+            <SearchIcon
+              sx={{
+                position: 'absolute',
+                left: 12,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'action.active',
+              }}
+            />
             <InputBase
-              sx={{ ml: 1, flex: 1 }}
               placeholder="Search projects"
-              inputProps={{ 'aria-label': 'search projects' }}
               value={searchTerm}
               onChange={handleSearchChange}
+              sx={{
+                width: '100%',
+                pl: 5,
+                pr: 2,
+                py: 1,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1,
+              }}
             />
-          </Paper>
+          </Box>
 
-          <FormControl variant="outlined" sx={{ minWidth: 180 }}>
-            <InputLabel id="status-filter-label">Filter by Status</InputLabel>
-            <Select
-              labelId="status-filter-label"
-              id="status-filter"
-              value={statusFilter}
-              onChange={handleStatusFilterChange}
-              label="Filter by Status"
-              startAdornment={<FilterListIcon sx={{ mr: 1, ml: -0.5 }} />}
-            >
-              <MenuItem value="all">All Statuses</MenuItem>
-              <MenuItem value={ProjectStatus.ACTIVE}>Active</MenuItem>
-              <MenuItem value={ProjectStatus.DRAFT}>Draft</MenuItem>
-              <MenuItem value={ProjectStatus.COMPLETED}>Completed</MenuItem>
-              <MenuItem value={ProjectStatus.ARCHIVED}>Archived</MenuItem>
-            </Select>
-          </FormControl>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+              width: { xs: '100%', sm: 'auto' },
+            }}
+          >
+            <FormControl size="small" sx={{ minWidth: 140 }}>
+              <Select
+                value={statusFilter}
+                onChange={handleStatusFilterChange}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Filter by Status' }}
+                renderValue={selected => (
+                  <Box display="flex" alignItems="center">
+                    <Typography variant="body2">
+                      {selected === 'all'
+                        ? 'All Statuses'
+                        : selected.charAt(0).toUpperCase() + selected.slice(1)}
+                    </Typography>
+                  </Box>
+                )}
+                sx={{ height: '40px' }}
+              >
+                <MenuItem value="all">All Statuses</MenuItem>
+                <MenuItem value={ProjectStatus.ACTIVE}>Active</MenuItem>
+                <MenuItem value={ProjectStatus.DRAFT}>Draft</MenuItem>
+                <MenuItem value={ProjectStatus.COMPLETED}>Completed</MenuItem>
+                <MenuItem value={ProjectStatus.ARCHIVED}>Archived</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
       </Box>
 
-      {filteredProjects.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center', borderRadius: theme.shape.borderRadius }}>
-          <Typography variant="h6" color="text.secondary">
-            No projects found matching your criteria
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mt={1}>
-            Try adjusting your search or filter settings
-          </Typography>
-        </Paper>
-      ) : (
-        <Grid container spacing={3}>
-          {filteredProjects.map(project => (
-            <Grid item xs={12} md={6} lg={4} key={project.id}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 12px 20px -10px rgba(0,0,0,0.1)',
-                  },
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography
-                      variant="h6"
-                      component="h2"
-                      fontWeight="600"
-                      color="text.primary"
-                      sx={{
-                        cursor: 'pointer',
-                        '&:hover': {
-                          color: theme.palette.primary.main,
-                          textDecoration: 'underline',
-                        },
-                      }}
-                      onClick={() => navigate(`/projects/${project.id}`)}
-                    >
-                      {project.title}
-                    </Typography>
-                    <Chip
-                      label={getStatusLabel(project.status)}
-                      color={getStatusColor(project.status)}
-                      size="small"
-                      sx={{ fontWeight: 500 }}
-                    />
-                  </Box>
-
-                  {project.status_distribution && (
-                    <Box mt={2} mb={2}>
-                      <StatusDistribution
-                        distribution={project.status_distribution}
-                        size="small"
-                        showLabels={true}
-                      />
-                    </Box>
-                  )}
-
-                  <Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 3 }}>
-                    {project.description}
-                  </Typography>
-
-                  <Divider sx={{ mb: 2 }} />
-
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Box display="flex" alignItems="center">
-                      <AccessTimeIcon fontSize="small" color="action" sx={{ mr: 0.5 }} />
-                      <Typography variant="caption" color="text.secondary">
-                        Updated: {new Date(project.updated_at).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-                <CardActions sx={{ px: 2, pb: 2 }}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    sx={{ mr: 1, borderRadius: theme.shape.borderRadius }}
-                    onClick={() => navigate(`/projects/${project.id}`)}
-                  >
-                    View Details
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    sx={{ borderRadius: theme.shape.borderRadius }}
-                  >
-                    Contact Reps
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+      {renderList()}
     </Container>
   );
 };
