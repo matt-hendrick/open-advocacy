@@ -283,7 +283,7 @@ const EntityRow = ({
                                 borderRadius="50%"
                                 bgcolor={getStatusColor(EntityStatus.SOLID_APPROVAL)}
                               />
-                              Strong Support
+                              Solid Approval
                             </Box>
                           </MenuItem>
                           <MenuItem value={EntityStatus.LEANING_APPROVAL}>
@@ -294,7 +294,7 @@ const EntityRow = ({
                                 borderRadius="50%"
                                 bgcolor={getStatusColor(EntityStatus.LEANING_APPROVAL)}
                               />
-                              Tentative Support
+                              Leaning Approval
                             </Box>
                           </MenuItem>
                           <MenuItem value={EntityStatus.NEUTRAL}>
@@ -305,7 +305,7 @@ const EntityRow = ({
                                 borderRadius="50%"
                                 bgcolor={getStatusColor(EntityStatus.NEUTRAL)}
                               />
-                              Undecided
+                              Neutral
                             </Box>
                           </MenuItem>
                           <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>
@@ -316,7 +316,7 @@ const EntityRow = ({
                                 borderRadius="50%"
                                 bgcolor={getStatusColor(EntityStatus.LEANING_DISAPPROVAL)}
                               />
-                              Tentative Opposition
+                              Leaning Disapproval
                             </Box>
                           </MenuItem>
                           <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>
@@ -327,7 +327,7 @@ const EntityRow = ({
                                 borderRadius="50%"
                                 bgcolor={getStatusColor(EntityStatus.SOLID_DISAPPROVAL)}
                               />
-                              Strong Opposition
+                              Solid Approval
                             </Box>
                           </MenuItem>
                         </Select>
@@ -512,11 +512,11 @@ const EntityList: React.FC<EntityListProps> = ({
                 label="Status"
               >
                 <MenuItem value="all">All Statuses</MenuItem>
-                <MenuItem value={EntityStatus.SOLID_APPROVAL}>Strong Support</MenuItem>
-                <MenuItem value={EntityStatus.LEANING_APPROVAL}>Tentative Support</MenuItem>
-                <MenuItem value={EntityStatus.NEUTRAL}>Undecided</MenuItem>
-                <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>Tentative Opposition</MenuItem>
-                <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>Strong Opposition</MenuItem>
+                <MenuItem value={EntityStatus.SOLID_APPROVAL}>Solid Approval</MenuItem>
+                <MenuItem value={EntityStatus.LEANING_APPROVAL}>Leaning Approval</MenuItem>
+                <MenuItem value={EntityStatus.NEUTRAL}>Neutral</MenuItem>
+                <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>Leaning Disapproval</MenuItem>
+                <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>Solid Disapproval</MenuItem>
               </Select>
             </FormControl>
 

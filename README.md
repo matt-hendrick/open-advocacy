@@ -26,11 +26,11 @@ Open Advocacy is an open-source platform connecting citizens with representative
 
 ### Entity Status Types
 - **Five Default Status Types**:
-  - Strong Support
-  - Tentative Support
-  - Neutral 
-  - Tentative Opposition
-  - Strong Opposition
+  - Solid Approval
+  - Leaning Approval
+  - Neutral
+  - Leaning Disapproval
+  - Solid Disapproval
 - **Visual Representation**: Color-coded for quick visual assessment
 - **Aggregate Display**: Projects show distribution of entity positions
 
