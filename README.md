@@ -74,7 +74,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 
 ### Phase 6: Get Better Example Data and Allow Creating/Editing Projects (IN PROGRESS)
 - ✅ Pull in real data for Chicago alders
-- Ensure that creating/editing a project works as intended
+- ✅ Ensure that creating/editing a project works as intended
+- ✅ Improve project create/edit form styling
+- Hide archived projects by default
 
 ### Phase 7: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
