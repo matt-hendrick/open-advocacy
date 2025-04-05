@@ -72,20 +72,19 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Clean up display of entity list (should be more compact)
 - ✅ Clean up display of project list
 
-### Phase 6: Edit/Create Project Functionality (IN PROGRESS)
-- Ensure that creating/editing a project works as intended
-
-### Phase 7: Validate Postgres Provider Works as Intended (PLANNED)
-- Setup postgres locally
-- Test all workflows with a postgres and ensure things work
-
-### Phase 8: Location Module Proof of Concept (PLANNED)
+### Phase 6: Location Module Proof of Concept (PLANNED)
+- Pull in real data for Chicago alders
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 - Create a minimal Chicago module that demonstrates the pluggable concept
-- Use a small static dataset of Chicago wards and representatives
 - Test switching between "default" and "Chicago" modules
-- Pull in real data for Chicago
-- Get real address lookup working
+- Get real address lookup working (need to get geojson for Chicago wards)
+
+### Phase 7: Edit/Create Project Functionality (IN PROGRESS)
+- Ensure that creating/editing a project works as intended
+
+### Phase 8: Validate Postgres Provider Works as Intended (PLANNED)
+- Setup postgres locally
+- Test all workflows with a postgres and ensure things work
 
 ### Phase 9: Add Auth/Admin System (PLANNED)
 - Add authentication and roles system
@@ -107,6 +106,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
+- Add IL House/Senate jurisdictions
 
 
 ## 5. MVB Implementation Steps

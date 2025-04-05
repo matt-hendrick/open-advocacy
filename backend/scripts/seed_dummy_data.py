@@ -10,6 +10,9 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.core.config import settings
+
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
@@ -34,8 +37,7 @@ except ImportError as e:
     sys.exit(1)
 
 # Database setup
-DATABASE_URL = "sqlite+aiosqlite:///./data/open_advocacy.db"
-logger.info(f"Using database URL: {DATABASE_URL}")
+logger.info(f"Using database URL: {settings.DATABASE_URL}")
 
 # Sample data UUIDs - using predefined UUIDs makes relationships easier to manage
 JURISDICTION_IDS = {
@@ -84,7 +86,7 @@ async def init_db(drop_existing: bool = False) -> tuple:
         os.makedirs("./data", exist_ok=True)
 
         # Create engine
-        engine = create_async_engine(DATABASE_URL, echo=False)
+        engine = create_async_engine(settings.DATABASE_URL, echo=False)
         logger.info("Database engine created")
 
         # Create database tables
@@ -460,7 +462,7 @@ async def seed_database() -> None:
     try:
         # Initialize database
         if args.data_only:
-            engine = create_async_engine(DATABASE_URL, echo=False)
+            engine = create_async_engine(settings.DATABASE_URL, echo=False)
             async_session = sessionmaker(
                 engine, class_=AsyncSession, expire_on_commit=False
             )
