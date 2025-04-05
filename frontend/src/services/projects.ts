@@ -10,11 +10,13 @@ interface ProjectCreateData {
   preferred_status?: EntityStatus;
   template_response?: string;
   jurisdiction_id?: string;
+  group_id?: string;
 }
 
 export const projectService = {
-  async getProjects(): Promise<{ data: Project[] }> {
-    return api.get<Project[]>('/projects');
+  async getProjects(groupId?: string): Promise<{ data: Project[] }> {
+    const params = groupId ? `?group_id=${groupId}` : '';
+    return api.get<Project[]>(`/projects${params}`);
   },
 
   async getProject(id: string): Promise<{ data: Project }> {
@@ -25,7 +27,6 @@ export const projectService = {
     return api.post<Project>('/projects', {
       ...project,
       preferred_status: project.preferred_status || EntityStatus.SOLID_APPROVAL,
-      jurisdiction_id: project.jurisdiction_id || null,
     });
   },
 

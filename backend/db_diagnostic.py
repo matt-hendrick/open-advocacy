@@ -324,22 +324,19 @@ async def create_and_retrieve_groups(
             Group(
                 name="Test Group 1",
                 description="A test group for project 1",
-                stance="pro",
-                project_id=projects[0].id,
+                projects=projects[0],
                 created_at=datetime.utcnow(),
             ),
             Group(
                 name="Test Group 2",
                 description="A test group for project 1",
-                stance="con",
-                project_id=projects[0].id,
+                projects=projects[0],
                 created_at=datetime.utcnow(),
             ),
             Group(
                 name="Test Group 3",
                 description="A test group for project 2",
-                stance="neutral",
-                project_id=projects[1].id,
+                projects=projects[1],
                 created_at=datetime.utcnow(),
             ),
         ]
@@ -356,9 +353,7 @@ async def create_and_retrieve_groups(
 
         # Log details
         for g in retrieved_groups:
-            logger.info(
-                f"Group: id={g.id}, name={g.name}, stance={g.stance}, project_id={g.project_id}"
-            )
+            logger.info(f"Group: id={g.id}, name={g.name}")
 
         # Test relationship with project
         group1 = retrieved_groups[0]
@@ -383,7 +378,7 @@ async def create_and_retrieve_groups(
 
         logger.info(f"Project '{project1.title}' has {len(project_groups)} groups")
         for g in project_groups:
-            logger.info(f"  - {g.name} (stance: {g.stance})")
+            logger.info(f"  - {g.name}")
 
         return retrieved_groups
     except SQLAlchemyError as e:

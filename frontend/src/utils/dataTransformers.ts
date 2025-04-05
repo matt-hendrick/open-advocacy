@@ -1,4 +1,4 @@
-import { Project, Entity, EntityStatus, ProjectStatus } from '../types';
+import { Project, Entity, EntityStatus, ProjectStatus, Group } from '../types';
 
 export const transformProjectFromApi = (project: any): Project => {
   return {
@@ -11,6 +11,8 @@ export const transformProjectFromApi = (project: any): Project => {
     preferred_status: project.preferred_status || EntityStatus.SOLID_APPROVAL,
     template_response: project.template_response || '',
     jurisdiction_id: project.jurisdiction_id,
+    jurisdiction_name: project.jurisdiction_name,
+    group_id: project.group_id,
     created_by: project.created_by || '',
     created_at: project.created_at,
     updated_at: project.updated_at,
@@ -23,7 +25,15 @@ export const transformProjectFromApi = (project: any): Project => {
       unknown: 0,
       total: 0,
     },
-    groups: project.groups || [],
+  };
+};
+
+export const transformGroupFromApi = (group: any): Group => {
+  return {
+    id: group.id,
+    name: group.name,
+    description: group.description || '',
+    created_at: group.created_at,
   };
 };
 

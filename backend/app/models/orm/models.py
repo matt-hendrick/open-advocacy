@@ -8,6 +8,18 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
+class Group(Base):
+    __tablename__ = "groups"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    projects = relationship("Project", back_populates="group")
+
+
 class Project(Base):
     __tablename__ = "projects"
 
@@ -26,25 +38,12 @@ class Project(Base):
     jurisdiction_id = Column(
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=True
     )
+    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
 
     # Relationships
-    groups = relationship("Group", back_populates="project")
     status_records = relationship("EntityStatusRecord", back_populates="project")
     jurisdiction = relationship("Jurisdiction", back_populates="projects")
-
-
-class Group(Base):
-    __tablename__ = "groups"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(255), nullable=False)
-    description = Column(Text, nullable=True)
-    stance = Column(String(50), nullable=False, default="neutral")
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    # Relationships
-    project = relationship("Project", back_populates="groups")
+    group = relationship("Group", back_populates="projects")
 
 
 class Jurisdiction(Base):

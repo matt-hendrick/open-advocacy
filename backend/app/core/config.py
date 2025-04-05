@@ -8,8 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 class Settings(BaseSettings):
     """Application settings."""
 
-    # Default to in memory, but can be overridden with environment variables
-    DATABASE_PROVIDER: str = "memory"  # Options: "memory", "sqlite", "postgres"
+    # Default to sqlite, but can be overridden with environment variables
+    DATABASE_PROVIDER: str = "sqlite"  # Options: "sqlite", "postgres"
     DATABASE_URL: str = f"sqlite+aiosqlite:///{BASE_DIR}/data/open_advocacy.db"
 
     # Database connection pool settings

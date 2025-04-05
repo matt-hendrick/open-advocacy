@@ -13,12 +13,6 @@ export enum EntityStatus {
   SOLID_DISAPPROVAL = 'solid_disapproval',
 }
 
-export enum GroupStance {
-  PRO = 'pro',
-  CON = 'con',
-  NEUTRAL = 'neutral',
-}
-
 export interface ContactInfo {
   email?: string;
   phone?: string;
@@ -75,10 +69,11 @@ export interface Project {
   preferred_status: EntityStatus;
   template_response?: string;
   jurisdiction_id: string;
+  jurisdiction_name?: string;
   created_by?: string;
   created_at: string;
   updated_at: string;
-  groups?: Group[];
+  group_id: string;
   status_distribution?: StatusDistribution;
 }
 
@@ -86,9 +81,8 @@ export interface Group {
   id: string;
   name: string;
   description?: string;
-  stance: GroupStance;
-  project_id: string;
   created_at: string;
+  projects?: Project[];
 }
 
 export interface AddressLookupRequest {

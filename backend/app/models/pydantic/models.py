@@ -19,12 +19,6 @@ class EntityStatus(str, Enum):
     SOLID_DISAPPROVAL = "solid_disapproval"
 
 
-class GroupStance(str, Enum):
-    PRO = "pro"
-    CON = "con"
-    NEUTRAL = "neutral"
-
-
 class ContactInfo(BaseModel):
     email: str | None = None
     phone: str | None = None
@@ -94,16 +88,10 @@ class StatusDistribution(BaseModel):
 class GroupBase(BaseModel):
     name: str
     description: str | None = None
-    stance: GroupStance = GroupStance.NEUTRAL
-
-
-class GroupCreate(GroupBase):
-    project_id: UUID
 
 
 class Group(GroupBase):
     id: UUID = Field(default_factory=uuid4)
-    project_id: UUID
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
@@ -119,6 +107,7 @@ class ProjectBase(BaseModel):
     preferred_status: EntityStatus = EntityStatus.SOLID_APPROVAL
     template_response: str | None = None
     jurisdiction_id: UUID | None = None
+    group_id: UUID | None = None
 
 
 class Project(ProjectBase):
@@ -126,8 +115,8 @@ class Project(ProjectBase):
     created_by: str | None = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
-    groups: list[Group] = []
     status_distribution: StatusDistribution | None = None
+    jurisdiction_name: str | None = None
 
     class Config:
         from_attributes = True

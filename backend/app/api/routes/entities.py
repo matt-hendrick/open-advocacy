@@ -28,13 +28,13 @@ async def list_entities(
 
 
 @router.get("/by-jurisdictions", response_model=list[Entity])
-async def get_entities_by_jurisdictions(
-    jurisdiction_ids: list[str] = Query(...),
+async def get_entities_by_jurisdiction(
+    jurisdiction_id: UUID,
     entities_provider: DatabaseProvider = Depends(get_entities_provider),
 ):
     entities = await entities_provider.list()
     filtered_entities = [
-        entity for entity in entities if entity.jurisdiction_id in jurisdiction_ids
+        entity for entity in entities if entity.jurisdiction_id == jurisdiction_id
     ]
     return filtered_entities
 

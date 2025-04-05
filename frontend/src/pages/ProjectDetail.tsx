@@ -96,17 +96,17 @@ const ProjectDetail: React.FC = () => {
 
   useEffect(() => {
     const fetchEntities = async () => {
-      if (!project || !project.jurisdictions.length) return;
+      if (!project || !project.jurisdiction_id) return;
 
       setLoadingEntities(true);
       try {
-        const response = await entityService.getEntitiesByJurisdictions(project.jurisdictions);
+        const response = await entityService.getEntitiesByJurisdictions(project.jurisdiction_id);
         const transformedEntities = response.data.map(transformEntityFromApi);
         console.log('response', response);
         console.log('transformedEntities', transformedEntities);
         setEntities(transformedEntities);
         console.log('Rendering with entities:', entities);
-        console.log('Project jurisdictions:', project.jurisdictions);
+        console.log('Project jurisdictions:', project.jurisdiction_id, project.jurisdiction_name);
       } catch (err) {
         console.error('Failed to fetch entities:', err);
       } finally {
@@ -115,7 +115,7 @@ const ProjectDetail: React.FC = () => {
     };
 
     fetchEntities();
-  }, [project?.jurisdictions]);
+  }, [project?.jurisdiction_id]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -152,8 +152,6 @@ const ProjectDetail: React.FC = () => {
       </Container>
     );
   }
-
-  const projectJurisdictions = jurisdictions.filter(j => project.jurisdictions.includes(j.id));
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -205,20 +203,18 @@ const ProjectDetail: React.FC = () => {
           {project.description}
         </Typography>
 
-        {projectJurisdictions.length > 0 && (
+        {project.jurisdiction_id && (
           <Box mt={2}>
             <Typography variant="subtitle2" gutterBottom>
               Jurisdictions:
             </Typography>
             <Box display="flex" gap={1} flexWrap="wrap">
-              {projectJurisdictions.map(jurisdiction => (
                 <Chip
-                  key={jurisdiction.id}
-                  label={jurisdiction.name}
+                  key={project.jurisdiction_id}
+                  label={project.jurisdiction_name || project.jurisdiction_id}
                   size="small"
                   variant="outlined"
                 />
-              ))}
             </Box>
           </Box>
         )}
@@ -259,8 +255,8 @@ const ProjectDetail: React.FC = () => {
             ) : entities.length === 0 ? (
               <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="h6" color="text.secondary">
-                  No entities found for the selected jurisdictions:{' '}
-                  {JSON.stringify(project.jurisdictions)}
+                  No entities found for the selected jurisdiction:{' '}
+                  {JSON.stringify(project.jurisdiction_name || project.jurisdiction_id)}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" mt={1}>
                   Available entities have jurisdictions:{' '}
@@ -268,14 +264,6 @@ const ProjectDetail: React.FC = () => {
                 </Typography>
               </Paper>
             ) : (
-              // <Paper sx={{ p: 4, textAlign: 'center' }}>
-              //   <Typography variant="h6" color="text.secondary">
-              //     No entities found for the selected jurisdictions
-              //   </Typography>
-              //   <Typography variant="body2" color="text.secondary" mt={1}>
-              //     Entities will appear here once they're associated with the project's jurisdictions
-              //   </Typography>
-              // </Paper>
               <Grid container spacing={3}>
                 {entities.map(entity => (
                   <Grid item xs={12} key={entity.id}>

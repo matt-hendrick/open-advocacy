@@ -180,6 +180,7 @@ async def create_projects(session: AsyncSession) -> None:
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc),
                 jurisdiction_id=JURISDICTION_IDS["chicago"],
+                group_id=GROUP_IDS["park_advocates"],
             ),
             Project(
                 id=PROJECT_IDS["library_funding"],
@@ -194,6 +195,7 @@ async def create_projects(session: AsyncSession) -> None:
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc),
                 jurisdiction_id=JURISDICTION_IDS["illinois"],
+                group_id=GROUP_IDS["library_supporters"],
             ),
             Project(
                 id=PROJECT_IDS["traffic_calming"],
@@ -208,6 +210,7 @@ async def create_projects(session: AsyncSession) -> None:
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc),
                 jurisdiction_id=JURISDICTION_IDS["chicago"],
+                group_id=GROUP_IDS["safe_streets"],
             ),
             Project(
                 id=PROJECT_IDS["budget_transparency"],
@@ -222,6 +225,7 @@ async def create_projects(session: AsyncSession) -> None:
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc),
                 jurisdiction_id=JURISDICTION_IDS["cook_county"],
+                group_id=GROUP_IDS["taxpayers"],
             ),
         ]
 
@@ -325,32 +329,24 @@ async def create_groups(session: AsyncSession) -> None:
                 id=GROUP_IDS["park_advocates"],
                 name="Park Advocates",
                 description="Group supporting the Lincoln Park renovation proposal",
-                stance="pro",
-                project_id=PROJECT_IDS["park_renovation"],
                 created_at=datetime.now(timezone.utc),
             ),
             Group(
                 id=GROUP_IDS["taxpayers"],
                 name="Taxpayers Association",
                 description="Group concerned about the cost of the park renovation",
-                stance="con",
-                project_id=PROJECT_IDS["park_renovation"],
                 created_at=datetime.now(timezone.utc),
             ),
             Group(
                 id=GROUP_IDS["library_supporters"],
                 name="Library Supporters Coalition",
                 description="Alliance of groups advocating for library funding",
-                stance="pro",
-                project_id=PROJECT_IDS["library_funding"],
                 created_at=datetime.now(timezone.utc),
             ),
             Group(
                 id=GROUP_IDS["safe_streets"],
                 name="Safe Streets Initiative",
                 description="Neighborhood group advocating for traffic safety improvements",
-                stance="pro",
-                project_id=PROJECT_IDS["traffic_calming"],
                 created_at=datetime.now(timezone.utc),
             ),
         ]
