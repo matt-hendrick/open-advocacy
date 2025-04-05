@@ -489,8 +489,20 @@ const CompactEntityList: React.FC<CompactEntityListProps> = ({
             Entities
           </Typography>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={2}
+            sx={{
+              flexWrap: { xs: 'wrap', sm: 'nowrap' },
+              justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+            }}
+          >
+            <FormControl
+              variant="outlined"
+              size="small"
+              sx={{ width: { xs: '120px', sm: '150px' } }}
+            >
               <InputLabel id="status-filter-label">Status</InputLabel>
               <Select
                 labelId="status-filter-label"
@@ -514,6 +526,11 @@ const CompactEntityList: React.FC<CompactEntityListProps> = ({
               placeholder="Search entities..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
+              sx={{
+                width: { xs: '100%', sm: '220px' },
+                flexGrow: { xs: 1, sm: 0 },
+                mt: { xs: 1, sm: 0 },
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -524,7 +541,6 @@ const CompactEntityList: React.FC<CompactEntityListProps> = ({
             />
           </Box>
         </Toolbar>
-
         <TableContainer>
           <Table aria-labelledby="tableTitle" size="medium">
             <TableHead>
