@@ -173,7 +173,7 @@ const EntityStatusManager: React.FC<EntityStatusManagerProps> = ({
                 {entity.name}
               </Typography>
               <Typography variant="subtitle1" color="text.secondary">
-                {entity.title} • {entity.entity_type}
+                {entity.title} • {entity.district || entity.entity_type}
               </Typography>
             </Box>
             {!isAdmin && existingStatus && (
@@ -206,35 +206,33 @@ const EntityStatusManager: React.FC<EntityStatusManagerProps> = ({
               Contact Information
             </Typography>
             <Box display="flex" flexDirection="column" gap={1} mt={1}>
-              {entity.contact_info.email && (
+              {entity.email && (
                 <Box display="flex" alignItems="center" gap={1}>
                   <EmailIcon fontSize="small" color="action" />
-                  <Link href={`mailto:${entity.contact_info.email}`}>
-                    {entity.contact_info.email}
-                  </Link>
+                  <Link href={`mailto:${entity.email}`}>{entity.email}</Link>
                 </Box>
               )}
 
-              {entity.contact_info.phone && (
+              {entity.phone && (
                 <Box display="flex" alignItems="center" gap={1}>
                   <PhoneIcon fontSize="small" color="action" />
-                  <Link href={`tel:${entity.contact_info.phone}`}>{entity.contact_info.phone}</Link>
+                  <Link href={`tel:${entity.phone}`}>{entity.phone}</Link>
                 </Box>
               )}
 
-              {entity.contact_info.website && (
+              {entity.website && (
                 <Box display="flex" alignItems="center" gap={1}>
                   <PublicIcon fontSize="small" color="action" />
-                  <Link href={entity.contact_info.website} target="_blank" rel="noopener">
+                  <Link href={entity.website} target="_blank" rel="noopener">
                     Website
                   </Link>
                 </Box>
               )}
 
-              {entity.contact_info.address && (
+              {entity.address && (
                 <Box display="flex" alignItems="flex-start" gap={1}>
                   <LocationOnIcon fontSize="small" color="action" sx={{ mt: 0.3 }} />
-                  <Typography variant="body2">{entity.contact_info.address}</Typography>
+                  <Typography variant="body2">{entity.address}</Typography>
                 </Box>
               )}
             </Box>

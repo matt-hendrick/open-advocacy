@@ -1,6 +1,6 @@
 from typing import Any
 from app.services.location.base import LocationModule
-from app.models.pydantic.models import Entity, ContactInfo
+from app.models.pydantic.models import Entity
 
 
 class DefaultLocationModule(LocationModule):
@@ -15,36 +15,30 @@ class DefaultLocationModule(LocationModule):
                 title="Representative",
                 entity_type="default_rep",
                 jurisdiction_id="default-jurisdiction",
-                contact_info=ContactInfo(
-                    email="jane.doe@example.gov",
-                    phone="555-123-4567",
-                    website="https://example.gov/janedoe",
-                    address="123 Government St, City, State 12345",
-                ),
+                email="jane.doe@example.gov",
+                phone="555-123-4567",
+                website="https://example.gov/janedoe",
+                address="123 Government St, City, State 12345",
             ),
             Entity(
                 name="John Smith",
                 title="Senator",
                 entity_type="default_sen",
                 jurisdiction_id="default-jurisdiction",
-                contact_info=ContactInfo(
-                    email="john.smith@example.gov",
-                    phone="555-765-4321",
-                    website="https://example.gov/johnsmith",
-                    address="456 Capitol Ave, City, State 12345",
-                ),
+                email="john.smith@example.gov",
+                phone="555-765-4321",
+                website="https://example.gov/johnsmith",
+                address="456 Capitol Ave, City, State 12345",
             ),
             Entity(
                 name="Bob James",
                 title="Alderman",
                 entity_type="default_alder",
                 jurisdiction_id="default-jurisdiction",
-                contact_info=ContactInfo(
-                    email="bob.james@example.gov",
-                    phone="555-12e-4567",
-                    website="https://example.gov/bobjames",
-                    address="124 Government St, City, State 12345",
-                ),
+                email="bob.james@example.gov",
+                phone="555-12e-4567",
+                website="https://example.gov/bobjames",
+                address="124 Government St, City, State 12345",
             ),
         ]
 

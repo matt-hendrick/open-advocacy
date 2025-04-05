@@ -76,6 +76,7 @@ class Entity(Base):
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=False
     )
     location_module_id = Column(String(50), nullable=False, default="default")
+    district = Column(String(255), nullable=True)
 
     # Contact info fields
     email = Column(String(255), nullable=True)

@@ -43,12 +43,11 @@ export const transformEntityFromApi = (entity: any): Entity => {
     name: entity.name,
     title: entity.title || '',
     entity_type: entity.entity_type,
-    contact_info: {
-      email: entity.contact_info?.email || '',
-      phone: entity.contact_info?.phone || '',
-      website: entity.contact_info?.website || '',
-      address: entity.contact_info?.address || '',
-    },
+    email: entity.email || '',
+    phone: entity.phone || '',
+    website: entity.website || '',
+    address: entity.address || '',
+    district: entity.district || '',
     jurisdiction_id: entity.jurisdiction_id,
     location_module_id: entity.location_module_id || 'default',
   };

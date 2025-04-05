@@ -12,14 +12,6 @@ export enum EntityStatus {
   LEANING_DISAPPROVAL = 'leaning_disapproval',
   SOLID_DISAPPROVAL = 'solid_disapproval',
 }
-
-export interface ContactInfo {
-  email?: string;
-  phone?: string;
-  website?: string;
-  address?: string;
-}
-
 export interface Jurisdiction {
   id: string;
   name: string;
@@ -34,7 +26,11 @@ export interface Entity {
   name: string;
   title?: string;
   entity_type: string;
-  contact_info: ContactInfo;
+  email?: string;
+  phone?: string;
+  website?: string;
+  address?: string;
+  district?: string;
   jurisdiction_id: string;
   location_module_id: string;
 }

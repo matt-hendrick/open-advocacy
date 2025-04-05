@@ -257,6 +257,7 @@ async def create_entities(session: AsyncSession) -> None:
                 phone="(312) 555-1234",
                 website="https://www.chicago.gov/ward1",
                 address="121 N LaSalle St, Chicago, IL 60602",
+                district="Ward 1",
             ),
             Entity(
                 id=ENTITY_IDS["state_rep"],
@@ -269,6 +270,7 @@ async def create_entities(session: AsyncSession) -> None:
                 phone="(217) 782-5678",
                 website="https://www.ilga.gov/house/rep1",
                 address="301 S 2nd St, Springfield, IL 62707",
+                district="House District 2",
             ),
             Entity(
                 id=ENTITY_IDS["commissioner"],
@@ -281,6 +283,7 @@ async def create_entities(session: AsyncSession) -> None:
                 phone="(312) 603-6400",
                 website="https://www.cookcountyil.gov/person/sarah-johnson",
                 address="118 N Clark St, Chicago, IL 60602",
+                district="County Commissioner District 5",
             ),
             Entity(
                 id=ENTITY_IDS["mayor"],

@@ -19,18 +19,15 @@ class EntityStatus(str, Enum):
     SOLID_DISAPPROVAL = "solid_disapproval"
 
 
-class ContactInfo(BaseModel):
-    email: str | None = None
-    phone: str | None = None
-    website: str | None = None
-    address: str | None = None
-
-
 class EntityBase(BaseModel):
     name: str
     title: str | None = None
     entity_type: str  # e.g., "alderman", "state_rep", "mayor"
-    contact_info: ContactInfo = Field(default_factory=ContactInfo)
+    email: str | None = None
+    phone: str | None = None
+    website: str | None = None
+    address: str | None = None
+    district: str | None = None
 
 
 class EntityCreate(EntityBase):

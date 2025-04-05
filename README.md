@@ -59,25 +59,38 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Create SQLAlchemy models matching validated data structure
 - ✅ Build dependency injection system for database providers
 
-### Phase 4: Ensure Current System Works As Intended and Clean up Frontend (IN PROGRESS)
-- Update dummy data to avoid orphan status
-- Ensure status updates updates status display. 
-- Display status counts along with colored distribution
-- Populate with a little more test data
+### Phase 4: Improve DB Filters and Status Display (COMPLETED)
+- ✅ Improve DB filtering. 
+- ✅ Ensure status are only displayed for in district entities
+- ✅ Ensure that all entities are counted as providing a status (even if no status exists)
+- ✅ Ensure status updates updates status display. 
+- ✅ Display status counts along with colored distribution
 
-### Phase 5: Features to Add (PLANNED)
-- Ability to update/display a project timeline and current status (bill timeline)
+### Phase 5: Ensure Entities have Correct Data and Display Correctly (PLANNED)
 - Add district to entity
-- Pull in real data for Chicago
+- Ensure entity contact info is saved correctly and displayed
+- Clean up display of entity list (should be more compact)
 - Either cut location module system or integrate with jurisdictions/entities
 
-### Phase 6: Cleanup Existing Implementation (PLANNED)
+### Phase 6: Location Module Proof of Concept (PLANNED)
+- Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
+- Create a minimal Chicago module that demonstrates the pluggable concept
+- Use a small static dataset of Chicago wards and representatives
+- Test switching between "default" and "Chicago" modules
+- Pull in real data for Chicago
+- Get real address lookup working
+
+### Phase 7: Cleanup Existing Implementation (PLANNED)
 - Replace various magic strings with enums
-- Clean up dead/unnecessary code (location)
 - Clean up data models (remove any unnecessary optionals or List/Dict)
 - Add some basic frontend/backend tests
 - Add some core tests to help validate that ensure future changes don't break anything
 - At least a few integration tests.
+
+### Features To Eventually Addd
+- Ability to update/display a project timeline and current status (bill timeline)
+- Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
+- Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 
 
 ## 5. MVB Implementation Steps
@@ -113,9 +126,8 @@ Potential next steps (with rough prioritization)
 
 1. Complete Chicago/Illinois specific location module
 2. Authentication and authorization system
-3. Entity-specific notes functionality
-4. Additional UI polish
-5. Template response generation
-6. Deployment infrastructure
-7. Containerize things
+3. Additional UI polish
+4. Template response generation
+5. Deployment infrastructure
+6. Containerize things
 

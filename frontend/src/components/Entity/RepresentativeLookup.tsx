@@ -130,7 +130,7 @@ const RepresentativeLookup: React.FC = () => {
                       <Divider sx={{ mb: 2 }} />
 
                       <List dense>
-                        {rep.contact_info.email && (
+                        {rep.email && (
                           <ListItem>
                             <ListItemAvatar>
                               <Avatar sx={{ width: 24, height: 24 }}>
@@ -139,16 +139,12 @@ const RepresentativeLookup: React.FC = () => {
                             </ListItemAvatar>
                             <ListItemText
                               primary="Email"
-                              secondary={
-                                <Link href={`mailto:${rep.contact_info.email}`}>
-                                  {rep.contact_info.email}
-                                </Link>
-                              }
+                              secondary={<Link href={`mailto:${rep.email}`}>{rep.email}</Link>}
                             />
                           </ListItem>
                         )}
 
-                        {rep.contact_info.phone && (
+                        {rep.phone && (
                           <ListItem>
                             <ListItemAvatar>
                               <Avatar sx={{ width: 24, height: 24 }}>
@@ -157,16 +153,12 @@ const RepresentativeLookup: React.FC = () => {
                             </ListItemAvatar>
                             <ListItemText
                               primary="Phone"
-                              secondary={
-                                <Link href={`tel:${rep.contact_info.phone}`}>
-                                  {rep.contact_info.phone}
-                                </Link>
-                              }
+                              secondary={<Link href={`tel:${rep.phone}`}>{rep.phone}</Link>}
                             />
                           </ListItem>
                         )}
 
-                        {rep.contact_info.website && (
+                        {rep.website && (
                           <ListItem>
                             <ListItemAvatar>
                               <Avatar sx={{ width: 24, height: 24 }}>
@@ -176,26 +168,22 @@ const RepresentativeLookup: React.FC = () => {
                             <ListItemText
                               primary="Website"
                               secondary={
-                                <Link
-                                  href={rep.contact_info.website}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {rep.contact_info.website}
+                                <Link href={rep.website} target="_blank" rel="noopener noreferrer">
+                                  {rep.website}
                                 </Link>
                               }
                             />
                           </ListItem>
                         )}
 
-                        {rep.contact_info.address && (
+                        {rep.address && (
                           <ListItem>
                             <ListItemAvatar>
                               <Avatar sx={{ width: 24, height: 24 }}>
                                 <LocationOnIcon fontSize="small" />
                               </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Office" secondary={rep.contact_info.address} />
+                            <ListItemText primary="Office" secondary={rep.address} />
                           </ListItem>
                         )}
                       </List>
