@@ -72,11 +72,12 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Clean up display of entity list (should be more compact)
 - ✅ Clean up display of project list
 
-### Phase 6: Get Better Example Data and Allow Creating/Editing Projects (IN PROGRESS)
+### Phase 6: Get Better Example Data and Allow Creating/Editing Projects (COMPLETED)
 - ✅ Pull in real data for Chicago alders
 - ✅ Ensure that creating/editing a project works as intended
 - ✅ Improve project create/edit form styling
-- Hide archived projects by default
+- ✅ Setup proper project status filtering (it was bugged before)
+- ✅ Hide archived projects by default
 
 ### Phase 7: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
@@ -95,6 +96,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Make projects shareable
 
 ### Phase 10: Cleanup Existing Implementation (PLANNED)
+- Don't reload entire project list on status/search text change
 - Replace various magic strings with enums
 - Clean up data models (remove any unnecessary optionals or List/Dict)
 - Clean up logic fetching status/jurisdiction for projects (it is duplicated across a couple endpoints)
