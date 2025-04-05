@@ -5,6 +5,7 @@ import os
 import sys
 import uuid
 import aiohttp
+import random
 from datetime import datetime, timezone
 from uuid import UUID
 
@@ -32,6 +33,7 @@ try:
         Group,
         Entity,
         Jurisdiction,
+        EntityStatusRecord,
     )
 
     logger.info("Successfully imported ORM models")
@@ -49,8 +51,12 @@ CHICAGO_ALDERMEN_API = "https://data.cityofchicago.org/resource/c6ie-9e6c.json"
 # Define UUIDs
 CHICAGO_ID = UUID("f47ac10b-58cc-4372-a567-0e02b2c3d479")
 CHICAGO_COUNCIL_ID = UUID("a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d")
-PARTICIPATORY_BUDGET_PROJECT_ID = UUID("d4e5f6a7-8b9c-7d8e-2f3a-5b6c7d8e9f0a")
-BUDGET_ADVOCATES_GROUP_ID = UUID("4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e")
+STRONG_TOWNS_GROUP_ID = UUID("4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e")
+
+# Project UUIDs
+HOUSING_PROJECT_ID = UUID("d4e5f6a7-8b9c-7d8e-2f3a-5b6c7d8e9f0a")
+SAFE_STREETS_PROJECT_ID = UUID("e5f6a7b8-9c0d-8e9f-3a4b-6c7d8e9f0a1b")
+PARKING_REFORM_PROJECT_ID = UUID("f6a7b8c9-0d1e-9f0a-4b5c-7d8e9f0a1b2c")
 
 
 async def init_db(create_tables: bool = False, drop_existing: bool = False) -> tuple:
@@ -131,27 +137,27 @@ async def create_chicago_council_jurisdiction(session: AsyncSession) -> UUID:
         raise
 
 
-async def create_budget_advocates_group(session: AsyncSession) -> UUID:
-    """Create a group for budget advocacy."""
-    logger.info("Creating Budget Advocates group...")
+async def create_strong_towns_group(session: AsyncSession) -> UUID:
+    """Create Strong Towns Chicago advocacy group."""
+    logger.info("Creating Strong Towns Chicago group...")
 
     try:
         group = Group(
-            id=BUDGET_ADVOCATES_GROUP_ID,
-            name="Chicago Budget Advocates",
-            description="Coalition of community organizations advocating for participatory budgeting and fiscal transparency",
+            id=STRONG_TOWNS_GROUP_ID,
+            name="Strong Towns Chicago",
+            description="Empowers neighborhoods to incrementally build a more financially resilient city from the bottom up, through abundant housing, safe streets, and effective transportation.",
             created_at=datetime.now(timezone.utc),
         )
 
         session.add(group)
         await session.commit()
         logger.info(
-            f"Created Budget Advocates group with ID: {BUDGET_ADVOCATES_GROUP_ID}"
+            f"Created Strong Towns Chicago group with ID: {STRONG_TOWNS_GROUP_ID}"
         )
 
-        return BUDGET_ADVOCATES_GROUP_ID
+        return STRONG_TOWNS_GROUP_ID
     except SQLAlchemyError as e:
-        logger.error(f"Error creating Budget Advocates group: {str(e)}")
+        logger.error(f"Error creating Strong Towns Chicago group: {str(e)}")
         await session.rollback()
         raise
 
@@ -227,22 +233,23 @@ async def create_aldermen_entities(
         raise
 
 
-async def create_participatory_budget_project(
+async def create_strong_towns_projects(
     session: AsyncSession, jurisdiction_id: UUID, group_id: UUID
 ):
-    """Create a project for Chicago participatory budgeting."""
-    logger.info("Creating Chicago Participatory Budgeting project...")
+    """Create projects for Strong Towns Chicago initiatives."""
+    logger.info("Creating Strong Towns Chicago projects...")
 
     try:
-        project = Project(
-            id=PARTICIPATORY_BUDGET_PROJECT_ID,
-            title="Chicago Participatory Budgeting Initiative",
-            description="Advocating for expanded participatory budgeting across all 50 wards to increase civic engagement and equitable resource allocation.",
+        # Housing Project
+        housing_project = Project(
+            id=HOUSING_PROJECT_ID,
+            title="Accessory Dwelling Units Legalization",
+            description="Advocating for legalizing accessory dwelling units (ADUs) throughout Chicago and Illinois to increase housing supply and affordability while allowing for gentle density increases in existing neighborhoods.",
             status="active",
             active=True,
-            link="https://example.com/chicago-pb-initiative",
+            link="https://example.com/strong-towns-adus",
             preferred_status="solid_approval",
-            template_response="I am writing to express my strong support for expanding participatory budgeting across all 50 Chicago wards. Participatory budgeting has proven successful in the wards where it has been implemented, giving residents direct control over how tax dollars are spent in their communities. This democratic process increases transparency, civic engagement, and ensures public funds address the most pressing community needs. I urge you to support this initiative and help make Chicago a leader in democratic governance.",
+            template_response="I am writing to express my strong support for legalizing accessory dwelling units throughout Chicago and Illinois. ADUs provide affordable housing options, help homeowners with mortgage costs, allow for aging in place, and increase density without changing neighborhood character. They're a proven solution to our housing shortage that has worked well in other cities. I urge you to support ADU legalization to help build a more financially resilient Chicago with housing options for everyone.",
             created_by="admin",
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
@@ -250,15 +257,103 @@ async def create_participatory_budget_project(
             group_id=group_id,
         )
 
-        session.add(project)
-        await session.commit()
-        logger.info(
-            f"Created Participatory Budgeting project with ID: {PARTICIPATORY_BUDGET_PROJECT_ID}"
+        # Safe Streets Project
+        safe_streets_project = Project(
+            id=SAFE_STREETS_PROJECT_ID,
+            title="Complete Streets Implementation",
+            description="Working to implement comprehensive safe streets policies including protected bike lanes, traffic calming measures, improved pedestrian infrastructure, and better transit access throughout Chicago.",
+            status="active",
+            active=True,
+            link="https://example.com/strong-towns-safe-streets",
+            preferred_status="solid_approval",
+            template_response="I am writing to express my support for implementing complete streets policies in Chicago. Too many of our streets prioritize cars over people, leading to dangerous conditions for pedestrians and cyclists. Complete streets with protected bike lanes, traffic calming measures, and accessible transit options make our city safer for everyone, reduce pollution, and create more vibrant neighborhoods. I urge you to support these essential safety improvements for all Chicagoans.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
         )
 
-        return project
+        # Parking Reform Project
+        parking_reform_project = Project(
+            id=PARKING_REFORM_PROJECT_ID,
+            title="Parking Minimum Elimination",
+            description="Advocating for the elimination of parking minimums in Chicago's zoning code to enable more affordable housing development, reduce car dependency, and create more walkable neighborhoods.",
+            status="active",
+            active=True,
+            link="https://example.com/strong-towns-parking-reform",
+            preferred_status="solid_approval",
+            template_response="I am writing to express my support for eliminating parking minimums in Chicago's zoning code. Current requirements force developers to build expensive parking spaces regardless of actual demand, which increases housing costs, wastes valuable urban land, and encourages more car use and traffic congestion. By eliminating these outdated requirements, we can make housing more affordable, enable small-scale neighborhood development, and create a more walkable, sustainable city. Many successful cities have already made this change with positive results. I urge you to support this important reform.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
+        )
+
+        projects = [housing_project, safe_streets_project, parking_reform_project]
+        session.add_all(projects)
+        await session.commit()
+
+        logger.info(f"Created {len(projects)} Strong Towns Chicago projects")
+        return projects
     except SQLAlchemyError as e:
-        logger.error(f"Error creating Participatory Budgeting project: {str(e)}")
+        logger.error(f"Error creating Strong Towns Chicago projects: {str(e)}")
+        await session.rollback()
+        raise
+
+
+async def create_random_status_records(session: AsyncSession, entities, projects):
+    """Create random status records for aldermen on projects."""
+    logger.info("Creating random status records for aldermen...")
+
+    try:
+        status_options = [
+            "solid_approval",
+            "leaning_approval",
+            "neutral",
+            "leaning_disapproval",
+            "solid_disapproval",
+        ]
+        status_records = []
+
+        for entity in entities:
+            for project in projects:
+                # Randomly select a status
+                status = random.choice(status_options)
+
+                # Random notes based on status
+                if status == "solid_approval":
+                    notes = f"Strongly supports the {project.title} initiative and has expressed willingness to advocate for it."
+                elif status == "leaning_approval":
+                    notes = f"Generally supportive of {project.title} but has some questions about implementation details."
+                elif status == "neutral":
+                    notes = f"Has not taken a clear position on {project.title} and has requested more information."
+                elif status == "leaning_disapproval":
+                    notes = f"Has expressed some concerns about {project.title} and its potential impacts."
+                else:  # solid_disapproval
+                    notes = f"Opposes the {project.title} initiative and has publicly stated concerns."
+
+                # Create status record
+                record = EntityStatusRecord(
+                    id=uuid.uuid4(),
+                    entity_id=entity.id,
+                    project_id=project.id,
+                    status=status,
+                    notes=notes,
+                    updated_at=datetime.now(timezone.utc),
+                    updated_by="admin",
+                )
+
+                status_records.append(record)
+
+        session.add_all(status_records)
+        await session.commit()
+        logger.info(f"Created {len(status_records)} random status records")
+
+        return status_records
+    except SQLAlchemyError as e:
+        logger.error(f"Error creating random status records: {str(e)}")
         await session.rollback()
         raise
 
@@ -277,6 +372,11 @@ async def main():
         "--drop",
         action="store_true",
         help="Drop existing tables before creating new ones (only used with --create-tables)",
+    )
+    parser.add_argument(
+        "--random-statuses",
+        action="store_true",
+        help="Assign random statuses for aldermen on each project",
     )
     args = parser.parse_args()
 
@@ -300,18 +400,22 @@ async def main():
             # Create Chicago City Council jurisdiction
             council_jurisdiction_id = await create_chicago_council_jurisdiction(session)
 
-            # Create advocacy group
-            group_id = await create_budget_advocates_group(session)
+            # Create Strong Towns Chicago group
+            group_id = await create_strong_towns_group(session)
 
             # Create aldermen entities
-            await create_aldermen_entities(
+            entities = await create_aldermen_entities(
                 session, aldermen_data, council_jurisdiction_id
             )
 
-            # Create project for Chicago City Council
-            await create_participatory_budget_project(
+            # Create projects for Strong Towns Chicago
+            projects = await create_strong_towns_projects(
                 session, council_jurisdiction_id, group_id
             )
+
+            # Optionally create random status records
+            if args.random_statuses:
+                await create_random_status_records(session, entities, projects)
 
         # Clean up
         await engine.dispose()
