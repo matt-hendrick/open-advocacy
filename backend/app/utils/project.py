@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from app.models.pydantic.models import Project, StatusDistribution
 from app.db.base import DatabaseProvider
-from app.utils.status import calculate_status_distribution
+from app.utils.status import calculate_status_distribution_with_neutrals
 
 
 async def get_project_status_distribution(
@@ -14,7 +14,8 @@ async def get_project_status_distribution(
     entities_provider: DatabaseProvider = None,
 ) -> StatusDistribution:
     """
-    Get status distribution for a project, filtered by entities in the project's jurisdiction.
+    Get status distribution for a project, considering all entities in the project's jurisdiction.
+    Entities without a status record are counted as NEUTRAL.
 
     Args:
         project_id: UUID of the project
@@ -37,23 +38,26 @@ async def get_project_status_distribution(
     if not project:
         return StatusDistribution()  # Return empty distribution if project not provided
 
-    # Get entities for the project's jurisdiction
+    # Get ALL entities for the project's jurisdiction
     jurisdiction_id = project.jurisdiction_id
     jurisdiction_entities = await entities_provider.filter(
         jurisdiction_id=jurisdiction_id
     )
-    entity_ids = [entity.id for entity in jurisdiction_entities]
 
-    if not entity_ids:
+    if not jurisdiction_entities:
         return StatusDistribution()  # Return empty distribution if no entities
 
-    # Get status records for the project and these entities using IN filter
+    # Total is the count of ALL entities in the jurisdiction
+    total_entities = len(jurisdiction_entities)
+    entity_ids = [entity.id for entity in jurisdiction_entities]
+
+    # Get status records for the project and these entities
     try:
         project_status_records = await status_records_provider.filter_multiple(
             filters={"project_id": project_id}, in_filters={"entity_id": entity_ids}
         )
     except (AttributeError, NotImplementedError):
-        # Fallback to the older approach if filter_multiple is not available on provider
+        # Fallback to the older approach if filter_multiple is not available
         all_status_records = await status_records_provider.list()
         project_status_records = [
             sr
@@ -61,7 +65,10 @@ async def get_project_status_distribution(
             if sr.project_id == project_id and sr.entity_id in entity_ids
         ]
 
-    return calculate_status_distribution(project_status_records)
+    # Calculate status distribution using our utility function
+    return calculate_status_distribution_with_neutrals(
+        project_status_records, total_entities
+    )
 
 
 async def enrich_projects_with_status_distributions(

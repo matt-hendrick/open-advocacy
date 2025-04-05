@@ -1,12 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
 
-from app.models.pydantic.models import (
-    Project,
-    ProjectBase,
-    ProjectStatus,
-    Jurisdiction,
-)
+from app.models.pydantic.models import Project, ProjectBase, ProjectStatus
 from app.db.base import DatabaseProvider
 from app.db.dependencies import (
     get_projects_provider,
@@ -23,13 +18,12 @@ from app.utils.project import (
 router = APIRouter()
 
 
-# TODO: Add auth to get user and get group
 @router.get("/", response_model=list[Project])
 async def list_projects(
     skip: int = 0,
     limit: int = 100,
-    status: ProjectStatus | None = None,
-    group_id: UUID | None = None,
+    status: ProjectStatus = None,
+    group_id: UUID = None,
     projects_provider: DatabaseProvider = Depends(get_projects_provider),
     status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
     entities_provider: DatabaseProvider = Depends(get_entities_provider),
@@ -46,7 +40,7 @@ async def list_projects(
     else:
         projects = await projects_provider.list(skip=skip, limit=limit)
 
-    # Add status distribution data using the new utility function
+    # Add status distribution data
     if projects:
         projects = await enrich_projects_with_status_distributions(
             projects=projects,
@@ -78,7 +72,7 @@ async def create_project(
 @router.get("/{project_id}", response_model=Project)
 async def get_project(
     project_id: UUID,
-    projects_provider: DatabaseProvider[Project, UUID] = Depends(get_projects_provider),
+    projects_provider: DatabaseProvider = Depends(get_projects_provider),
     status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
     jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
     entities_provider: DatabaseProvider = Depends(get_entities_provider),
@@ -91,11 +85,11 @@ async def get_project(
 
     # Get jurisdiction name
     jurisdiction_id = project.jurisdiction_id
-    jurisdiction: Jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+    jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
     if jurisdiction and jurisdiction.name:
         project.jurisdiction_name = jurisdiction.name
 
-    # Get status distribution using the new utility function
+    # Get status distribution
     project.status_distribution = await get_project_status_distribution(
         project_id=project_id,
         project=project,
@@ -110,7 +104,7 @@ async def get_project(
 async def update_project(
     project_id: UUID,
     project: ProjectBase,
-    projects_provider: DatabaseProvider[Project, UUID] = Depends(get_projects_provider),
+    projects_provider: DatabaseProvider = Depends(get_projects_provider),
 ):
     db_project = await projects_provider.get(project_id)
     if not db_project:
@@ -123,7 +117,7 @@ async def update_project(
 @router.delete("/{project_id}", response_model=bool)
 async def delete_project(
     project_id: UUID,
-    projects_provider: DatabaseProvider[Project, UUID] = Depends(get_projects_provider),
+    projects_provider: DatabaseProvider = Depends(get_projects_provider),
 ):
     db_project = await projects_provider.get(project_id)
     if not db_project:

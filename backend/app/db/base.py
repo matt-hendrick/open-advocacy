@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Any
+from typing import TypeVar, Generic, Any, List
 
 T = TypeVar("T")
 ID = TypeVar("ID")
@@ -14,7 +14,7 @@ class DatabaseProvider(ABC, Generic[T, ID]):
         pass
 
     @abstractmethod
-    async def list(self, skip: int = 0, limit: int = 100) -> list[T]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[T]:
         """List all items with pagination."""
         pass
 
@@ -34,7 +34,7 @@ class DatabaseProvider(ABC, Generic[T, ID]):
         pass
 
     @abstractmethod
-    async def filter(self, **filters) -> list[T]:
+    async def filter(self, **filters) -> List[T]:
         """
         Filter items by field equality.
 
@@ -47,7 +47,7 @@ class DatabaseProvider(ABC, Generic[T, ID]):
         pass
 
     @abstractmethod
-    async def filter_in(self, field: str, values: list[Any]) -> list[T]:
+    async def filter_in(self, field: str, values: List[Any]) -> List[T]:
         """
         Filter items where a field value is in a list of values.
 
@@ -62,7 +62,7 @@ class DatabaseProvider(ABC, Generic[T, ID]):
 
     @abstractmethod
     async def filter_multiple(
-        self, filters: dict[str, Any], in_filters: dict[str, list[Any]] | None = None
+        self, filters: dict[str, Any], in_filters: dict[str, List[Any]] | None = None
     ) -> List[T]:
         """
         Filter items by multiple conditions including both equality and IN clauses.
