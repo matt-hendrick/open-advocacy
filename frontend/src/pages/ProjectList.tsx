@@ -26,11 +26,11 @@ import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { projectService } from '../../services/projects';
-import { Project, ProjectStatus } from '../../types';
-import ErrorDisplay from '../common/ErrorDisplay';
-import { transformProjectFromApi } from '../../utils/dataTransformers';
-import StatusDistribution from '../Status/StatusDistribution';
+import { projectService } from '../services/projects';
+import { Project, ProjectStatus } from '../types';
+import ErrorDisplay from '../components/common/ErrorDisplay';
+import { transformProjectFromApi } from '../utils/dataTransformers';
+import StatusDistribution from '../components/Status/StatusDistribution';
 
 const getStatusColor = (status: ProjectStatus): 'success' | 'default' | 'info' | 'secondary' => {
   switch (status) {
