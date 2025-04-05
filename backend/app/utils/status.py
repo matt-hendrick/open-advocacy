@@ -33,7 +33,7 @@ def calculate_status_distribution_with_neutrals(
     }
 
     # Process explicit status records
-    for entity_id, status in entity_statuses.items():
+    for _, status in entity_statuses.items():
         if status == EntityStatus.NEUTRAL:
             continue  # Already counted as neutral
 

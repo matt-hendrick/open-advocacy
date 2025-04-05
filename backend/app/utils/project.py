@@ -1,7 +1,7 @@
 from uuid import UUID
 from typing import List, Optional
 
-from app.models.pydantic.models import Project, StatusDistribution
+from app.models.pydantic.models import Project, StatusDistribution, Jurisdiction
 from app.db.base import DatabaseProvider
 from app.utils.status import calculate_status_distribution_with_neutrals
 
@@ -97,5 +97,31 @@ async def enrich_projects_with_status_distributions(
             status_records_provider=status_records_provider,
             entities_provider=entities_provider,
         )
+
+    return projects
+
+
+async def enrich_projects_with_jurisdiction_name(
+    projects: List[Project],
+    jurisdictions_provider: DatabaseProvider,
+) -> List[Project]:
+    """
+    Enrich a list of projects with their juridiction name.
+
+    Args:
+        projects: List of Project objects
+        jurisidiction_provider: Provider for jurisdiction
+
+    Returns:
+        List of Project objects with jurisdiction name field populated
+    """
+    if not projects:
+        return []
+
+    for project in projects:
+        jurisdiction_id = project.jurisdiction_id
+        jurisdiction: Jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+        if jurisdiction and jurisdiction.name:
+            project.jurisdiction_name = jurisdiction.name
 
     return projects

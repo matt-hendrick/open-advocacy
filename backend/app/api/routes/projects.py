@@ -13,6 +13,7 @@ from app.db.dependencies import (
 from app.utils.project import (
     get_project_status_distribution,
     enrich_projects_with_status_distributions,
+    enrich_projects_with_jurisdiction_name,
 )
 
 router = APIRouter()
@@ -27,6 +28,7 @@ async def list_projects(
     projects_provider: DatabaseProvider = Depends(get_projects_provider),
     status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
     entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
 ):
     """List projects with optional filtering."""
     filters = {}
@@ -40,12 +42,16 @@ async def list_projects(
     else:
         projects = await projects_provider.list(skip=skip, limit=limit)
 
-    # Add status distribution data
+    # TODO: Clean up the logic between this and the get endpoint
+    # Add status distribution/jurisdiction name data
     if projects:
         projects = await enrich_projects_with_status_distributions(
             projects=projects,
             status_records_provider=status_records_provider,
             entities_provider=entities_provider,
+        )
+        projects = await enrich_projects_with_jurisdiction_name(
+            projects=projects, jurisdictions_provider=jurisdictions_provider
         )
 
     return projects
@@ -83,6 +89,7 @@ async def get_project(
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
+    # TODO: Clean up the logic between this and the list endpoint
     # Get jurisdiction name
     jurisdiction_id = project.jurisdiction_id
     jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
