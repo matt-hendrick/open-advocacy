@@ -82,24 +82,29 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 6a: Bug Fix - Updating Entity Status (COMPLETED)
 - ✅ Updating entity status does not update the status for the entity properly on the project detail page
 
-### Phase 7: Location Module Proof of Concept (IN PROGRESS)
-- Get real address lookup working (need to get geojson for Chicago wards)
-- Re-evaluate Location feature. It may make more sense to allow a user to input an address and show them all districts they fall within (along with entities associated with those). User enters address, we look up their coordinates, optionally filter by jurisdiction, and then use SQL geography to see if their point is within a geojson line. If not filtering by jurisdiction, return all.
-- Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
-- Create a minimal Chicago module that demonstrates the pluggable concept
-- Test switching between "default" and "Chicago" modules
+### Phase 7: Location Module Proof of Concept (COMPLETED)
+- ✅ Get geojson for Chicago wards
+- ✅ Get real address lookup working 
+- ✅ Re-evaluate Location feature. It may make more sense to allow a user to input an address and show them all districts they fall within (along with entities associated with those). User enters address, we look up their coordinates, optionally filter by jurisdiction, and then use SQL geography to see if their point is within a geojson line. If not filtering by jurisdiction, return all.
+- ✅ Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 
-### Phase 8: Validate Postgres Provider Works as Intended (PLANNED)
+### Phase 8: Improve Representative Lookup and Displaying that to the User (IN PROGRESS)
+- Improve the styling of the lookup representatives page
+- Save user's representative data to local storage
+- Use that entity data to highlight where their rep stands on the project detail page (for a project in which their rep is in the jurisdiction)
+- Use that entity data to allow the "Contact your rep about this issue" to pull up a new page or modal displaying that entities position on the issue along with a template message to send them (plus the entities contact info)
+
+### Phase 9: Validate Postgres Provider Works as Intended (PLANNED)
 - Setup postgres locally
 - Test all workflows with a postgres and ensure things work
 
-### Phase 9: Add Auth/Admin System (PLANNED)
+### Phase 10: Add Auth/Admin System (PLANNED)
 - Add authentication and roles system
 - Segment projects by group
 - Allow groups to hide some/all projects
 - Make projects shareable
 
-### Phase 10: Cleanup Existing Implementation (PLANNED)
+### Phase 11: Cleanup Existing Implementation (PLANNED)
 - Don't reload entire project list on status/search text change
 - Ensure all backend endpoints use DB filter methods (don't use .list)
 - Everything is UTC atm, reconsider that
@@ -112,12 +117,12 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
 ## 5. Features To Eventually Add
+- Add IL House/Senate jurisdictions
 - Create an entity detail page that display entity info + associated projects/status
 - Ability to update/display a project timeline and current status (bill timeline)
 - Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
-- Add IL House/Senate jurisdictions
 - Create add entity page?
 - Create add jurisdiction pages?
 
