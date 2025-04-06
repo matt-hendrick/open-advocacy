@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -8,23 +8,161 @@ import {
   Container,
   useTheme,
   IconButton,
+  Badge,
+  Tooltip,
+  Popover,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Chip,
+  Paper,
 } from '@mui/material';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import PersonIcon from '@mui/icons-material/Person';
+import PlaceIcon from '@mui/icons-material/Place';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useTheme as useCustomTheme } from '../../theme/ThemeProvider';
 import { lightTheme, darkTheme } from '../../theme/themes';
+import { UserRepresentativesContext } from '../../pages/RepresentativeLookup';
 
 const Header: React.FC = () => {
   const theme = useTheme();
   const { currentTheme, setTheme } = useCustomTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { hasUserRepresentatives, userRepresentatives, userAddress } = useContext(
+    UserRepresentativesContext
+  );
+
+  // State for representative popover
+  const [repAnchorEl, setRepAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleRepClick = (event: React.MouseEvent<HTMLElement>) => {
+    setRepAnchorEl(event.currentTarget);
+  };
+
+  const handleRepClose = () => {
+    setRepAnchorEl(null);
+  };
+
+  const repPopoverOpen = Boolean(repAnchorEl);
+
+  const handleEntityClick = (entityId: string) => {
+    // For now, navigate to the representatives page
+    // Later you can update this to go to a specific entity page
+    navigate(`/representatives?highlight=${entityId}`);
+    handleRepClose();
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
   const toggleTheme = () => {
     setTheme(currentTheme.name === 'light' ? darkTheme : lightTheme);
+  };
+
+  // Representative badge and popover
+  const RepresentativeBadge = () => {
+    if (!hasUserRepresentatives) return null;
+
+    return (
+      <>
+        <Tooltip title={`Your representatives for: ${userAddress}`}>
+          <Chip
+            icon={<PersonIcon />}
+            label={`${userRepresentatives.length} Saved Representative${userRepresentatives.length > 1 ? 's' : ''}`}
+            color="primary"
+            variant="outlined"
+            onClick={handleRepClick}
+            sx={{
+              ml: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: theme.palette.primary.main + '1A', // 10% opacity
+              },
+            }}
+          />
+        </Tooltip>
+
+        <Popover
+          open={repPopoverOpen}
+          anchorEl={repAnchorEl}
+          onClose={handleRepClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+          <Paper sx={{ width: 320, maxHeight: 400, overflow: 'auto' }}>
+            <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+              <Typography variant="subtitle1" fontWeight="bold">
+                Your Representatives
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Based on: {userAddress}
+              </Typography>
+            </Box>
+
+            <List dense>
+              {userRepresentatives.map(rep => (
+                <ListItem
+                  key={rep.id}
+                  button
+                  onClick={() => handleEntityClick(rep.id)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover,
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 36 }}>
+                    <PersonIcon color="primary" fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="body2">
+                        <strong>{rep.name}</strong>
+                      </Typography>
+                    }
+                    secondary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <PlaceIcon sx={{ fontSize: 14 }} />
+                        <Typography variant="caption" noWrap>
+                          {rep.district_name || rep.title || 'Representative'}
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                  <ArrowForwardIcon fontSize="small" color="action" sx={{ opacity: 0.6 }} />
+                </ListItem>
+              ))}
+            </List>
+
+            <Divider />
+
+            <Box sx={{ p: 1.5, textAlign: 'center' }}>
+              <Button
+                size="small"
+                variant="outlined"
+                component={RouterLink}
+                to="/representatives"
+                onClick={handleRepClose}
+              >
+                View All Representatives
+              </Button>
+            </Box>
+          </Paper>
+        </Popover>
+      </>
+    );
   };
 
   return (
@@ -59,58 +197,70 @@ const Header: React.FC = () => {
             >
               Open Advocacy
             </Typography>
+
+            {/* Representative badge with popover */}
+            <RepresentativeBadge />
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-            <Button
-              color="inherit"
-              component={RouterLink}
-              to="/"
-              sx={{
-                mx: 1,
-                color: isActive('/') ? theme.palette.primary.main : theme.palette.text.primary,
-                fontWeight: isActive('/') ? 700 : 500,
-                '&:hover': {
-                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                },
-              }}
-            >
-              Home
-            </Button>
-            <Button
-              color="inherit"
-              component={RouterLink}
-              to="/projects"
-              sx={{
-                mx: 1,
-                color: isActive('/projects')
-                  ? theme.palette.primary.main
-                  : theme.palette.text.primary,
-                fontWeight: isActive('/projects') ? 700 : 500,
-                '&:hover': {
-                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                },
-              }}
-            >
-              Projects
-            </Button>
-            <Button
-              color="inherit"
-              component={RouterLink}
-              to="/representatives"
-              sx={{
-                mx: 1,
-                color: isActive('/representatives')
-                  ? theme.palette.primary.main
-                  : theme.palette.text.primary,
-                fontWeight: isActive('/representatives') ? 700 : 500,
-                '&:hover': {
-                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                },
-              }}
-            >
-              Find Representatives
-            </Button>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              ml: 0,
+            }}
+          >
+            <>
+              <Button
+                color="inherit"
+                component={RouterLink}
+                to="/"
+                sx={{
+                  mx: 1,
+                  color: isActive('/') ? theme.palette.primary.main : theme.palette.text.primary,
+                  fontWeight: isActive('/') ? 700 : 500,
+                  '&:hover': {
+                    backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                  },
+                }}
+              >
+                Home
+              </Button>
+              <Button
+                color="inherit"
+                component={RouterLink}
+                to="/projects"
+                sx={{
+                  mx: 1,
+                  color: isActive('/projects')
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary,
+                  fontWeight: isActive('/projects') ? 700 : 500,
+                  '&:hover': {
+                    backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                  },
+                }}
+              >
+                Projects
+              </Button>
+              <Button
+                color="inherit"
+                component={RouterLink}
+                to="/representatives"
+                sx={{
+                  mx: 1,
+                  color: isActive('/representatives')
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary,
+                  fontWeight: isActive('/representatives') ? 700 : 500,
+                  '&:hover': {
+                    backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                  },
+                }}
+              >
+                Find Representatives
+              </Button>
+            </>
           </Box>
 
           <Box>
