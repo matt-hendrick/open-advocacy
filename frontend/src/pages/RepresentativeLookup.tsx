@@ -35,7 +35,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import { Entity } from '../../types';
-import { representativeService } from '../services/representatives';
+import { entityService } from '../services/entities';
 import { useNavigate } from 'react-router-dom';
 
 // Local storage keys
@@ -130,7 +130,7 @@ const RepresentativeLookup: React.FC = () => {
     setError(null);
 
     try {
-      const response = await representativeService.findByAddress(address);
+      const response = await entityService.findByAddress(address);
 
       const reps = response.data.representatives || response.data;
       const foundDistricts = response.data.districts || [];

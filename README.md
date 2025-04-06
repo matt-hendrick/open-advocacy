@@ -105,6 +105,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Make projects shareable
 
 ### Phase 11: Cleanup Existing Implementation (PLANNED)
+- Clean up massive monolothic RepresenativeLookup.tsx. It is messy and has a bunch of things that should be their own files.
 - Don't reload entire project list on status/search text change
 - Ensure all backend endpoints use DB filter methods (don't use .list)
 - Everything is UTC atm, reconsider that

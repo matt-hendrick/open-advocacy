@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import projects, groups, entities, status, jurisdictions, location
+from app.api.routes import projects, groups, entities, status, jurisdictions
 import logging
 import time
 
@@ -77,7 +77,6 @@ app.include_router(status.router, prefix="/api/status", tags=["status"])
 app.include_router(
     jurisdictions.router, prefix="/api/jurisdictions", tags=["jurisdictions"]
 )
-app.include_router(location.router, prefix="/api/location", tags=["location"])
 
 
 @app.on_event("startup")
