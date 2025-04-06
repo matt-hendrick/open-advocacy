@@ -8,7 +8,6 @@ import {
   Container,
   useTheme,
   IconButton,
-  Badge,
   Tooltip,
   Popover,
   List,
@@ -18,6 +17,7 @@ import {
   Divider,
   Chip,
   Paper,
+  ButtonBase,
 } from '@mui/material';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -53,9 +53,8 @@ const Header: React.FC = () => {
   const repPopoverOpen = Boolean(repAnchorEl);
 
   const handleEntityClick = (entityId: string) => {
-    // For now, navigate to the representatives page
-    // Later you can update this to go to a specific entity page
-    navigate(`/representatives?highlight=${entityId}`);
+    // TODO: Actually implement an entity page and navigate to it
+    // navigate(`/entities?${entityId}`);
     handleRepClose();
   };
 
@@ -113,11 +112,14 @@ const Header: React.FC = () => {
 
             <List dense>
               {userRepresentatives.map(rep => (
-                <ListItem
+                <ListItem 
                   key={rep.id}
-                  button
+                  component={ButtonBase}
                   onClick={() => handleEntityClick(rep.id)}
                   sx={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '8px 16px',
                     '&:hover': {
                       backgroundColor: theme.palette.action.hover,
                     },
@@ -128,17 +130,17 @@ const Header: React.FC = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary={
-                      <Typography variant="body2">
+                      <Typography variant="body2" component="span">
                         <strong>{rep.name}</strong>
                       </Typography>
                     }
                     secondary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                        <PlaceIcon sx={{ fontSize: 14 }} />
-                        <Typography variant="caption" noWrap>
-                          {rep.district_name || rep.title || 'Representative'}
-                        </Typography>
-                      </Box>
+                      <Typography component="span" variant="caption">
+                        <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                          <PlaceIcon sx={{ fontSize: 14 }} />
+                          <span>{rep.district_name || rep.title || 'Representative'}</span>
+                        </Box>
+                      </Typography>
                     }
                   />
                   <ArrowForwardIcon fontSize="small" color="action" sx={{ opacity: 0.6 }} />
