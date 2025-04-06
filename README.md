@@ -80,7 +80,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Hide archived projects by default
 
 ### Phase 6a: Bug Fix - Updating Entity Status (IN PROGRESS)
-- Updating entity status does not update the status for the entity properly on the project detail page
+- ✅ Updating entity status does not update the status for the entity properly on the project detail page
 
 ### Phase 7: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
@@ -100,6 +100,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 
 ### Phase 10: Cleanup Existing Implementation (PLANNED)
 - Don't reload entire project list on status/search text change
+- Ensure all backend endpoints use DB filter methods (don't use .list)
 - Replace various magic strings with enums
 - Clean up data models (remove any unnecessary optionals or List/Dict)
 - Clean up logic fetching status/jurisdiction for projects (it is duplicated across a couple endpoints)
