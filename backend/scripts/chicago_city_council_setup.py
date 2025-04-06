@@ -34,6 +34,7 @@ try:
         Entity,
         Jurisdiction,
         EntityStatusRecord,
+        District,
     )
 
     logger.info("Successfully imported ORM models")
@@ -170,6 +171,8 @@ async def create_aldermen_entities(
 
     try:
         entities = []
+        # Track districts we've created
+        district_map = {}
 
         for alderman in aldermen_data:
             # Extract name
@@ -177,46 +180,56 @@ async def create_aldermen_entities(
 
             # Extract ward number
             ward = alderman.get("ward", "")
-            district = f"Ward {ward}"
+            district_name = f"Ward {ward}"
+
+            # Get or create district
+            if district_name in district_map:
+                district_id = district_map[district_name]
+            else:
+                # Create new district
+                district = District(
+                    id=uuid.uuid4(),
+                    name=district_name,
+                    code=ward,
+                    jurisdiction_id=jurisdiction_id,
+                )
+                session.add(district)
+                await session.flush()  # Get ID without full commit
+                district_id = district.id
+                district_map[district_name] = district_id
 
             # Extract contact info
             email = alderman.get("email", "")
             ward_phone = alderman.get("ward_phone", "")
             city_hall_phone = alderman.get("city_hall_phone", "")
-
-            # Choose the ward phone as primary, but if missing use city hall phone
             phone = ward_phone if ward_phone else city_hall_phone
 
-            # Extract addresses
+            # Address logic
             ward_address = alderman.get("address", "")
             zipcode = alderman.get("zipcode", "")
             city_hall_address = alderman.get("city_hall_address", "")
             city_hall_zipcode = alderman.get("city_hall_zipcode", "")
 
-            # Create full address
             if ward_address:
                 full_address = f"{ward_address}, Chicago, IL {zipcode}"
             else:
                 full_address = f"{city_hall_address}, Chicago, IL {city_hall_zipcode}"
 
-            # Extract website if available
             website = None
             if "website" in alderman and isinstance(alderman["website"], dict):
                 website = alderman["website"].get("url", None)
 
-            # Create entity
             entity = Entity(
                 id=uuid.uuid4(),
                 name=name,
                 title="Alderperson",
                 entity_type="alderman",
-                jurisdiction_id=jurisdiction_id,
-                location_module_id="chicago",
+                district_id=district_id,
                 email=email,
                 phone=phone,
                 website=website,
                 address=full_address,
-                district=district,
+                jurisdiction_id=jurisdiction_id,
             )
 
             entities.append(entity)

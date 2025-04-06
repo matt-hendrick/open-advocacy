@@ -3,14 +3,14 @@ import json
 from uuid import UUID
 import sys
 
-from app.db.dependencies import get_jurisdictions_provider
-from app.models.pydantic.models import JurisdictionBase
+from app.db.dependencies import get_jurisdictions_provider, get_districts_provider
+from app.models.pydantic.models import DistrictBase, Jurisdiction
 from app.geo.provider_factory import get_geo_provider
 
 
 async def import_chicago_wards(file_path: str, parent_jurisdiction_id: UUID = None):
     """
-    Import Chicago wards from a GeoJSON file
+    Import Chicago wards from a GeoJSON file into District model
 
     Args:
         file_path: Path to GeoJSON file with ward boundaries
@@ -18,7 +18,21 @@ async def import_chicago_wards(file_path: str, parent_jurisdiction_id: UUID = No
     """
     # Get providers
     jurisdictions_provider = get_jurisdictions_provider()
+    districts_provider = get_districts_provider()
     geo_provider = get_geo_provider()
+
+    # Verify parent jurisdiction exists
+    if parent_jurisdiction_id:
+        parent = await jurisdictions_provider.get(parent_jurisdiction_id)
+        if not parent:
+            print(f"Parent jurisdiction with ID {parent_jurisdiction_id} not found")
+            return False
+    else:
+        jurisdiction_list: list[Jurisdiction] = await jurisdictions_provider.filter(
+            name="Chicago City Council"
+        )
+        parent = jurisdiction_list[0]
+        parent_jurisdiction_id = parent.id
 
     # Read GeoJSON file
     try:
@@ -50,28 +64,27 @@ async def import_chicago_wards(file_path: str, parent_jurisdiction_id: UUID = No
         ward_num = feature["properties"]["ward"]
         ward_name = f"Ward {ward_num}"
 
-        # Check if ward already exists
-        existing_wards = await jurisdictions_provider.filter(name=ward_name)
+        # Check if district already exists
+        existing_districts = await districts_provider.filter(name=ward_name)
 
-        if existing_wards:
+        if existing_districts:
             print(f"Ward {ward_num} already exists, updating boundary")
-            ward_id = existing_wards[0].id
+            district_id = existing_districts[0].id
             # Update boundary
-            await geo_provider.store_jurisdiction_boundary(ward_id, feature)
+            await geo_provider.store_district_boundary(district_id, feature)
         else:
             print(f"Creating new ward: {ward_name}")
-            # Create new jurisdiction for ward
-            new_ward = JurisdictionBase(
+            # Create new district for ward
+            new_district = DistrictBase(
                 name=ward_name,
-                description=f"Chicago Ward {ward_num}",
-                level="ward",
-                parent_jurisdiction_id=parent_jurisdiction_id,
+                code=str(ward_num),
+                jurisdiction_id=parent_jurisdiction_id,
             )
 
-            created_ward = await jurisdictions_provider.create(new_ward)
+            created_district = await districts_provider.create(new_district)
 
             # Store boundary
-            await geo_provider.store_jurisdiction_boundary(created_ward.id, feature)
+            await geo_provider.store_district_boundary(created_district.id, feature)
 
     print(f"Processed {len(features)} wards")
     return True

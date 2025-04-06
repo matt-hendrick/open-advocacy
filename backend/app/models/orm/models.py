@@ -66,13 +66,29 @@ class Jurisdiction(Base):
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=True
     )
     created_at = Column(DateTime, default=datetime.utcnow)
-    boundary = Column(JSON, nullable=True)
 
     # Relationships
     entities = relationship("Entity", back_populates="jurisdiction")
     parent = relationship("Jurisdiction", remote_side=[id], back_populates="children")
     children = relationship("Jurisdiction", back_populates="parent")
+    districts = relationship("District", back_populates="jurisdiction")
     projects = relationship("Project", back_populates="jurisdiction")
+
+
+class District(Base):
+    __tablename__ = "districts"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(255), nullable=False)  # "Ward 4", "3rd Congressional District"
+    code = Column(String(50), nullable=True)  # Optional numeric code like "4", "3"
+    jurisdiction_id = Column(
+        UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=False
+    )
+    boundary = Column(JSON, nullable=True)  # GeoJSON boundary
+
+    # Relationships
+    jurisdiction = relationship("Jurisdiction", back_populates="districts")
+    entities = relationship("Entity", back_populates="district")
 
 
 class Entity(Base):
@@ -85,8 +101,7 @@ class Entity(Base):
     jurisdiction_id = Column(
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=False
     )
-    location_module_id = Column(String(50), nullable=False, default="default")
-    district = Column(String(255), nullable=True)
+    district_id = Column(UUID(as_uuid=True), ForeignKey("districts.id"), nullable=False)
 
     # Contact info fields
     email = Column(String(255), nullable=True)
@@ -95,6 +110,7 @@ class Entity(Base):
     address = Column(Text, nullable=True)
 
     # Relationships
+    district = relationship("District", back_populates="entities")
     jurisdiction = relationship("Jurisdiction", back_populates="entities")
     status_records = relationship("EntityStatusRecord", back_populates="entity")
 

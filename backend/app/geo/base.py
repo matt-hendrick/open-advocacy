@@ -1,37 +1,22 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Any
 from uuid import UUID
 
 
 class GeoProvider(ABC):
-    """Interface for geographic operations"""
+    """Base interface for geographic operations"""
+
+    def __init__(self, session_factory):
+        self.session_factory = session_factory
 
     @abstractmethod
-    async def point_in_jurisdictions(self, lat: float, lon: float) -> List[UUID]:
-        """
-        Find all jurisdiction IDs that contain the given point
-
-        Args:
-            lat: Latitude
-            lon: Longitude
-
-        Returns:
-            List of jurisdiction IDs
-        """
+    async def districts_containing_point(self, lat: float, lon: float) -> List[UUID]:
+        """Find all district IDs that contain the given point"""
         pass
 
     @abstractmethod
-    async def store_jurisdiction_boundary(
-        self, jurisdiction_id: UUID, geojson: Dict[str, Any]
+    async def store_district_boundary(
+        self, district_id: UUID, geojson: dict[str, Any]
     ) -> bool:
-        """
-        Store a boundary for a jurisdiction
-
-        Args:
-            jurisdiction_id: ID of the jurisdiction
-            geojson: GeoJSON boundary data
-
-        Returns:
-            Success flag
-        """
+        """Store a boundary for a district"""
         pass

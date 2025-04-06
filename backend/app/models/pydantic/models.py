@@ -29,18 +29,18 @@ class EntityBase(BaseModel):
     phone: str | None = None
     website: str | None = None
     address: str | None = None
-    district: str | None = None
+    jurisdiction_id: UUID
+    district_id: UUID
 
 
 class EntityCreate(EntityBase):
     jurisdiction_id: UUID
-    location_module_id: str = "default"
 
 
 class Entity(EntityBase):
     id: UUID = Field(default_factory=uuid4)
-    jurisdiction_id: UUID
-    location_module_id: str = "default"
+    jurisdiction_name: str | None = None
+    district_name: str | None = None
 
     class Config:
         from_attributes = True
@@ -51,23 +51,34 @@ class JurisdictionBase(BaseModel):
     description: str | None = None
     level: str  # city, state, federal
     parent_jurisdiction_id: UUID | None = None
-    # Either JSON or JSON as string for GeoJson boundaries
-    boundary: Union[dict[str, Any], str] | None = None
-
-    @validator('boundary')
-    def parse_boundary(cls, v):
-        """Parse boundary if it's a string"""
-        if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except:
-                return v
-        return v
 
 
 class Jurisdiction(JurisdictionBase):
     id: UUID = Field(default_factory=uuid4)
     created_at: datetime = Field(default_factory=datetime.now)
+
+    class Config:
+        from_attributes = True
+
+
+class DistrictBase(BaseModel):
+    name: str
+    code: str | None = None
+    jurisdiction_id: UUID
+
+
+class District(DistrictBase):
+    id: UUID = Field(default_factory=uuid4)
+    boundary: Union[dict[str, Any], str] | None = None
+
+    @validator("boundary")
+    def parse_boundary(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except Exception:
+                return v
+        return v
 
     class Config:
         from_attributes = True
