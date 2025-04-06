@@ -1,6 +1,15 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, DateTime
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    ForeignKey,
+    Text,
+    DateTime,
+    JSON,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -57,6 +66,7 @@ class Jurisdiction(Base):
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=True
     )
     created_at = Column(DateTime, default=datetime.utcnow)
+    boundary = Column(JSON, nullable=True)
 
     # Relationships
     entities = relationship("Entity", back_populates="jurisdiction")

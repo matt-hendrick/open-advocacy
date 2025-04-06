@@ -1,4 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
+import json
+from typing import Any, Union
 from enum import Enum
 from datetime import datetime
 from uuid import uuid4, UUID
@@ -49,6 +51,18 @@ class JurisdictionBase(BaseModel):
     description: str | None = None
     level: str  # city, state, federal
     parent_jurisdiction_id: UUID | None = None
+    # Either JSON or JSON as string for GeoJson boundaries
+    boundary: Union[dict[str, Any], str] | None = None
+
+    @validator('boundary')
+    def parse_boundary(cls, v):
+        """Parse boundary if it's a string"""
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except:
+                return v
+        return v
 
 
 class Jurisdiction(JurisdictionBase):
