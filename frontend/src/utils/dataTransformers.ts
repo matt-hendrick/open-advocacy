@@ -47,8 +47,7 @@ export const transformEntityFromApi = (entity: any): Entity => {
     phone: entity.phone || '',
     website: entity.website || '',
     address: entity.address || '',
-    district: entity.district || '',
+    district_name: entity.district_name || '',
     jurisdiction_id: entity.jurisdiction_id,
-    location_module_id: entity.location_module_id || 'default',
   };
 };

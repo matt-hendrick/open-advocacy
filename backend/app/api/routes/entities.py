@@ -3,40 +3,27 @@ from uuid import UUID
 
 from app.models.pydantic.models import Entity, EntityCreate
 from app.db.base import DatabaseProvider
-from app.db.dependencies import get_entities_provider, get_jurisdictions_provider
+from app.db.dependencies import (
+    get_entities_provider,
+    get_jurisdictions_provider,
+    get_districts_provider,
+)
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[Entity])
 async def list_entities(
-    jurisdiction_id: str | None = None,
-    entity_type: str | None = None,
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
-):
-    entities = await entities_provider.list()
-
-    # Filter by jurisdiction_id if provided
-    if jurisdiction_id:
-        entities = [e for e in entities if e.jurisdiction_id == jurisdiction_id]
-
-    # Filter by entity_type if provided
-    if entity_type:
-        entities = [e for e in entities if e.entity_type == entity_type]
-
-    return entities
-
-
-@router.get("/by-jurisdictions", response_model=list[Entity])
-async def get_entities_by_jurisdiction(
     jurisdiction_id: UUID,
     entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    districts_provider=Depends(get_districts_provider),
 ):
-    entities = await entities_provider.list()
-    filtered_entities = [
-        entity for entity in entities if entity.jurisdiction_id == jurisdiction_id
-    ]
-    return filtered_entities
+    entities = await entities_provider.filter(jurisdiction_id=jurisdiction_id)
+    for entity in entities:
+        district = await districts_provider.get(entity.district_id)
+        if district:
+            entity.district_name = district.name
+    return entities
 
 
 @router.post("/", response_model=Entity)

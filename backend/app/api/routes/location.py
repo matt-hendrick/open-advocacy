@@ -34,6 +34,5 @@ async def lookup_representatives(
         district = await districts_provider.get(entity.district_id)
         if district:
             entity.district_name = district.name
-            # You could also add jurisdiction info here if needed
 
     return entities

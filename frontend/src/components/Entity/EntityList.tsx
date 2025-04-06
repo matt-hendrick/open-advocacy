@@ -190,7 +190,7 @@ const EntityRow = ({
 
         <TableCell>{entity.title || ''}</TableCell>
 
-        <TableCell>{entity.district || entity.entity_type}</TableCell>
+        <TableCell>{entity.district_name || entity.entity_type}</TableCell>
 
         <TableCell align="right">
           <Chip
@@ -443,7 +443,8 @@ const EntityList: React.FC<EntityListProps> = ({
         searchTerm === '' ||
         entity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (entity.title && entity.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (entity.district && entity.district.toLowerCase().includes(searchTerm.toLowerCase()));
+        (entity.district_name &&
+          entity.district_name.toLowerCase().includes(searchTerm.toLowerCase()));
 
       // Filter by status
       if (filterStatus !== 'all') {

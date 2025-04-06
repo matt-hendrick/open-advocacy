@@ -25,7 +25,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import PublicIcon from '@mui/icons-material/Public';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Entity } from '../../types';
-import { representativeService } from '../../services/representatives';
+import { representativeService } from '../services/representatives';
 
 const RepresentativeLookup: React.FC = () => {
   const [address, setAddress] = useState<string>('');
@@ -123,6 +123,9 @@ const RepresentativeLookup: React.FC = () => {
                           <Typography variant="h6">{rep.name}</Typography>
                           <Typography variant="subtitle2" color="textSecondary">
                             {rep.title}
+                          </Typography>
+                          <Typography variant="subtitle1" color="textSecondary">
+                            {rep.district_name}
                           </Typography>
                         </div>
                       </Box>

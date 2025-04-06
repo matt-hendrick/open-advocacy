@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import ProjectDetail from './pages/ProjectDetail';
 import ProjectFormPage from './pages/ProjectFormPage';
 import ProjectList from './pages/ProjectList';
-import RepresentativeLookup from './components/Entity/RepresentativeLookup';
+import RepresentativeLookup from './pages/RepresentativeLookup';
 
 const App: React.FC = () => {
   return (

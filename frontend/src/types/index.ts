@@ -30,9 +30,8 @@ export interface Entity {
   phone?: string;
   website?: string;
   address?: string;
-  district?: string;
+  district_name?: string;
   jurisdiction_id: string;
-  location_module_id: string;
 }
 
 export interface EntityStatusRecord {
