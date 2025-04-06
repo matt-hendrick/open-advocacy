@@ -79,14 +79,15 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Setup proper project status filtering (it was bugged before)
 - ✅ Hide archived projects by default
 
-### Phase 6a: Bug Fix - Updating Entity Status (IN PROGRESS)
+### Phase 6a: Bug Fix - Updating Entity Status (COMPLETED)
 - ✅ Updating entity status does not update the status for the entity properly on the project detail page
 
-### Phase 7: Location Module Proof of Concept (PLANNED)
+### Phase 7: Location Module Proof of Concept (IN PROGRESS)
+- Get real address lookup working (need to get geojson for Chicago wards)
+- Re-evaluate Location feature. It may make more sense to allow a user to input an address and show them all districts they fall within (along with entities associated with those). User enters address, we look up their coordinates, optionally filter by jurisdiction, and then use SQL geography to see if their point is within a geojson line. If not filtering by jurisdiction, return all.
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 - Create a minimal Chicago module that demonstrates the pluggable concept
 - Test switching between "default" and "Chicago" modules
-- Get real address lookup working (need to get geojson for Chicago wards)
 
 ### Phase 8: Validate Postgres Provider Works as Intended (PLANNED)
 - Setup postgres locally
