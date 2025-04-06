@@ -14,7 +14,7 @@ export const statusService = {
     projectId?: string,
     entityId?: string
   ): Promise<{ data: EntityStatusRecord[] }> {
-    let url = '/status';
+    let url = '/status/';
     const params = [];
 
     if (projectId) params.push(`project_id=${projectId}`);

@@ -18,15 +18,21 @@ async def list_status_records(
     entity_id: UUID | None = None,
     status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
 ):
-    status_records = await status_records_provider.list()
+    filters = {}
+    in_filters = {}
 
-    # Filter by project_id if provided
     if project_id:
-        status_records = [sr for sr in status_records if sr.project_id == project_id]
+        filters["project_id"] = project_id
 
-    # Filter by entity_id if provided
     if entity_id:
-        status_records = [sr for sr in status_records if sr.entity_id == entity_id]
+        filters["entity_id"] = entity_id
+
+    if filters or in_filters:
+        status_records = await status_records_provider.filter_multiple(
+            filters, in_filters
+        )
+    else:
+        status_records = await status_records_provider.list()
 
     return status_records
 

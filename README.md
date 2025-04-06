@@ -79,6 +79,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Setup proper project status filtering (it was bugged before)
 - ✅ Hide archived projects by default
 
+### Phase 6a: Bug Fix - Updating Entity Status (IN PROGRESS)
+- Updating entity status does not update the status for the entity properly on the project detail page
+
 ### Phase 7: Location Module Proof of Concept (PLANNED)
 - Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 - Create a minimal Chicago module that demonstrates the pluggable concept

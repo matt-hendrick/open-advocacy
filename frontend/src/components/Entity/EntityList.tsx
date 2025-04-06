@@ -327,7 +327,7 @@ const EntityRow = ({
                                 borderRadius="50%"
                                 bgcolor={getStatusColor(EntityStatus.SOLID_DISAPPROVAL)}
                               />
-                              Solid Approval
+                              Solid Disapproval
                             </Box>
                           </MenuItem>
                         </Select>
@@ -419,16 +419,6 @@ const EntityList: React.FC<EntityListProps> = ({
   const [orderBy, setOrderBy] = useState<keyof Entity>('name');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterTypeOpen, setFilterTypeOpen] = useState(false);
-
-  // Get unique entity types for filtering
-  const entityTypes = useMemo(() => {
-    const types = new Set<string>();
-    entities.forEach(entity => {
-      types.add(entity.entity_type);
-    });
-    return Array.from(types);
-  }, [entities]);
 
   // Sort entities based on orderBy and order
   const sortedEntities = useMemo(() => {
