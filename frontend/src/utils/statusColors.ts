@@ -1,4 +1,4 @@
-import { EntityStatus } from '../../types';
+import { EntityStatus } from '../types';
 
 export const getStatusColor = (status: EntityStatus): string => {
   switch (status) {

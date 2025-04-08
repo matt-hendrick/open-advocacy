@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
 import { StatusDistribution as StatusDistributionType, EntityStatus } from '../../types';
+import { getStatusColor, getStatusLabel } from '../../utils/statusColors';
 
 interface StatusBarProps {
   distribution: StatusDistributionType;
@@ -9,40 +10,6 @@ interface StatusBarProps {
   showPercentages?: boolean;
   showCounts?: boolean;
 }
-
-const getStatusColor = (status: EntityStatus): string => {
-  switch (status) {
-    case EntityStatus.SOLID_APPROVAL:
-      return '#2e7d32'; // Green
-    case EntityStatus.LEANING_APPROVAL:
-      return '#66bb6a'; // Light green
-    case EntityStatus.NEUTRAL:
-      return '#ffb74d'; // Orange
-    case EntityStatus.LEANING_DISAPPROVAL:
-      return '#ef5350'; // Light red
-    case EntityStatus.SOLID_DISAPPROVAL:
-      return '#c62828'; // Dark red
-    default:
-      return '#9e9e9e'; // Grey
-  }
-};
-
-const getStatusTooltip = (status: EntityStatus): string => {
-  switch (status) {
-    case EntityStatus.SOLID_APPROVAL:
-      return 'Solid Approval';
-    case EntityStatus.LEANING_APPROVAL:
-      return 'Leaning Approval';
-    case EntityStatus.NEUTRAL:
-      return 'Neutral';
-    case EntityStatus.LEANING_DISAPPROVAL:
-      return 'Leaning Disapproval';
-    case EntityStatus.SOLID_DISAPPROVAL:
-      return 'Solid Disapproval';
-    default:
-      return 'Unknown';
-  }
-};
 
 const StatusDistribution: React.FC<StatusBarProps> = ({
   distribution,
@@ -87,7 +54,7 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
           return (
             <Tooltip
               key={index}
-              title={`${getStatusTooltip(section.status)}: ${section.count} (${percentage.toFixed(1)}%)`}
+              title={`${getStatusLabel(section.status)}: ${section.count} (${percentage.toFixed(1)}%)`}
             >
               <Box
                 sx={{
@@ -131,7 +98,7 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
                   }}
                 />
                 <Typography variant="body2" component="span">
-                  {getStatusTooltip(section.status)}: {section.count}
+                  {getStatusLabel(section.status)}: {section.count}
                 </Typography>
               </Box>
             );

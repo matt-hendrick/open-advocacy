@@ -7,7 +7,6 @@ import {
   Button,
   Chip,
   Divider,
-  Grid,
   Card,
   CardContent,
   Link,
@@ -26,6 +25,7 @@ import { jurisdictionService } from '../services/jurisdictions';
 import { Project, Jurisdiction, Entity, EntityStatusRecord } from '../types';
 import StatusDistribution from '../components/Status/StatusDistribution';
 import EntityList from '../components/Entity/EntityList';
+import UserEntityProjectSection from '../components/Entity/UserEntityProjectSection';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { transformEntityFromApi } from '../utils/dataTransformers';
 
@@ -207,6 +207,8 @@ const ProjectDetail: React.FC = () => {
         <Typography variant="body1" color="text.secondary" paragraph mt={2}>
           {project.description}
         </Typography>
+
+        <UserEntityProjectSection project={project} statusRecords={statusRecords} />
 
         {project.jurisdiction_id && (
           <Box mt={2}>

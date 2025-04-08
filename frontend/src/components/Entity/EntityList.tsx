@@ -36,6 +36,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 import { Entity, Project, EntityStatus, EntityStatusRecord } from '../../types';
 import { statusService } from '../../services/status';
+import { getStatusColor, getStatusLabel } from '../../utils/statusColors';
 
 // Type for sort orders
 type Order = 'asc' | 'desc';
@@ -47,41 +48,6 @@ interface EntityListProps {
   onStatusUpdated: () => void;
   isAdmin: boolean;
 }
-
-// Helper functions from your existing code
-const getStatusColor = (status: EntityStatus | undefined): string => {
-  switch (status) {
-    case EntityStatus.SOLID_APPROVAL:
-      return '#2e7d32'; // Dark green
-    case EntityStatus.LEANING_APPROVAL:
-      return '#66bb6a'; // Light green
-    case EntityStatus.NEUTRAL:
-      return '#ffb74d'; // Orange
-    case EntityStatus.LEANING_DISAPPROVAL:
-      return '#ef5350'; // Light red
-    case EntityStatus.SOLID_DISAPPROVAL:
-      return '#c62828'; // Dark red
-    default:
-      return '#9e9e9e'; // Grey
-  }
-};
-
-const getStatusLabel = (status: EntityStatus | undefined): string => {
-  switch (status) {
-    case EntityStatus.SOLID_APPROVAL:
-      return 'Solid Approval';
-    case EntityStatus.LEANING_APPROVAL:
-      return 'Leaning Approval';
-    case EntityStatus.NEUTRAL:
-      return 'Neutral';
-    case EntityStatus.LEANING_DISAPPROVAL:
-      return 'Leaning Disapproval';
-    case EntityStatus.SOLID_DISAPPROVAL:
-      return 'Solid Disapproval';
-    default:
-      return 'No Status';
-  }
-};
 
 // Row component that handles expansion
 const EntityRow = ({
