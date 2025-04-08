@@ -108,6 +108,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Make projects shareable
 
 ### Phase 11: Cleanup Existing Implementation (PLANNED)
+- Rename frontend components with Representatives to Entities to be more generic
 - Don't reload entire project list on status/search text change
 - Ensure all backend endpoints use DB filter methods (don't use .list)
 - Everything is UTC atm, reconsider that
