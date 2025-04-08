@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -19,7 +19,7 @@ import {
   Paper,
   ButtonBase,
 } from '@mui/material';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
@@ -28,16 +28,13 @@ import PlaceIcon from '@mui/icons-material/Place';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useTheme as useCustomTheme } from '../../theme/ThemeProvider';
 import { lightTheme, darkTheme } from '../../theme/themes';
-import { UserRepresentativesContext } from '../../pages/RepresentativeLookup';
+import { useUserRepresentatives } from '../../contexts/UserRepresentativesContext';
 
 const Header: React.FC = () => {
   const theme = useTheme();
   const { currentTheme, setTheme } = useCustomTheme();
   const location = useLocation();
-  const navigate = useNavigate();
-  const { hasUserRepresentatives, userRepresentatives, userAddress } = useContext(
-    UserRepresentativesContext
-  );
+  const { hasUserRepresentatives, userRepresentatives, userAddress } = useUserRepresentatives();
 
   // State for representative popover
   const [repAnchorEl, setRepAnchorEl] = useState<HTMLElement | null>(null);
@@ -112,7 +109,7 @@ const Header: React.FC = () => {
 
             <List dense>
               {userRepresentatives.map(rep => (
-                <ListItem 
+                <ListItem
                   key={rep.id}
                   component={ButtonBase}
                   onClick={() => handleEntityClick(rep.id)}
@@ -136,7 +133,10 @@ const Header: React.FC = () => {
                     }
                     secondary={
                       <Typography component="span" variant="caption">
-                        <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Box
+                          component="span"
+                          sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                        >
                           <PlaceIcon sx={{ fontSize: 14 }} />
                           <span>{rep.district_name || rep.title || 'Representative'}</span>
                         </Box>

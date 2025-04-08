@@ -89,10 +89,13 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 
 ### Phase 8: Improve Representative Lookup and Displaying that to the User (IN PROGRESS)
-- Improve the styling of the lookup representatives page
-- Save user's representative data to local storage
+- ✅ Improve the styling of the lookup representatives page
+- ✅ Save user's representative data to local storage
 - Use that entity data to highlight where their rep stands on the project detail page (for a project in which their rep is in the jurisdiction)
 - Use that entity data to allow the "Contact your rep about this issue" to pull up a new page or modal displaying that entities position on the issue along with a template message to send them (plus the entities contact info)
+- Fix rep search input width (it is too small)
+- Clean up Header.tsx. It can be broken up into subcomponents.
+- Clean up massive monolothic RepresenativeLookup.tsx. It is messy and has a bunch of things that should be their own files.
 
 ### Phase 9: Validate Postgres Provider Works as Intended (PLANNED)
 - Setup postgres locally
@@ -105,8 +108,6 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Make projects shareable
 
 ### Phase 11: Cleanup Existing Implementation (PLANNED)
-- Clean up Header.tsx. It can be broken up into subcomponents.
-- Clean up massive monolothic RepresenativeLookup.tsx. It is messy and has a bunch of things that should be their own files.
 - Don't reload entire project list on status/search text change
 - Ensure all backend endpoints use DB filter methods (don't use .list)
 - Everything is UTC atm, reconsider that

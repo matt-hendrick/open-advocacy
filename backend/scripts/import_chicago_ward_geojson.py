@@ -8,7 +8,7 @@ from app.models.pydantic.models import DistrictBase, Jurisdiction
 from app.geo.provider_factory import get_geo_provider
 
 
-async def import_chicago_wards(file_path: str, parent_jurisdiction_id: UUID = None):
+async def import_chicago_wards(file_path: str = "data/chicago-wards.geojson", parent_jurisdiction_id: UUID = None):
     """
     Import Chicago wards from a GeoJSON file into District model
 

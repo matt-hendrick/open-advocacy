@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './theme/ThemeProvider';
-import { UserRepresentativesProvider } from './pages/RepresentativeLookup';
+import { UserRepresentativesProvider } from './contexts/UserRepresentativesContext';
 
 import Header from './components/common/Header';
 import HomePage from './pages/HomePage';
