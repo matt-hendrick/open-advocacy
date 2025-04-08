@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -68,6 +69,7 @@ const EntityRow = ({
   const [notes, setNotes] = useState<string>(statusRecord?.notes || '');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleStatusChange = (event: SelectChangeEvent<EntityStatus>) => {
     setStatus(event.target.value as EntityStatus);
@@ -221,6 +223,16 @@ const EntityRow = ({
                       )}
                     </Box>
                   </Paper>
+                  <Box>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => navigate(`/representatives/${entity.id}`)}
+                      sx={{ mr: 1 }}
+                    >
+                      View Representative Details
+                    </Button>
+                  </Box>
                 </Grid>
 
                 {/* Status Controls */}

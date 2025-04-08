@@ -19,7 +19,7 @@ import {
   Paper,
   ButtonBase,
 } from '@mui/material';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
@@ -34,6 +34,7 @@ const Header: React.FC = () => {
   const theme = useTheme();
   const { currentTheme, setTheme } = useCustomTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const { hasUserRepresentatives, userRepresentatives, userAddress } = useUserRepresentatives();
 
   // State for representative popover
@@ -50,8 +51,7 @@ const Header: React.FC = () => {
   const repPopoverOpen = Boolean(repAnchorEl);
 
   const handleEntityClick = (entityId: string) => {
-    // TODO: Actually implement an entity page and navigate to it
-    // navigate(`/entities?${entityId}`);
+    navigate(`/representatives/${entityId}`);
     handleRepClose();
   };
 

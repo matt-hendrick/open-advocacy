@@ -172,6 +172,14 @@ const RepresentativeItem: React.FC<RepresentativeItemProps> = ({
           {/* Contact button */}
           <Box display="flex" justifyContent="flex-end" mt={2}>
             <Button
+              variant="outlined"
+              size="small"
+              onClick={() => navigate(`/representatives/${entity.id}`)}
+            >
+              View Representative Details
+            </Button>
+
+            <Button
               variant="contained"
               size="small"
               color="primary"

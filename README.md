@@ -93,7 +93,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Save user's representative data to local storage
 - ✅ Clean up massive monolothic RepresenativeLookup.tsx. It is messy and has a bunch of things that should be their own files.
 - ✅ Use that entity data to highlight where their rep stands on the project detail page (for a project in which their rep is in the jurisdiction)
-- Use that entity data to allow the "Contact your rep about this issue" to pull up a new page or modal displaying that entities position on the issue along with a template message to send them (plus the entities contact info)
+- ✅ Add an entity detail page that displays the entities info and their stance on projects they are linked to
+- Improve styling of buttons linking to entity detail page
+- Determine if a contact rep page is necessary. If so, use that entity data to allow the "Contact your rep about this issue" to pull up a new page or modal displaying that entities position on the issue along with a template message to send them (plus the entities contact info)
 - Fix rep search input width (it is too small)
 
 ### Phase 9: Validate Postgres Provider Works as Intended (PLANNED)

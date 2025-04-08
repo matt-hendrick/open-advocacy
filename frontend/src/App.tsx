@@ -9,6 +9,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import ProjectFormPage from './pages/ProjectFormPage';
 import ProjectList from './pages/ProjectList';
 import RepresentativeLookup from './pages/RepresentativeLookup';
+import EntityDetail from './pages/EntityDetail';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
               <Route path="/projects/:id/edit" element={<ProjectFormPage />} />
               <Route path="/projects/:id" element={<ProjectDetail />} />
               <Route path="/representatives" element={<RepresentativeLookup />} />
+              <Route path="/representatives/:id" element={<EntityDetail />} />
             </Routes>
           </main>
         </Router>

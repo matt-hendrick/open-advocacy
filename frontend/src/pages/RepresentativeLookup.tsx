@@ -97,10 +97,6 @@ const RepresentativeLookup: React.FC = () => {
     clearUserRepresentatives();
   };
 
-  const handleViewProjects = (rep: Entity) => {
-    navigate(`/projects?representative=${rep.id}`);
-  };
-
   const handleCloseToast = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -277,9 +273,9 @@ const RepresentativeLookup: React.FC = () => {
                   size="small"
                   variant="outlined"
                   color="primary"
-                  onClick={() => handleViewProjects(rep)}
+                  onClick={() => navigate(`/representatives/${rep.id}`)}
                 >
-                  View Related Projects
+                  View Representative Details
                 </Button>
               </CardActions>
             </Card>
