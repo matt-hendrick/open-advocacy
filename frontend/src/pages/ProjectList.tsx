@@ -213,9 +213,6 @@ const ProjectList: React.FC = () => {
                   >
                     View Details
                   </Button>
-                  <Button variant="contained" size="small" color="primary">
-                    Contact Your Rep about This
-                  </Button>
                 </Box>
               </Box>
             </Paper>

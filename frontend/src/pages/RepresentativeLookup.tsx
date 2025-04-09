@@ -137,9 +137,26 @@ const RepresentativeLookup: React.FC = () => {
                       <PersonIcon />
                     </Avatar>
                     <Box>
-                      <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold' }}>
+                      <Link
+                        component="button"
+                        variant="h6"
+                        onClick={() => navigate(`/representatives/${rep.id}`)}
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: '1.25rem',
+                          fontFamily: theme.typography.h6.fontFamily,
+                          textAlign: 'left',
+                          textTransform: 'none',
+                          color: 'text.primary',
+                          textDecoration: 'none',
+                          '&:hover': {
+                            textDecoration: 'underline',
+                            color: theme.palette.primary.main,
+                          },
+                        }}
+                      >
                         {rep.name}
-                      </Typography>
+                      </Link>
                       <Typography variant="subtitle2" color="textSecondary">
                         {rep.title}
                       </Typography>
@@ -306,9 +323,9 @@ const RepresentativeLookup: React.FC = () => {
           positions.
         </Typography>
 
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2} alignItems="stretch">
-            <Grid item xs={12} md={8}>
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <Grid container spacing={2} alignItems="stretch" sx={{ width: '100%' }}>
+            <Grid item xs={12} md={8} sx={{ width: '100%' }}>
               <TextField
                 fullWidth
                 label="Street Address"
@@ -319,6 +336,7 @@ const RepresentativeLookup: React.FC = () => {
                 required
                 disabled={loading}
                 sx={{
+                  width: '100%',
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
                     height: '100%',

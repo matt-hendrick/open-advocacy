@@ -266,18 +266,13 @@ const EntityDetail: React.FC = () => {
                           )}
                         </CardContent>
                         <CardActions>
-                          <Button size="small" onClick={() => navigate(`/projects/${project.id}`)}>
-                            View Project
-                          </Button>
                           <Button
                             size="small"
                             variant="contained"
                             color="primary"
-                            onClick={() =>
-                              navigate(`/contact?project=${project.id}&representative=${entity.id}`)
-                            }
+                            onClick={() => navigate(`/projects/${project.id}`)}
                           >
-                            Contact About This Issue
+                            View Project
                           </Button>
                         </CardActions>
                       </Card>
