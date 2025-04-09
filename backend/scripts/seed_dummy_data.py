@@ -122,7 +122,6 @@ async def create_jurisdictions(session: AsyncSession) -> None:
                 name="United States",
                 description="Federal jurisdiction of the United States",
                 level="federal",
-                parent_jurisdiction_id=None,
                 created_at=datetime.now(timezone.utc),
             ),
             Jurisdiction(
@@ -130,7 +129,6 @@ async def create_jurisdictions(session: AsyncSession) -> None:
                 name="Illinois",
                 description="State of Illinois jurisdiction",
                 level="state",
-                parent_jurisdiction_id=JURISDICTION_IDS["usa"],
                 created_at=datetime.now(timezone.utc),
             ),
             Jurisdiction(
@@ -138,7 +136,6 @@ async def create_jurisdictions(session: AsyncSession) -> None:
                 name="Cook County",
                 description="Cook County jurisdiction in Illinois",
                 level="county",
-                parent_jurisdiction_id=JURISDICTION_IDS["illinois"],
                 created_at=datetime.now(timezone.utc),
             ),
             Jurisdiction(
@@ -146,7 +143,6 @@ async def create_jurisdictions(session: AsyncSession) -> None:
                 name="Chicago",
                 description="City of Chicago municipal jurisdiction",
                 level="city",
-                parent_jurisdiction_id=JURISDICTION_IDS["cook_county"],
                 created_at=datetime.now(timezone.utc),
             ),
         ]

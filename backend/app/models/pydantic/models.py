@@ -50,7 +50,6 @@ class JurisdictionBase(BaseModel):
     name: str
     description: str | None = None
     level: str  # city, state, federal
-    parent_jurisdiction_id: UUID | None = None
 
 
 class Jurisdiction(JurisdictionBase):

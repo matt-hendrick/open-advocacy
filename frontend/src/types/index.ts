@@ -17,7 +17,6 @@ export interface Jurisdiction {
   name: string;
   description?: string;
   level: string; // city, state, federal
-  parent_jurisdiction_id?: string;
   created_at: string;
 }
 

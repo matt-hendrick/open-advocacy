@@ -5,7 +5,6 @@ interface JurisdictionCreateData {
   name: string;
   description?: string;
   level: string;
-  parent_jurisdiction_id?: string;
 }
 
 export const jurisdictionService = {

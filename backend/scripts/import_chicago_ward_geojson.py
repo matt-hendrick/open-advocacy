@@ -8,31 +8,35 @@ from app.models.pydantic.models import DistrictBase, Jurisdiction
 from app.geo.provider_factory import get_geo_provider
 
 
-async def import_chicago_wards(file_path: str = "data/chicago-wards.geojson", parent_jurisdiction_id: UUID = None):
+async def import_chicago_wards(
+    file_path: str = "data/chicago-wards.geojson", jurisdiction_id: UUID = None
+):
     """
     Import Chicago wards from a GeoJSON file into District model
 
     Args:
         file_path: Path to GeoJSON file with ward boundaries
-        parent_jurisdiction_id: Optional parent jurisdiction ID (City of Chicago)
+        jurisdiction_id: Optional parent jurisdiction ID (City of Chicago)
     """
     # Get providers
     jurisdictions_provider = get_jurisdictions_provider()
     districts_provider = get_districts_provider()
     geo_provider = get_geo_provider()
 
-    # Verify parent jurisdiction exists
-    if parent_jurisdiction_id:
-        parent = await jurisdictions_provider.get(parent_jurisdiction_id)
-        if not parent:
-            print(f"Parent jurisdiction with ID {parent_jurisdiction_id} not found")
-            return False
-    else:
+    jurisdiction: Jurisdiction | None = None
+
+    # Verify jurisdiction exists
+    if jurisdiction_id:
+        jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+        if not jurisdiction:
+            print(f"Jurisdiction with ID {jurisdiction_id} not found")
+
+    if not jurisdiction:
         jurisdiction_list: list[Jurisdiction] = await jurisdictions_provider.filter(
             name="Chicago City Council"
         )
-        parent = jurisdiction_list[0]
-        parent_jurisdiction_id = parent.id
+        jurisdiction = jurisdiction_list[0]
+        jurisdiction_id = jurisdiction.id
 
     # Read GeoJSON file
     try:
@@ -78,7 +82,7 @@ async def import_chicago_wards(file_path: str = "data/chicago-wards.geojson", pa
             new_district = DistrictBase(
                 name=ward_name,
                 code=str(ward_num),
-                jurisdiction_id=parent_jurisdiction_id,
+                jurisdiction_id=jurisdiction_id,
             )
 
             created_district = await districts_provider.create(new_district)
@@ -92,9 +96,7 @@ async def import_chicago_wards(file_path: str = "data/chicago-wards.geojson", pa
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print(
-            "Usage: python import_chicago_wards.py <geojson_file> [parent_jurisdiction_id]"
-        )
+        print("Usage: python import_chicago_wards.py <geojson_file> [jurisdiction_id]")
         sys.exit(1)
 
     file_path = sys.argv[1]

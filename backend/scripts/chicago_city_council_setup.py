@@ -121,7 +121,6 @@ async def create_chicago_council_jurisdiction(session: AsyncSession) -> UUID:
             name="Chicago City Council",
             description="Legislative branch of the City of Chicago government consisting of 50 alderpersons",
             level="city_council",
-            parent_jurisdiction_id=CHICAGO_ID,  # Parent is the Chicago jurisdiction
             created_at=datetime.now(timezone.utc),
         )
 

@@ -23,7 +23,7 @@ class Group(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
 
     # Relationships
     projects = relationship("Project", back_populates="group")
@@ -41,8 +41,10 @@ class Project(Base):
     preferred_status = Column(String(50), nullable=False, default="solid_approval")
     template_response = Column(Text, nullable=True)
     created_by = Column(String(255), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
     vote_count = Column(Integer, default=0)
     jurisdiction_id = Column(
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=True
@@ -62,15 +64,10 @@ class Jurisdiction(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     level = Column(String(50), nullable=False)  # city, state, federal
-    parent_jurisdiction_id = Column(
-        UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=True
-    )
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
 
     # Relationships
     entities = relationship("Entity", back_populates="jurisdiction")
-    parent = relationship("Jurisdiction", remote_side=[id], back_populates="children")
-    children = relationship("Jurisdiction", back_populates="parent")
     districts = relationship("District", back_populates="jurisdiction")
     projects = relationship("Project", back_populates="jurisdiction")
 
@@ -123,7 +120,7 @@ class EntityStatusRecord(Base):
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=False)
     status = Column(String(50), nullable=False, default="neutral")
     notes = Column(Text, nullable=True)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     updated_by = Column(String(255), nullable=False)
 
     # Relationships

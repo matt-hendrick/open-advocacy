@@ -225,7 +225,19 @@ const EntityDetail: React.FC = () => {
                             alignItems="flex-start"
                             mb={1}
                           >
-                            <Typography variant="h6">{project.title}</Typography>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                  textDecoration: 'underline',
+                                  color: 'primary.main',
+                                },
+                              }}
+                              onClick={() => navigate(`/projects/${project.id}`)}
+                            >
+                              {project.title}
+                            </Typography>
                             <Chip
                               label={getStatusLabel(status)}
                               size="small"

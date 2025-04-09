@@ -88,27 +88,30 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Re-evaluate Location feature. It may make more sense to allow a user to input an address and show them all districts they fall within (along with entities associated with those). User enters address, we look up their coordinates, optionally filter by jurisdiction, and then use SQL geography to see if their point is within a geojson line. If not filtering by jurisdiction, return all.
 - ✅ Ensure that location properly links up to jurisdictions/entities (can potentially consolidate)
 
-### Phase 8: Improve Representative Lookup and Displaying Entity Information to the User (IN PROGRESS)
+### Phase 8: Improve Representative Lookup and Displaying Entity Information to the User (COMPLETED)
 - ✅ Improve the styling of the lookup representatives page
 - ✅ Save user's representative data to local storage
 - ✅ Clean up massive monolothic RepresenativeLookup.tsx. It is messy and has a bunch of things that should be their own files.
 - ✅ Use that entity data to highlight where their rep stands on the project detail page (for a project in which their rep is in the jurisdiction)
 - ✅ Add an entity detail page that displays the entities info and their stance on projects they are linked to
 - ✅ Fix rep search input width (it is too small)
-- Improve styling of buttons linking to entity detail page
-- Make entity name on rep lookup page a link and make project name on entity detail page a link.
+- ✅ Improve styling of buttons linking to entity detail page
+- ✅ Make entity name on rep lookup page a link and make project name on entity detail page a link.
 
 ### Phase 9: Validate Postgres Provider Works as Intended (PLANNED)
 - Setup postgres locally
-- Test all workflows with a postgres and ensure things work
+- Test all workflows with a postgres and ensure things work end-to-end
 
-### Phase 10: Add Auth/Admin System (PLANNED)
-- Add authentication and roles system
-- Segment projects by group
-- Allow groups to hide some/all projects
-- Make projects shareable
+### Phase 10: Determine Deployment Steps (PLANNED)
+- Investigate deployment options (want something cheap, quick, and easy to maintain)
+- Where do I want to deploy this?
+- How do I want to manage deployments (terraform?)?
+- Document a plan for deployment
 
-### Phase 11: Cleanup Existing Implementation (PLANNED)
+### Phase 11: Actually Deploy this Somewhere (PLANNED)
+- Deploy the app according to whatever is determined in the previous step
+
+### Phase 12: Cleanup Existing Implementation (PLANNED)
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
 - Don't reload entire project list on status/search text change
@@ -122,6 +125,12 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Add some core tests to help validate that ensure future changes don't break anything
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
+
+### Phase 13: Add Auth/Admin System (PLANNED)
+- Add authentication and roles system
+- Segment projects by group
+- Allow groups to hide some/all projects
+- Make projects shareable
 
 ## 5. Features To Eventually Add
 - Add IL House/Senate jurisdictions

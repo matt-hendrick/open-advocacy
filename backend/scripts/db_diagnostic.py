@@ -81,21 +81,18 @@ async def create_and_retrieve_jurisdictions(
                 name="Test City",
                 description="A test city jurisdiction",
                 level="city",
-                parent_jurisdiction_id=None,
                 created_at=datetime.utcnow(),
             ),
             Jurisdiction(
                 name="Test County",
                 description="A test county jurisdiction",
                 level="county",
-                parent_jurisdiction_id=None,
                 created_at=datetime.utcnow(),
             ),
             Jurisdiction(
                 name="Test State",
                 description="A test state jurisdiction",
                 level="state",
-                parent_jurisdiction_id=None,
                 created_at=datetime.utcnow(),
             ),
         ]
@@ -113,24 +110,6 @@ async def create_and_retrieve_jurisdictions(
         # Log details
         for j in retrieved_jurisdictions:
             logger.info(f"Jurisdiction: id={j.id}, name={j.name}, level={j.level}")
-
-        # Test parent-child relationship
-        city = retrieved_jurisdictions[0]
-        state = retrieved_jurisdictions[2]
-
-        # Set parent
-        city.parent_jurisdiction_id = state.id
-        await session.commit()
-        logger.info(f"Set {city.name} parent to {state.name}")
-
-        # Refresh city to get the updated data
-        await session.refresh(city)
-        logger.info(f"City parent_jurisdiction_id: {city.parent_jurisdiction_id}")
-
-        # Verify parent was set correctly
-        logger.info(
-            f"Parent relationship: {city.parent_jurisdiction_id} == {state.id}: {city.parent_jurisdiction_id == state.id}"
-        )
 
         return retrieved_jurisdictions
     except SQLAlchemyError as e:
