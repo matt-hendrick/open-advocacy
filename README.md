@@ -98,9 +98,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Improve styling of buttons linking to entity detail page
 - ✅ Make entity name on rep lookup page a link and make project name on entity detail page a link.
 
-### Phase 9: Validate Postgres Provider Works as Intended (PLANNED)
-- Setup postgres locally
-- Test all workflows with a postgres and ensure things work end-to-end
+### Phase 9: Validate Postgres Provider Works as Intended (Completed)
+- ✅ Setup postgres locally
+- ✅Test all workflows with a postgres and ensure things work end-to-end
 
 ### Phase 10: Determine Deployment Steps (PLANNED)
 - Investigate deployment options (want something cheap, quick, and easy to maintain)
