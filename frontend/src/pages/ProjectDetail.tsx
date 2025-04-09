@@ -247,7 +247,7 @@ const ProjectDetail: React.FC = () => {
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={handleTabChange} aria-label="project tabs">
-              <Tab label="Entities" id="tab-0" />
+              <Tab label="Representatives" id="tab-0" />
               <Tab label="Preferred Response" id="tab-1" />
             </Tabs>
           </Box>
@@ -260,7 +260,7 @@ const ProjectDetail: React.FC = () => {
             ) : entities.length === 0 ? (
               <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="h6" color="text.secondary">
-                  No entities found for the selected jurisdiction
+                  No representatives found for the selected jurisdiction
                 </Typography>
               </Paper>
             ) : (

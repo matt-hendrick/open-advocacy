@@ -259,7 +259,9 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
   return (
     <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Where Your Representatives Stand
+        {relevantEntities?.length == 1
+          ? 'Where Your Representative Stands'
+          : 'Where Your Representatives Stand'}
       </Typography>
 
       <List disablePadding sx={{ mt: 2 }}>

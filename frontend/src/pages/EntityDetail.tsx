@@ -202,7 +202,7 @@ const EntityDetail: React.FC = () => {
                 </Typography>
               </Box>
             ) : (
-              <Grid container spacing={3} sx={{ mt: 1 }}>
+              <Grid container spacing={3} sx={{ mt: 1, width: '100%' }}>
                 {projects.map(project => {
                   const statusRecord = statusRecords.find(
                     sr => sr.project_id === project.id && sr.entity_id === entity.id
@@ -211,14 +211,17 @@ const EntityDetail: React.FC = () => {
                   const status = statusRecord?.status || EntityStatus.NEUTRAL;
 
                   return (
-                    <Grid item xs={12} key={project.id}>
+                    <Grid item xs={12} key={project.id} sx={{ width: '100%' }}>
                       <Card
                         sx={{
                           borderLeft: `4px solid ${getStatusColor(status)}`,
                           borderRadius: '0 8px 8px 0',
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
                         }}
                       >
-                        <CardContent>
+                        <CardContent sx={{ flexGrow: 1 }}>
                           <Box
                             display="flex"
                             justifyContent="space-between"
