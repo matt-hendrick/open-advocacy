@@ -1,8 +1,13 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.pool import NullPool
+from sqlalchemy import text
+import logging
+
 
 from app.core.config import settings
 from app.models.orm.models import Base
+
+logger = logging.getLogger("session.py")
 
 # Dictionary to store engines for different database types
 _engines = {}
@@ -76,8 +81,10 @@ async def create_tables():
         await conn.run_sync(Base.metadata.create_all)
 
 
-async def drop_tables():
-    """Drop all tables in the database (for testing only)."""
-    engine = get_engine()
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+async def init_postgis():
+    """Initialize PostGIS extension if using PostgreSQL."""
+    if settings.DATABASE_PROVIDER.lower() == "postgres":
+        engine = get_engine()
+        async with engine.begin() as conn:
+            await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
+            logger.info("PostGIS extension initialized")

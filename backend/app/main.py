@@ -5,7 +5,7 @@ import logging
 import time
 
 from app.core.config import settings
-from app.db.session import create_tables
+from app.db.session import create_tables, init_postgis
 
 
 logging.basicConfig(
@@ -86,6 +86,8 @@ async def startup_event():
         f"Starting application with {settings.DATABASE_PROVIDER} database provider"
     )
     await create_tables()
+
+    await init_postgis()
 
 
 if __name__ == "__main__":

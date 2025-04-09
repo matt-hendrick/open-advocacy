@@ -1,6 +1,6 @@
-# app/geo/postgres.py
 from typing import List, Dict, Any
 from uuid import UUID
+import json
 from sqlalchemy import text
 
 from app.geo.base import GeoProvider
@@ -9,7 +9,7 @@ from app.geo.base import GeoProvider
 class PostgresGeoProvider(GeoProvider):
     """PostgreSQL implementation of geographic operations using PostGIS"""
 
-    async def point_in_districts(self, lat: float, lon: float) -> List[UUID]:
+    async def districts_containing_point(self, lat: float, lon: float) -> List[UUID]:
         """
         Find all district IDs that contain the given point using PostGIS
         """
@@ -34,16 +34,16 @@ class PostgresGeoProvider(GeoProvider):
         Store a boundary for a district, optimizing for PostGIS
         """
         async with self.session_factory() as session:
-            # Update the boundary
+            # Update the boundary using proper parameter style
             query = text("""
                 UPDATE districts
-                SET boundary = :geojson::jsonb
+                SET boundary = cast(:geojson AS jsonb)
                 WHERE id = :district_id
                 RETURNING id
             """)
 
             result = await session.execute(
-                query, {"geojson": geojson, "jurisdiction_id": str(district_id)}
+                query, {"geojson": json.dumps(geojson), "district_id": str(district_id)}
             )
 
             await session.commit()
