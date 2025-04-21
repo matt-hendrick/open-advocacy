@@ -111,7 +111,14 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 11: Actually Deploy this Somewhere (PLANNED)
 - Deploy the app according to whatever is determined in the previous step
 
-### Phase 12: Cleanup Existing Implementation (PLANNED)
+### Phase 12: Test and Document (PLANNED)
+- Test all workflows on the deployed version of the application
+- Document the current state of the application.
+- Clean up existing readmes
+- Test running the application fresh on another machine to validate instructions are correct
+
+### Phase 13: Cleanup Existing Implementation (PLANNED)
+- Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
 - Don't reload entire project list on status/search text change
@@ -126,7 +133,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
-### Phase 13: Add Auth/Admin System (PLANNED)
+### Phase 14: Add Auth/Admin System (PLANNED)
 - Add authentication and roles system
 - Segment projects by group
 - Allow groups to hide some/all projects

@@ -69,8 +69,13 @@ const RepresentativeLookup: React.FC = () => {
     try {
       const response = await entityService.findByAddress(address);
 
-      const reps = response.data.representatives || response.data;
-      const foundDistricts = response.data.districts || [];
+      const reps: Entity[] = response.data;
+
+      const foundDistricts = [];
+
+      for (let i = 0; i < reps.length; i++) {
+        foundDistricts.push(reps[i].district_name);
+      }
 
       setRepresentatives(reps);
       setDistricts(foundDistricts);
@@ -116,7 +121,7 @@ const RepresentativeLookup: React.FC = () => {
     return (
       <Grid container spacing={3}>
         {reps.map(rep => (
-          <Grid item xs={12} md={6} key={rep.id}>
+          <Grid size={{ xs: 12, md: 6 }} key={rep.id}>
             <Card
               elevation={3}
               sx={{
@@ -325,7 +330,7 @@ const RepresentativeLookup: React.FC = () => {
 
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Grid container spacing={2} alignItems="stretch" sx={{ width: '100%' }}>
-            <Grid item xs={12} md={8} sx={{ width: '100%' }}>
+            <Grid size={{ xs: 12, md: 8 }} sx={{ width: '100%' }}>
               <TextField
                 fullWidth
                 label="Street Address"
@@ -344,7 +349,7 @@ const RepresentativeLookup: React.FC = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Button
                 type="submit"
                 variant="contained"

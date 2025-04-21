@@ -166,7 +166,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <TextField
                 fullWidth
                 required
@@ -180,7 +180,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               />
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <FormControl fullWidth>
                 <InputLabel id="status-label">Status</InputLabel>
                 <Select
@@ -188,7 +188,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
                   id="status"
                   value={status}
                   label="Status"
-                  onChange={e => setStatus(e.target.value)}
+                  onChange={e => setStatus(e.target.value as ProjectStatus)}
                   MenuProps={{
                     PaperProps: {
                       sx: { maxHeight: 48 * 4.5 },
@@ -203,7 +203,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 multiline
@@ -217,7 +217,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 id="link"
@@ -246,7 +246,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth error={!!jurisdictionError}>
                 <InputLabel id="jurisdiction-label">Jurisdiction</InputLabel>
                 <Select
@@ -274,7 +274,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth>
                 <InputLabel id="group-label">Group</InputLabel>
                 <Select
@@ -317,7 +317,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth>
                 <InputLabel id="preferred-status-label">Preferred Status</InputLabel>
                 <Select
@@ -325,7 +325,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
                   id="preferred-status"
                   value={preferredStatus}
                   label="Preferred Status"
-                  onChange={e => setPreferredStatus(e.target.value)}
+                  onChange={e => setPreferredStatus(e.target.value as EntityStatus)}
                   MenuProps={{
                     PaperProps: {
                       sx: { maxHeight: 48 * 4.5 },
@@ -352,7 +352,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 multiline

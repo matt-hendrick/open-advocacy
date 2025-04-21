@@ -37,7 +37,7 @@ const ProjectList: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const fetchProjects = async (status?: ProjectStatus, searchQuery?: string) => {
+  const fetchProjects = async (status?: ProjectStatus | string, searchQuery?: string) => {
     setLoading(true);
     setError(null);
     try {

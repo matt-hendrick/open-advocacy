@@ -15,7 +15,7 @@ const HomePage: React.FC = () => {
         </Typography>
 
         <Grid container spacing={4} justifyContent="center" mt={4}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
               <Typography variant="h5" gutterBottom>
                 Find Your Representatives
@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
               <Typography variant="h5" gutterBottom>
                 Explore Projects

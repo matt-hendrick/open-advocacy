@@ -105,7 +105,7 @@ const EntityDetail: React.FC = () => {
 
       <Grid container spacing={4}>
         {/* Entity Information */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, borderRadius: 2, height: '100%' }}>
             <Box display="flex" alignItems="center" mb={2}>
               <Avatar
@@ -189,7 +189,7 @@ const EntityDetail: React.FC = () => {
         </Grid>
 
         {/* Associated Projects */}
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Paper sx={{ p: 3, borderRadius: 2 }}>
             <Typography variant="h5" gutterBottom>
               Projects & Positions
@@ -211,7 +211,7 @@ const EntityDetail: React.FC = () => {
                   const status = statusRecord?.status || EntityStatus.NEUTRAL;
 
                   return (
-                    <Grid item xs={12} key={project.id} sx={{ width: '100%' }}>
+                    <Grid size={{ xs: 12 }} key={project.id} sx={{ width: '100%' }}>
                       <Card
                         sx={{
                           borderLeft: `4px solid ${getStatusColor(status)}`,

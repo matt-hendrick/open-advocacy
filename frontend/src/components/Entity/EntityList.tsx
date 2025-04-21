@@ -179,7 +179,7 @@ const EntityRow = ({
             <Box sx={{ margin: 2 }}>
               <Grid container spacing={3}>
                 {/* Contact Information */}
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Paper
                     elevation={0}
                     sx={{
@@ -236,7 +236,7 @@ const EntityRow = ({
                 </Grid>
 
                 {/* Status Controls */}
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   {isAdmin ? (
                     <>
                       <Typography variant="subtitle2" gutterBottom>
@@ -535,9 +535,9 @@ const EntityList: React.FC<EntityListProps> = ({
                 </TableCell>
                 <TableCell>
                   <TableSortLabel
-                    active={orderBy === 'district'}
-                    direction={orderBy === 'district' ? order : 'asc'}
-                    onClick={() => handleRequestSort('district')}
+                    active={orderBy === 'district_name'}
+                    direction={orderBy === 'district_name' ? order : 'asc'}
+                    onClick={() => handleRequestSort('district_name')}
                   >
                     District
                   </TableSortLabel>

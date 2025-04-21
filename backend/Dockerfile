@@ -5,8 +5,8 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 RUN pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install
+    poetry install --no-root
 
 COPY . .
 
-CMD ["python", "run.py"]
+CMD ["gunicorn", "app.main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
