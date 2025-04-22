@@ -9,7 +9,7 @@ from app.geo.provider_factory import get_geo_provider
 
 
 async def import_chicago_wards(
-    file_path: str = "data/chicago-wards.geojson", jurisdiction_id: UUID = None
+    file_path: str = "app/data/chicago-wards.geojson", jurisdiction_id: UUID = None
 ):
     """
     Import Chicago wards from a GeoJSON file into District model

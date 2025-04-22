@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get the base URL from environment variable or use default
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://backend-production-6533a.up.railway.app/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -29,5 +29,14 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+
+api.interceptors.request.use(config => {
+  // Force HTTPS for all requests
+  if (config.url.startsWith('http://')) {
+    config.url = config.url.replace('http://', 'https://');
+  }
+  return config;
+});
 
 export default api;

@@ -7,6 +7,12 @@ import time
 from app.core.config import settings
 from app.db.session import create_tables, init_postgis
 
+from app.scripts.chicago_city_council_setup import setup_chicago_city_council_data
+from app.scripts.import_chicago_ward_geojson import import_chicago_wards
+from app.db.dependencies import get_jurisdictions_provider, get_districts_provider
+from app.models.pydantic.models import DistrictBase, Jurisdiction
+
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,6 +26,7 @@ app = FastAPI(
     title="Open Advocacy API",
     description="API for connecting citizens with representatives and tracking advocacy projects",
     version="0.1.0",
+    root_path="/",
 )
 
 # Add CORS middleware for development
@@ -27,6 +34,9 @@ origins = [
     "http://localhost:3000",
     "http://localhost:5173",  # Default Vite dev server port
 ]
+
+if settings.ALLOWED_ORIGIN:
+    origins.append(settings.ALLOWED_ORIGIN)
 
 app.add_middleware(
     CORSMiddleware,
@@ -65,6 +75,7 @@ async def log_requests(request: Request, call_next):
         raise
 
 
+# TODO: Remove this
 @app.get("/")
 async def root():
     return {"message": "Welcome to Open Advocacy API"}
@@ -79,15 +90,32 @@ app.include_router(
 )
 
 
+# TODO: Consider if this is necessary
 @app.on_event("startup")
 async def startup_event():
     """Initialize database and load sample data on startup."""
     logger.info(
         f"Starting application with {settings.DATABASE_PROVIDER} database provider"
     )
-    await create_tables()
+    # await create_tables()
+    jurisdiction_list = None
+    try:
+        jurisdictions_provider = get_jurisdictions_provider()
+        jurisdiction_list: list[Jurisdiction] = await jurisdictions_provider.filter(
+                name="Chicago City Council"
+            )
+    except Exception:
+        logger.exception("There was an error fetching jurisdictions.")
+    
+    if not jurisdiction_list or len(jurisdiction_list) < 1:
+        logger.info("Filling database with Chicago city council data")
 
-    await init_postgis()
+        await init_postgis()
+
+        await setup_chicago_city_council_data()
+
+        await import_chicago_wards()
+
 
 
 if __name__ == "__main__":

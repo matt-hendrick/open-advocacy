@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     GEOCODING_SERVICE: str | None = None  # "google", "mapbox", etc.
     GEOCODING_API_KEY: str | None = None
 
+    ALLOWED_ORIGIN : str | None = None 
+
     class Config:
         env_file = os.path.join(BASE_DIR, ".env")
         env_file_encoding = "utf-8"

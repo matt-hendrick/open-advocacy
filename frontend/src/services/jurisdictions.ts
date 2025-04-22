@@ -9,7 +9,7 @@ interface JurisdictionCreateData {
 
 export const jurisdictionService = {
   async getJurisdictions(): Promise<{ data: Jurisdiction[] }> {
-    return api.get<Jurisdiction[]>('/jurisdictions');
+    return api.get<Jurisdiction[]>('/jurisdictions/');
   },
 
   async getJurisdiction(id: string): Promise<{ data: Jurisdiction }> {

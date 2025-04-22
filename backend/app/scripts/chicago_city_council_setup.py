@@ -392,10 +392,13 @@ async def main():
     )
     args = parser.parse_args()
 
+    await setup_chicago_city_council_data(create_tables=args.create_tables, drop_existing=args.drop, generate_random_statuses=args.random_statuses)
+
+async def setup_chicago_city_council_data(create_tables: bool = True, drop_existing: bool = True, generate_random_statuses: bool = True):
     try:
         # Initialize database
         engine, async_session = await init_db(
-            create_tables=args.create_tables, drop_existing=args.drop
+            create_tables=create_tables, drop_existing=drop_existing
         )
 
         # Fetch Chicago aldermen data
@@ -426,7 +429,7 @@ async def main():
             )
 
             # Optionally create random status records
-            if args.random_statuses:
+            if generate_random_statuses:
                 await create_random_status_records(session, entities, projects)
 
         # Clean up
