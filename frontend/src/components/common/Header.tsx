@@ -177,8 +177,21 @@ const Header: React.FC = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ height: 64 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Toolbar
+          disableGutters
+          sx={{
+            height: { xs: 56, sm: 64 },
+            flexDirection: { xs: 'column', sm: 'row' },
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              width: { xs: '100%', sm: 'auto' },
+              justifyContent: { xs: 'space-between', sm: 'flex-start' },
+              alignItems: 'center',
+            }}
+          >
             <VolunteerActivismIcon
               sx={{
                 mr: 1.5,
@@ -207,9 +220,8 @@ const Header: React.FC = () => {
           <Box
             sx={{
               flexGrow: 1,
-              display: 'flex',
+              display: { xs: 'none', sm: 'flex' }, // Hide on mobile
               justifyContent: 'center',
-              ml: 0,
             }}
           >
             <>
@@ -265,13 +277,32 @@ const Header: React.FC = () => {
             </>
           </Box>
 
-          <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              position: { xs: 'absolute', sm: 'static' },
+              right: { xs: '0px', sm: 'auto' },
+              top: { xs: '80%', sm: 'auto' },
+              transform: { xs: 'translateY(-50%)', sm: 'none' },
+            }}
+          >
             <IconButton
               onClick={toggleTheme}
               color="inherit"
-              sx={{ color: theme.palette.text.primary }}
+              sx={{
+                color: theme.palette.text.primary,
+                padding: { xs: '8px', sm: '12px' }, // Smaller padding on mobile
+                fontSize: { xs: '1.2rem', sm: '1.5rem' }, // Smaller icon size on mobile
+              }}
+              aria-label={
+                currentTheme.name === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+              }
             >
-              {currentTheme.name === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              {currentTheme.name === 'dark' ? (
+                <Brightness7Icon fontSize="inherit" />
+              ) : (
+                <Brightness4Icon fontSize="inherit" />
+              )}
             </IconButton>
           </Box>
         </Toolbar>
