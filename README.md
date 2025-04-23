@@ -109,6 +109,7 @@ Planned additional work:
 - Improved UI and UX
 - Add script to add IL Senate and House data
 - Adding test coverage
+- General code cleanup (lots of the frontend code is messy)
 - Deployment infrastructure improvements
 
 ## Screenshots
