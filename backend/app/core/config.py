@@ -24,6 +24,7 @@ class Settings(BaseSettings):
 
     ENVIRONMENT: str = "development"
 
+    # TODO: Tweak this if geocoding with different providers is properly implemented
     GEOCODING_SERVICE: str | None = None  # "google", "mapbox", etc.
     GEOCODING_API_KEY: str | None = None
 

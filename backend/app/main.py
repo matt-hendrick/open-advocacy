@@ -93,7 +93,6 @@ async def startup_event():
         logger.exception("Error initializing postgis or creating initial tables.")
 
 
-
 if __name__ == "__main__":
     import uvicorn
 
