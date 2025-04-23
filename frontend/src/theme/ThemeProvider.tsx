@@ -49,6 +49,20 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       shape: {
         borderRadius: currentTheme.borderRadius,
       },
+    });
+  }, [currentTheme]);
+
+  const contextValue = useMemo(() => {
+    return {
+      currentTheme,
+      setTheme: setCurrentTheme,
+    };
+  }, [currentTheme]);
+
+  // Overrides some of the mui components to improve styling on smaller screens
+  const completeTheme = useMemo(() => {
+    return createTheme({
+      ...theme,
       components: {
         MuiCard: {
           styleOverrides: {
@@ -74,20 +88,45 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
             },
           },
         },
+        MuiContainer: {
+          styleOverrides: {
+            root: {
+              [theme.breakpoints.down('sm')]: {
+                padding: '0 12px',
+              },
+            },
+          },
+        },
+        MuiPaper: {
+          styleOverrides: {
+            root: {
+              [theme.breakpoints.down('sm')]: {
+                padding: '12px',
+              },
+            },
+          },
+        },
+        MuiTypography: {
+          styleOverrides: {
+            h3: {
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.75rem',
+              },
+            },
+            h5: {
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.25rem',
+              },
+            },
+          },
+        },
       },
     });
-  }, [currentTheme]);
-
-  const contextValue = useMemo(() => {
-    return {
-      currentTheme,
-      setTheme: setCurrentTheme,
-    };
-  }, [currentTheme]);
+  }, [theme, currentTheme]);
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={completeTheme}>
         <CssBaseline />
         {children}
       </MuiThemeProvider>

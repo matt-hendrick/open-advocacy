@@ -177,13 +177,13 @@ const EntityRow = ({
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 2 }}>
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 {/* Contact Information */}
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Paper
                     elevation={0}
                     sx={{
-                      p: 2,
+                      p: { xs: 1.5, sm: 2 }, // Smaller padding on mobile
                       bgcolor: 'rgba(0,0,0,0.02)',
                       borderRadius: 1,
                     }}
@@ -236,14 +236,14 @@ const EntityRow = ({
                 </Grid>
 
                 {/* Status Controls */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, sm: 12, md: 6 }}>
                   {isAdmin ? (
-                    <>
+                    <Box sx={{ width: '100%', overflowX: 'hidden' }}>
                       <Typography variant="subtitle2" gutterBottom>
                         Update Status
                       </Typography>
 
-                      <FormControl fullWidth sx={{ mb: 2 }}>
+                      <FormControl fullWidth sx={{ mb: 2, maxWidth: '100%' }}>
                         <InputLabel id={`status-select-label-${entity.id}`}>Status</InputLabel>
                         <Select
                           labelId={`status-select-label-${entity.id}`}
@@ -252,6 +252,28 @@ const EntityRow = ({
                           label="Status"
                           onChange={handleStatusChange}
                           disabled={loading}
+                          // TODO: Clean up this very messy file
+                          // The below is a hack that was necessary as for some reason mobile wasn't displaying the menu items
+                          MenuProps={{
+                            PaperProps: {
+                              sx: {
+                                // Only apply these styles at mobile breakpoints
+                                [`@media (max-width:600px)`]: {
+                                  left: '0 !important',
+                                  maxWidth: '280px !important',
+                                },
+                              },
+                            },
+                            // These positioning settings work well for both mobile and desktop
+                            anchorOrigin: {
+                              vertical: 'bottom',
+                              horizontal: 'left',
+                            },
+                            transformOrigin: {
+                              vertical: 'top',
+                              horizontal: 'left',
+                            },
+                          }}
                         >
                           <MenuItem value={EntityStatus.SOLID_APPROVAL}>
                             <Box display="flex" alignItems="center" gap={1}>
@@ -319,25 +341,30 @@ const EntityRow = ({
                         value={notes}
                         onChange={handleNotesChange}
                         disabled={loading}
-                        sx={{ mb: 2 }}
+                        sx={{ mb: 2, maxWidth: '100%' }}
                       />
 
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}
-                        disabled={loading}
-                        sx={{ minWidth: 120 }}
-                      >
-                        {loading ? 'Saving...' : statusRecord ? 'Update' : 'Save'}
-                      </Button>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleSubmit();
+                          }}
+                          disabled={loading}
+                          sx={{ minWidth: 120, alignSelf: 'flex-start' }}
+                        >
+                          {loading ? 'Saving...' : statusRecord ? 'Update' : 'Save'}
+                        </Button>
 
-                      {error && (
-                        <Typography color="error" sx={{ mt: 1 }}>
-                          {error}
-                        </Typography>
-                      )}
-                    </>
+                        {error && (
+                          <Typography color="error" sx={{ mt: 1 }}>
+                            {error}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Box>
                   ) : (
                     statusRecord && (
                       <>
@@ -452,6 +479,11 @@ const EntityList: React.FC<EntityListProps> = ({
           sx={{
             pl: { sm: 2 },
             pr: { xs: 1, sm: 1 },
+            flexDirection: { xs: 'column', sm: 'row' }, // Stack vertically on mobile
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            '& > :first-of-type': {
+              mb: { xs: 1, sm: 0 }, // Add margin below title on mobile
+            },
           }}
         >
           <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
@@ -463,8 +495,9 @@ const EntityList: React.FC<EntityListProps> = ({
             alignItems="center"
             gap={2}
             sx={{
+              width: { xs: '100%', sm: 'auto' },
               flexWrap: { xs: 'wrap', sm: 'nowrap' },
-              justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+              justifyContent: { xs: 'space-between', sm: 'flex-end' },
             }}
           >
             <FormControl
@@ -510,7 +543,16 @@ const EntityList: React.FC<EntityListProps> = ({
             />
           </Box>
         </Toolbar>
-        <TableContainer>
+        <TableContainer
+          sx={{
+            overflowX: 'auto', // Allows horizontal scrolling on mobile if needed
+            '& .MuiTableCell-root': {
+              // Make table cells more compact on mobile
+              padding: { xs: '8px 6px', sm: '16px' },
+              whiteSpace: { xs: 'nowrap', sm: 'normal' },
+            },
+          }}
+        >
           <Table aria-labelledby="tableTitle" size="medium">
             <TableHead>
               <TableRow>
