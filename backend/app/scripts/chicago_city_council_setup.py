@@ -56,8 +56,13 @@ STRONG_TOWNS_GROUP_ID = UUID("4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e")
 
 # Project UUIDs
 HOUSING_PROJECT_ID = UUID("d4e5f6a7-8b9c-7d8e-2f3a-5b6c7d8e9f0a")
-SAFE_STREETS_PROJECT_ID = UUID("e5f6a7b8-9c0d-8e9f-3a4b-6c7d8e9f0a1b")
 PARKING_REFORM_PROJECT_ID = UUID("f6a7b8c9-0d1e-9f0a-4b5c-7d8e9f0a1b2c")
+TWO_TO_FOUR_FLATS_PROJECT_ID = UUID("a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d")
+SPEED_LIMIT_PROJECT_ID = UUID("b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e")
+VACANCY_TAX_PROJECT_ID = UUID("c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f")
+BROADWAY_UPZONING_PROJECT_ID = UUID("d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a")
+MARCEY_DEVELOPMENT_PROJECT_ID = UUID("e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b")
+FERN_HILL_PROJECT_ID = UUID("f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c")
 
 
 async def init_db(create_tables: bool = False, drop_existing: bool = False) -> tuple:
@@ -252,14 +257,14 @@ async def create_strong_towns_projects(
     logger.info("Creating Strong Towns Chicago projects...")
 
     try:
-        # Housing Project
+        # Housing Project - ADUs
         housing_project = Project(
             id=HOUSING_PROJECT_ID,
             title="Accessory Dwelling Units Legalization",
             description="Advocating for legalizing accessory dwelling units (ADUs) throughout Chicago and Illinois to increase housing supply and affordability while allowing for gentle density increases in existing neighborhoods.",
             status="active",
             active=True,
-            link="https://example.com/strong-towns-adus",
+            link="https://actionnetwork.org/petitions/support-adus-citywide-in-chicago",
             preferred_status="solid_approval",
             template_response="I am writing to express my strong support for legalizing accessory dwelling units throughout Chicago and Illinois. ADUs provide affordable housing options, help homeowners with mortgage costs, allow for aging in place, and increase density without changing neighborhood character. They're a proven solution to our housing shortage that has worked well in other cities. I urge you to support ADU legalization to help build a more financially resilient Chicago with housing options for everyone.",
             created_by="admin",
@@ -269,16 +274,16 @@ async def create_strong_towns_projects(
             group_id=group_id,
         )
 
-        # Safe Streets Project
-        safe_streets_project = Project(
-            id=SAFE_STREETS_PROJECT_ID,
-            title="Complete Streets Implementation",
-            description="Working to implement comprehensive safe streets policies including protected bike lanes, traffic calming measures, improved pedestrian infrastructure, and better transit access throughout Chicago.",
+        # Allow 2-4 Flats By Right
+        two_to_four_flats_project = Project(
+            id=TWO_TO_FOUR_FLATS_PROJECT_ID,
+            title="2-4 Flat By-Right Zoning Reform",
+            description="Advocating for changes to Chicago's zoning laws to allow 2-to-4-flat buildings by right in residential areas, helping to increase the supply of affordable housing and reverse the trend of losing these traditional Chicago housing types.",
             status="active",
             active=True,
-            link="https://example.com/strong-towns-safe-streets",
+            link="https://actionnetwork.org/petitions/support-4-flats-by-right-throughout-chicago/",
             preferred_status="solid_approval",
-            template_response="I am writing to express my support for implementing complete streets policies in Chicago. Too many of our streets prioritize cars over people, leading to dangerous conditions for pedestrians and cyclists. Complete streets with protected bike lanes, traffic calming measures, and accessible transit options make our city safer for everyone, reduce pollution, and create more vibrant neighborhoods. I urge you to support these essential safety improvements for all Chicagoans.",
+            template_response="I support updating Chicago's zoning to allow 2-to-4-flat buildings by right in residential areas. These traditional Chicago housing types provide naturally affordable homes, allow multi-generational living, and help maintain neighborhood character while increasing density. Recent decades have seen thousands of these structures converted to single-family homes, reducing affordable housing options. I urge you to support zoning reform that makes it easier to build and maintain 2-4 flats throughout Chicago.",
             created_by="admin",
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
@@ -286,14 +291,31 @@ async def create_strong_towns_projects(
             group_id=group_id,
         )
 
-        # Parking Reform Project
+        # Speed Limit Reduction
+        speed_limit_project = Project(
+            id=SPEED_LIMIT_PROJECT_ID,
+            title="Lower City Speed Limit to 25 MPH",
+            description="Supporting efforts to reduce Chicago's default speed limit from 30 mph to 25 mph to improve safety for pedestrians, cyclists, and all road users. Research shows that lower speeds dramatically reduce the likelihood of fatal crashes.",
+            status="active",
+            active=True,
+            link="https://actionnetwork.org/letters/lower-the-default-speed-limit-in-chicago",
+            preferred_status="solid_approval",
+            template_response="I strongly support reducing Chicago's default speed limit from 30 mph to 25 mph. Data shows this small reduction can cut pedestrian fatality risks in half when crashes occur. Other major cities like New York, Boston, and Seattle have already implemented this change with positive results for public safety. I urge you to support this important safety measure to protect all Chicagoans and create more livable streets for everyone.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
+        )
+
+        # Parking Minimum Reform
         parking_reform_project = Project(
             id=PARKING_REFORM_PROJECT_ID,
             title="Parking Minimum Elimination",
             description="Advocating for the elimination of parking minimums in Chicago's zoning code to enable more affordable housing development, reduce car dependency, and create more walkable neighborhoods.",
             status="active",
             active=True,
-            link="https://example.com/strong-towns-parking-reform",
+            link="https://chicago-parking-reform.org/",
             preferred_status="solid_approval",
             template_response="I am writing to express my support for eliminating parking minimums in Chicago's zoning code. Current requirements force developers to build expensive parking spaces regardless of actual demand, which increases housing costs, wastes valuable urban land, and encourages more car use and traffic congestion. By eliminating these outdated requirements, we can make housing more affordable, enable small-scale neighborhood development, and create a more walkable, sustainable city. Many successful cities have already made this change with positive results. I urge you to support this important reform.",
             created_by="admin",
@@ -303,7 +325,85 @@ async def create_strong_towns_projects(
             group_id=group_id,
         )
 
-        projects = [housing_project, safe_streets_project, parking_reform_project]
+        # Vacancy Tax
+        vacancy_tax_project = Project(
+            id=VACANCY_TAX_PROJECT_ID,
+            title="Vacancy Tax Implementation",
+            description="Advocating for the implementation of vacancy taxes in high-demand Chicago neighborhoods to discourage property speculation, reduce empty storefronts and homes, and generate revenue for affordable housing initiatives.",
+            status="active",
+            active=True,
+            link="https://lawreview.uchicago.edu/sites/default/files/2024-09/03_Dong_CMT_Final.pdf",
+            preferred_status="solid_approval",
+            template_response="I support implementing vacancy taxes in high-demand Chicago neighborhoods. Vacant properties negatively impact community safety, economic vitality, and housing affordability while property owners wait for values to increase. A vacancy tax would discourage speculation, incentivize productive use of properties, and generate funding for affordable housing initiatives. Cities like Vancouver and San Francisco have implemented similar policies with success. I urge you to support this measure to create more vibrant, affordable neighborhoods.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
+        )
+
+        # Broadway Upzoning
+        broadway_upzoning_project = Project(
+            id=BROADWAY_UPZONING_PROJECT_ID,
+            title="Broadway Corridor Upzoning",
+            description="Supporting the Chicago Department of Planning and Development's initiative to upzone Broadway from Montrose Avenue to Devon Avenue, allowing for increased density, more housing, and pedestrian-friendly development along this key transit corridor.",
+            status="active",
+            active=True,
+            link="https://chi.streetsblog.org/2025/01/06/now-playing-on-broadway-new-land-use-plan-could-support-edgewater-uptown-and-the-entire-city",
+            preferred_status="solid_approval",
+            template_response="I strongly support the proposed upzoning of Broadway from Montrose to Devon Avenue. This transit-rich corridor is ideal for increased density that would provide more housing, support local businesses, and create a more vibrant, walkable community. With the CTA Red Line modernization nearing completion, now is the perfect time to encourage development that maximizes this infrastructure investment. The proposed upzoning to B3-5 and C1-5 designations with pedestrian street protections will help create a more livable, sustainable North Side while addressing our housing needs.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
+        )
+
+        # Marcey Street Development
+        marcey_development_project = Project(
+            id=MARCEY_DEVELOPMENT_PROJECT_ID,
+            title="1840 N Marcey Development Support",
+            description="Supporting Sterling Bay's proposed mixed-use development at 1840 N Marcey Street in Lincoln Park, which would bring 615 apartments across two towers (25 and 15 stories) to a currently underutilized site near Lincoln Yards.",
+            status="active",
+            active=True,
+            link="https://news.wttw.com/2025/01/09/developer-moves-forward-lincoln-park-apartment-complex-setting-stage-fight-over",
+            preferred_status="solid_approval",
+            template_response="I support Sterling Bay's proposed development at 1840 N Marcey Street. This project would transform an underutilized site into much-needed housing near jobs and transportation. The 615 apartments would include affordable units and help address Chicago's housing shortage while activating the area with retail spaces and improved pedestrian infrastructure. Density in this location makes sense given its proximity to transit, the Chicago River, and the Lincoln Yards development. I urge you to support this project to bring more housing options and economic activity to the area.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
+        )
+
+        # Fern Hill Development
+        fern_hill_project = Project(
+            id=FERN_HILL_PROJECT_ID,
+            title="Old Town Canvas Development Support",
+            description="Supporting Fern Hill's proposed Old Town Canvas mixed-use development at North Avenue and LaSalle Drive, which would bring new housing and retail to replace underutilized sites including two gas stations.",
+            status="active",
+            active=True,
+            link="https://www.engagefernhill.com/home",
+            preferred_status="solid_approval",
+            template_response="I support Fern Hill's Old Town Canvas development project, which would transform underutilized properties at North Avenue and LaSalle Drive into much-needed housing. The project includes affordable units, improved traffic and pedestrian safety features, and will help revitalize a key intersection. The development represents smart urban infill that increases housing supply near jobs and transit while providing community benefits like dedicated Moody Church parking and a grocer in the former Treasure Island space. I urge you to support this project to create a more vibrant, walkable, and housing-rich neighborhood.",
+            created_by="admin",
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
+            jurisdiction_id=jurisdiction_id,
+            group_id=group_id,
+        )
+
+        projects = [
+            housing_project,
+            two_to_four_flats_project,
+            speed_limit_project,
+            parking_reform_project,
+            vacancy_tax_project,
+            broadway_upzoning_project,
+            marcey_development_project,
+            fern_hill_project,
+        ]
+
         session.add_all(projects)
         await session.commit()
 
@@ -392,9 +492,18 @@ async def main():
     )
     args = parser.parse_args()
 
-    await setup_chicago_city_council_data(create_tables=args.create_tables, drop_existing=args.drop, generate_random_statuses=args.random_statuses)
+    await setup_chicago_city_council_data(
+        create_tables=args.create_tables,
+        drop_existing=args.drop,
+        generate_random_statuses=args.random_statuses,
+    )
 
-async def setup_chicago_city_council_data(create_tables: bool = True, drop_existing: bool = True, generate_random_statuses: bool = True):
+
+async def setup_chicago_city_council_data(
+    create_tables: bool = True,
+    drop_existing: bool = True,
+    generate_random_statuses: bool = True,
+):
     try:
         # Initialize database
         engine, async_session = await init_db(

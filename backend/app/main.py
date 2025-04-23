@@ -5,13 +5,12 @@ import logging
 import time
 
 from app.core.config import settings
-from app.db.session import create_tables, init_postgis
+from app.db.session import init_postgis
 
 from app.scripts.chicago_city_council_setup import setup_chicago_city_council_data
 from app.scripts.import_chicago_ward_geojson import import_chicago_wards
-from app.db.dependencies import get_jurisdictions_provider, get_districts_provider
-from app.models.pydantic.models import DistrictBase, Jurisdiction
-
+from app.db.dependencies import get_jurisdictions_provider
+from app.models.pydantic.models import Jurisdiction
 
 
 logging.basicConfig(
@@ -102,11 +101,11 @@ async def startup_event():
     try:
         jurisdictions_provider = get_jurisdictions_provider()
         jurisdiction_list: list[Jurisdiction] = await jurisdictions_provider.filter(
-                name="Chicago City Council"
-            )
+            name="Chicago City Council"
+        )
     except Exception:
         logger.exception("There was an error fetching jurisdictions.")
-    
+
     if not jurisdiction_list or len(jurisdiction_list) < 1:
         logger.info("Filling database with Chicago city council data")
 
@@ -115,7 +114,6 @@ async def startup_event():
         await setup_chicago_city_council_data()
 
         await import_chicago_wards()
-
 
 
 if __name__ == "__main__":
