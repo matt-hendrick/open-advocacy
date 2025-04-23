@@ -85,9 +85,13 @@ async def startup_event():
     logger.info(
         f"Starting application with {settings.DATABASE_PROVIDER} database provider"
     )
-    await create_tables()
+    try:
+        await init_postgis()
 
-    await init_postgis()
+        await create_tables()
+    except Exception:
+        logger.exception("Error initializing postgis or creating initial tables.")
+
 
 
 if __name__ == "__main__":
