@@ -213,8 +213,10 @@ const Header: React.FC = () => {
               Open Advocacy
             </Typography>
 
-            {/* Representative badge with popover */}
-            <RepresentativeBadge />
+            {/* Representative badge with popover - only show if screen is large enough */}
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+              <RepresentativeBadge />
+            </Box>
           </Box>
 
           <Box

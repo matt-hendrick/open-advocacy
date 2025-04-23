@@ -177,13 +177,13 @@ const EntityRow = ({
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 2 }}>
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 {/* Contact Information */}
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Paper
                     elevation={0}
                     sx={{
-                      p: 2,
+                      p: { xs: 1.5, sm: 2 }, // Smaller padding on mobile
                       bgcolor: 'rgba(0,0,0,0.02)',
                       borderRadius: 1,
                     }}
@@ -452,6 +452,11 @@ const EntityList: React.FC<EntityListProps> = ({
           sx={{
             pl: { sm: 2 },
             pr: { xs: 1, sm: 1 },
+            flexDirection: { xs: 'column', sm: 'row' }, // Stack vertically on mobile
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            '& > :first-of-type': {
+              mb: { xs: 1, sm: 0 }, // Add margin below title on mobile
+            },
           }}
         >
           <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
@@ -463,8 +468,9 @@ const EntityList: React.FC<EntityListProps> = ({
             alignItems="center"
             gap={2}
             sx={{
+              width: { xs: '100%', sm: 'auto' },
               flexWrap: { xs: 'wrap', sm: 'nowrap' },
-              justifyContent: { xs: 'flex-end', sm: 'flex-end' },
+              justifyContent: { xs: 'space-between', sm: 'flex-end' },
             }}
           >
             <FormControl
@@ -510,7 +516,16 @@ const EntityList: React.FC<EntityListProps> = ({
             />
           </Box>
         </Toolbar>
-        <TableContainer>
+        <TableContainer
+          sx={{
+            overflowX: 'auto', // Allows horizontal scrolling on mobile if needed
+            '& .MuiTableCell-root': {
+              // Make table cells more compact on mobile
+              padding: { xs: '8px 6px', sm: '16px' },
+              whiteSpace: { xs: 'nowrap', sm: 'normal' },
+            },
+          }}
+        >
           <Table aria-labelledby="tableTitle" size="medium">
             <TableHead>
               <TableRow>
