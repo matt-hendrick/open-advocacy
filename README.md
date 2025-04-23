@@ -1,6 +1,6 @@
 # Open Advocacy
 
-Open Advocacy is an open-source platform connecting citizens with representatives and tracking advocacy projects. The platform allows users to look up their representatives, track advocacy projects, and understand where representatives stand on various issues.
+Open Advocacy is an open-source web application connecting citizens with representatives and tracking advocacy projects. The web application allows users to look up their representatives, track advocacy projects, and understand where representatives stand on various issues.
 
 
 ## Current Project Features
