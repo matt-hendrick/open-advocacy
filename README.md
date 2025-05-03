@@ -62,6 +62,17 @@ To populate the database with example data, follow these steps:
   python -m scripts.import_chicago_ward_geojson data/chicago-wards.geojson
   ```
 
+5. Import Illinois House and Senate geospatial data:
+  ```bash
+  python -m scripts.import_illinois_geojson
+  ```
+
+6. Import Illinois House and Senate represenative data:
+  ```bash
+  python -m scripts.illinois_state_legislators_setup
+  ```
+
+
 ## Project Structure
 ```
 open-advocacy/

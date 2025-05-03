@@ -112,13 +112,19 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 11: Actually Deploy this Somewhere (COMPLETED)
 - ✅ Deploy the app according to whatever is determined in the previous step
 
-### Phase 12: Test and Document Deployment (PLANNED)
-✅ Test all workflows on the deployed version of the application
-- Document the current state of the application.
-- Clean up existing readmes
-- Test running the application fresh on another machine to validate instructions are correct
+### Phase 12: Test and Document Deployment (Completed)
+- ✅ Test all workflows on the deployed version of the application
+- ✅ Document the current state of the application.
+- ✅ Clean up existing readmes
+- ✅ Test running the application fresh on another machine to validate instructions are correct
 
-### Phase 13: Cleanup Existing Implementation (PLANNED)
+### Phase 13: Add Some Additional Data and (IN PROGRESS)
+- ✅ Add script to add IL House/Senate data
+- Clean up and consolidate various utility scripts
+- Add an in UI means of adding Chicago/IL data
+- Investigate exporting/import project data
+
+### Phase 14: Cleanup Existing Implementation (PLANNED)
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
@@ -134,14 +140,13 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
-### Phase 14: Add Auth/Admin System (PLANNED)
+### Phase 15: Add Auth/Admin System (PLANNED)
 - Add authentication and roles system
 - Segment projects by group
 - Allow groups to hide some/all projects
 - Make projects shareable
 
 ## 5. Features To Eventually Add
-- Add IL House/Senate jurisdictions
 - Create an entity detail page that display entity info + associated projects/status
 - Ability to update/display a project timeline and current status (bill timeline)
 - Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
