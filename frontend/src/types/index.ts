@@ -71,6 +71,26 @@ export interface Project {
   status_distribution?: StatusDistribution;
 }
 
+export interface ProjectCreateData {
+  title: string;
+  description?: string;
+  status?: ProjectStatus;
+  active?: boolean;
+  link?: string;
+  preferred_status?: EntityStatus;
+  template_response?: string;
+  jurisdiction_id?: string;
+  group_id?: string;
+}
+
+export interface ProjectFilterParams {
+  status?: ProjectStatus;
+  group_id?: string;
+  skip?: number;
+  limit?: number;
+  include_archived?: boolean;
+}
+
 export interface Group {
   id: string;
   name: string;
