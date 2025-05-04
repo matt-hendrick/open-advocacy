@@ -30,17 +30,21 @@ async def init_db(create_tables: bool = True, drop_existing: bool = False):
         if create_tables:
             async with engine.begin() as conn:
                 if drop_existing:
-                    logger.info("Dropping all existing tables...")
-                    await conn.run_sync(Base.metadata.drop_all)
-                    logger.info("Dropped all existing tables")
+                    try:
+                        logger.info("Dropping all existing tables...")
+                        await conn.run_sync(Base.metadata.drop_all)
+                        logger.info("Dropped all existing tables")
+                    except Exception as e:
+                        logger.error(f"There was an error deleting tables... {e}")
 
                 logger.info("Creating database tables...")
                 await conn.run_sync(Base.metadata.create_all)
                 logger.info("Created all necessary tables")
 
-        async with engine.begin() as conn:
-            await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
-            logger.info("PostGIS extension initialized")
+        if settings.DATABASE_PROVIDER.lower() == "postgres":
+            async with engine.begin() as conn:
+                await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
+                logger.info("PostGIS extension initialized")
 
         # Create session factory
         async_session = sessionmaker(

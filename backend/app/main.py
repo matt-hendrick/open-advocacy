@@ -3,14 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import projects, groups, entities, status, jurisdictions
 import logging
 import time
+import os
 
 from app.core.config import settings
-from app.db.session import init_postgis
 
-from app.scripts.chicago_city_council_setup import setup_chicago_city_council_data
-from app.scripts.import_chicago_ward_geojson import import_chicago_wards
-from app.db.dependencies import get_jurisdictions_provider
-from app.models.pydantic.models import Jurisdiction
+from scripts.init_db import init_db
+from scripts.import_data import import_data
+from scripts.import_example_project_data import import_projects
 
 
 logging.basicConfig(
@@ -36,7 +35,7 @@ origins = [
 ]
 
 if settings.ALLOWED_ORIGIN:
-    origins.append(settings.ALLOWED_ORIGIN)
+    origins = settings.ALLOWED_ORIGIN
 
 app.add_middleware(
     CORSMiddleware,
@@ -89,32 +88,60 @@ app.include_router(
     jurisdictions.router, prefix="/api/jurisdictions", tags=["jurisdictions"]
 )
 
+DB_INIT_LOCK_FILE = "/tmp/open_advocacy_db_initialized"
+
 
 # TODO: Consider if this is necessary
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database and load sample data on startup."""
+    """Initialize database and load data on startup, ensuring it happens only once."""
     logger.info(
         f"Starting application with {settings.DATABASE_PROVIDER} database provider"
     )
-    # await create_tables()
-    jurisdiction_list = None
-    try:
-        jurisdictions_provider = get_jurisdictions_provider()
-        jurisdiction_list: list[Jurisdiction] = await jurisdictions_provider.filter(
-            name="Chicago City Council"
-        )
-    except Exception:
-        logger.exception("There was an error fetching jurisdictions.")
 
-    if not jurisdiction_list or len(jurisdiction_list) < 1:
-        logger.info("Filling database with Chicago city council data")
+    # Check if we need to initialize the database
+    should_init_db = True
 
-        await init_postgis()
+    # For distributed environments (multiple workers), use a file-based lock
+    if os.path.exists(DB_INIT_LOCK_FILE):
+        logger.info("Database initialization lock file exists, skipping initialization")
+        should_init_db = False
 
-        await setup_chicago_city_council_data()
+    if should_init_db:
+        try:
+            try:
+                with open(DB_INIT_LOCK_FILE, "w") as f:
+                    f.write(
+                        f"Database initialized at {time.strftime('%Y-%m-%d %H:%M:%S')}"
+                    )
+            except Exception as e:
+                logger.error(f"Failed to write lock file... {e}")
+            logger.info("Initializing database...")
 
-        await import_chicago_wards()
+            # Step 1: Initialize database with tables, dropping existing ones
+            logger.info("Creating database tables...")
+            await init_db(create_tables=True, drop_existing=True)
+
+            # Step 2: Import Chicago data
+            logger.info("Importing Chicago data...")
+            chicago_result = await import_data("chicago")
+            if chicago_result.get("steps_failed", 0) > 0:
+                logger.warning("Some Chicago import steps failed")
+
+            # Step 3: Import Illinois data
+            logger.info("Importing Illinois data...")
+            illinois_result = await import_data("illinois")
+            if illinois_result.get("steps_failed", 0) > 0:
+                logger.warning("Some Illinois import steps failed")
+
+            # Step 4: Import projects
+            logger.info("Importing projects...")
+            await import_projects()
+
+            logger.info("Database initialization completed successfully")
+
+        except Exception as e:
+            logger.error(f"Database initialization failed: {str(e)}")
 
 
 if __name__ == "__main__":

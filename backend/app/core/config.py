@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     GEOCODING_API_KEY: str | None = None
 
     ALLOWED_ORIGIN: str | None = None
-    
+
     OPENSTATES_API_KEY: str | None = None
 
     DATA_DIR: str | None = None
