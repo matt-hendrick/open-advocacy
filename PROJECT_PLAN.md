@@ -79,8 +79,6 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Improve project create/edit form styling
 - ✅ Setup proper project status filtering (it was bugged before)
 - ✅ Hide archived projects by default
-
-### Phase 6a: Bug Fix - Updating Entity Status (COMPLETED)
 - ✅ Updating entity status does not update the status for the entity properly on the project detail page
 
 ### Phase 7: Location Module Proof of Concept (COMPLETED)
@@ -118,8 +116,10 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Clean up existing readmes
 - ✅ Test running the application fresh on another machine to validate instructions are correct
 
-### Phase 13: Add Some Additional Data and (IN PROGRESS)
+### Phase 13: Add Script to Add in IL Data, Fix Bugs, and add in Service Layer (IN PROGRESS)
 - ✅ Add script to add IL House/Senate data
+- ✅ Fix a bug with project creations
+- Create a service layer between routes and the DB logic
 - Clean up and consolidate various utility scripts
 - Add an in UI means of adding Chicago/IL data
 - Investigate exporting/import project data
