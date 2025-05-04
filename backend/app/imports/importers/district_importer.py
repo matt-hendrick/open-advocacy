@@ -43,7 +43,7 @@ class DistrictImporter(DataImporter):
     async def import_data(
         self,
         jurisdiction_name: str,
-        data: list[dict[str, Any]] = None,
+        data: list[dict[str, Any]] | dict[str, Any] = None,
         geojson_data: dict[str, Any] = None,
         name_format: str = "District {code}",
         code_field: str = "district_number",
@@ -75,6 +75,11 @@ class DistrictImporter(DataImporter):
         error_count = 0
         districts = []
 
+        # Check if data is actually GeoJSON
+        if isinstance(data, dict) and data.get("type") == "FeatureCollection":
+            geojson_data = data
+            data = None
+
         # Handle tabular data import
         if data:
             await self._import_from_tabular_data(
@@ -90,6 +95,15 @@ class DistrictImporter(DataImporter):
 
         # Handle GeoJSON boundary import
         if geojson_data:
+            # Ensure geojson_data is a dict, not a string
+            if isinstance(geojson_data, str):
+                try:
+                    import json
+
+                    geojson_data = json.loads(geojson_data)
+                except json.JSONDecodeError:
+                    raise ValueError("Invalid GeoJSON string format")
+
             await self._import_from_geojson(
                 geojson_data=geojson_data,
                 jurisdiction_id=jurisdiction_id,
@@ -203,6 +217,7 @@ class DistrictImporter(DataImporter):
         # Get existing districts for lookup
         existing_districts = await self.district_service.list_districts(jurisdiction_id)
         existing_by_name = {d.name: d for d in existing_districts}
+        existing_by_code = {d.code: d for d in existing_districts}
 
         # Process each feature
         for feature in features:
@@ -220,7 +235,9 @@ class DistrictImporter(DataImporter):
                 district_code = str(district_number)
 
                 # Check if district already exists
-                existing_district = existing_by_name.get(district_name)
+                existing_district = existing_by_name.get(
+                    district_name
+                ) or existing_by_code.get(district_code)
 
                 if existing_district:
                     logger.info(
@@ -265,21 +282,6 @@ class DistrictImporter(DataImporter):
         """Validate district import parameters."""
         if "jurisdiction_name" not in kwargs:
             logger.error(f"Jurisdiction name not in kwargs: {kwargs}")
-            return False
-
-        # Must have either data or geojson_data
-        if "data" not in kwargs and "geojson_data" not in kwargs:
-            logger.error(f"Data and geojson_data not in kwargs: {kwargs}")
-            return False
-
-        # If using data, must have code_field
-        if "data" in kwargs and "code_field" not in kwargs:
-            logger.error(f"code_field not in kwargs: {kwargs}")
-            return False
-
-        # If using geojson_data, must have district_name_property
-        if "geojson_data" in kwargs and "district_name_property" not in kwargs:
-            logger.error(f"district_name_property not in kwargs: {kwargs}")
             return False
 
         return True

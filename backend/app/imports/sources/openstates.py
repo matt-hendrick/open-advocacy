@@ -24,6 +24,9 @@ class OpenStatesDataSource(DataSource):
         self.people_endpoint = f"{base_url}/people"
         self.geo_endpoint = f"{base_url}/people.geo"
 
+        # Cache for fetched data
+        self._cached_data = None
+
         # Default included fields
         self.include_fields = include_fields or [
             "other_names",
@@ -46,6 +49,11 @@ class OpenStatesDataSource(DataSource):
         Returns:
             Dict with 'house' and 'senate' lists of legislator data
         """
+        # Return cached data if available
+        if self._cached_data is not None:
+            logger.info(f"Using cached {self.state_code.upper()} legislators data")
+            return self._cached_data
+
         logger.info(
             f"Fetching {self.state_code.upper()} legislators from OpenStates API..."
         )
@@ -112,6 +120,9 @@ class OpenStatesDataSource(DataSource):
                     f"{len(legislators['senate'])} Senators"
                 )
                 logger.info(f"Total fetched: {total_fetched}")
+
+                # Cache the data
+                self._cached_data = legislators
                 return legislators
         except Exception as e:
             logger.error(f"Error fetching legislators: {str(e)}")

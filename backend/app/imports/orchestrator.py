@@ -2,7 +2,6 @@ from typing import Any, Type
 import logging
 
 from app.imports.locations.base import LocationConfig
-from app.imports.base import DataImporter, DataSource
 
 logger = logging.getLogger("import-orchestrator")
 
@@ -22,13 +21,6 @@ class ImportOrchestrator:
     async def import_location(self, location_key: str, **kwargs) -> dict[str, Any]:
         """
         Import data for a specific location.
-
-        Args:
-            location_key: Key for the location configuration
-            **kwargs: Additional parameters for the import
-
-        Returns:
-            Dict with import results
         """
         if location_key not in self.available_locations:
             raise ValueError(f"Unknown location: {location_key}")
@@ -38,13 +30,20 @@ class ImportOrchestrator:
 
         # Get importers and data sources
         importers_config = await location_config.get_importers()
-        importers: list[DataImporter] = importers_config.get("importers", {})
-        data_sources: list[DataSource] = importers_config.get("data_sources", {})
+        importers = importers_config.get("importers", {})
+        data_sources = importers_config.get("data_sources", {})
 
         # Execute import steps
         results = []
         for step in location_config.import_steps:
             step_name = step.get("name", "Unnamed step")
+
+            # Check if this step should be skipped
+            step_skip_key = f"{step_name}.skip"
+            if step_skip_key in kwargs and kwargs[step_skip_key]:
+                logger.info(f"Skipping step: {step_name}")
+                continue
+
             logger.info(f"Starting import step: {step_name}")
 
             # Get importer
@@ -92,24 +91,27 @@ class ImportOrchestrator:
                     continue
 
             # Prepare config for import
-            import_config = step.get("config", {})
+            import_config = step.get(
+                "config", {}
+            ).copy()  # Make a copy to avoid modifying the original
+
+            # Handle special case for district_importer with geojson data
             if (
-                "geojson_data" in import_config
-                and import_config["geojson_data"] is True
+                importer_key == "district_importer"
+                and data
+                and isinstance(data, dict)
+                and data.get("type") == "FeatureCollection"
             ):
-                # Pass the GeoJSON data from the data source to the importer
                 import_config["geojson_data"] = data
-                # Remove the flag
-                del import_config["geojson_data"]
-            else:
-                # Regular data handling
+            elif data:
                 import_config["data"] = data
 
             # Merge with any override parameters from kwargs
             for key, value in kwargs.items():
                 if key.startswith(f"{step_name}."):
                     param_key = key.split(".", 1)[1]
-                    import_config[param_key] = value
+                    if param_key != "skip":  # Skip the skip flag
+                        import_config[param_key] = value
 
             # Validate and execute import
             try:

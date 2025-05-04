@@ -57,7 +57,6 @@ class ChicagoLocationConfig(LocationConfig):
                 "data_source": "wards_geojson",
                 "config": {
                     "jurisdiction_name": "Chicago City Council",
-                    "geojson_data": True,
                     "district_name_property": "ward",
                     "district_name_prefix": "Ward ",
                 },

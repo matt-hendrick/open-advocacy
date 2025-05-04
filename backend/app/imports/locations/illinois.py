@@ -73,7 +73,6 @@ class IllinoisLocationConfig(LocationConfig):
                 "data_source": "house_geojson",
                 "config": {
                     "jurisdiction_name": "Illinois House of Representatives",
-                    "geojson_data": True,
                     "district_name_property": "Name",
                     "district_name_prefix": "IL House District ",
                 },
@@ -84,7 +83,6 @@ class IllinoisLocationConfig(LocationConfig):
                 "data_source": "senate_geojson",
                 "config": {
                     "jurisdiction_name": "Illinois State Senate",
-                    "geojson_data": True,
                     "district_name_property": "Name",
                     "district_name_prefix": "IL Senate District ",
                 },
@@ -135,6 +133,10 @@ class IllinoisLocationConfig(LocationConfig):
         district_service = get_cached_district_service()
         entity_service = get_cached_entity_service()
 
+        legislators_data_source = IllinoisLegislatorsDataSource(
+            api_key=self.openstates_api_key
+        )
+
         return {
             "importers": {
                 "jurisdiction_importer": JurisdictionImporter(jurisdiction_service),
@@ -146,9 +148,7 @@ class IllinoisLocationConfig(LocationConfig):
                 ),
             },
             "data_sources": {
-                "legislators": IllinoisLegislatorsDataSource(
-                    api_key=self.openstates_api_key
-                ),
+                "legislators": legislators_data_source,
                 "house_geojson": GeoJSONDataSource(file_path=self.house_geojson_path),
                 "senate_geojson": GeoJSONDataSource(file_path=self.senate_geojson_path),
             },

@@ -184,8 +184,26 @@ class EntityImporter(DataImporter):
         if "." in field_spec:
             parts = field_spec.split(".", 1)
             parent = data.get(parts[0])
-            if parent and isinstance(parent, dict):
-                return self._extract_value(parent, parts[1])
+            if parent:
+                if isinstance(parent, dict):
+                    return self._extract_value(parent, parts[1])
+                elif isinstance(parent, list):
+                    # Try to parse the next part as an integer (array index)
+                    index_parts = parts[1].split(".", 1)
+                    try:
+                        index = int(index_parts[0])
+                        if 0 <= index < len(parent):
+                            if len(index_parts) > 1:
+                                # Continue with the rest of the path
+                                return self._extract_value(
+                                    parent[index], index_parts[1]
+                                )
+                            else:
+                                # Return the value at the index
+                                return parent[index]
+                    except ValueError:
+                        # Not an integer index
+                        pass
             return None
 
         # Handle simple field

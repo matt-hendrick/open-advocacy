@@ -2,6 +2,7 @@ import asyncio
 import logging
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 
 from app.core.config import settings
 from app.models.orm.models import Base
@@ -36,6 +37,10 @@ async def init_db(create_tables: bool = True, drop_existing: bool = False):
                 logger.info("Creating database tables...")
                 await conn.run_sync(Base.metadata.create_all)
                 logger.info("Created all necessary tables")
+
+        async with engine.begin() as conn:
+            await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
+            logger.info("PostGIS extension initialized")
 
         # Create session factory
         async_session = sessionmaker(

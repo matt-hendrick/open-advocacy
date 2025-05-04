@@ -1,5 +1,6 @@
 from typing import Any
 import json
+import os
 import aiohttp
 import logging
 from pathlib import Path
@@ -45,15 +46,42 @@ class GeoJSONDataSource(DataSource):
     async def _read_local_file(self) -> dict[str, Any]:
         """Read GeoJSON data from local file."""
         try:
-            with open(self.file_path, "r") as f:
+            # Ensure path is absolute or properly resolved
+            resolved_path = Path(self.file_path).resolve()
+            logger.info(f"Reading GeoJSON from resolved path: {resolved_path}")
+
+            if not os.path.exists(resolved_path):
+                logger.error(f"GeoJSON file not found at path: {resolved_path}")
+                raise FileNotFoundError(
+                    f"GeoJSON file not found at path: {resolved_path}"
+                )
+
+            with open(resolved_path, "r") as f:
                 data = json.load(f)
-                self._validate_geojson(data)
-                return data
+
+            # Log more details about the file content for debugging
+            feature_count = len(data.get("features", []))
+            logger.info(f"Loaded GeoJSON with {feature_count} features")
+
+            # Sample the first feature for debugging purposes
+            if feature_count > 0:
+                first_feature = data["features"][0]
+                logger.info(
+                    f"First feature properties: {first_feature.get('properties', {})}"
+                )
+
+            self._validate_geojson(data)
+            return data
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in GeoJSON file: {str(e)}")
+            raise
         except Exception as e:
-            raise Exception(f"Error reading GeoJSON file: {str(e)}")
+            logger.error(f"Error reading GeoJSON file: {str(e)}")
+            raise
 
     async def _download_from_url(self) -> dict[str, Any]:
         """Download GeoJSON data from URL."""
+        logger.info(f"Downloading GeoJSON from URL: {self.url}")
         async with aiohttp.ClientSession() as session:
             # First check the content length to decide if we need to stream
             async with session.head(self.url) as head_response:
@@ -61,6 +89,7 @@ class GeoJSONDataSource(DataSource):
                     raise Exception(f"Failed to access URL: {head_response.status}")
 
                 content_length = int(head_response.headers.get("Content-Length", "0"))
+                logger.info(f"GeoJSON content length: {content_length} bytes")
 
                 # Use streaming for large files
                 if content_length > self.stream_threshold:
@@ -74,6 +103,18 @@ class GeoJSONDataSource(DataSource):
                         )
 
                     data = await response.json()
+
+                    # Log more details about the file content for debugging
+                    feature_count = len(data.get("features", []))
+                    logger.info(f"Downloaded GeoJSON with {feature_count} features")
+
+                    # Sample the first feature for debugging purposes
+                    if feature_count > 0:
+                        first_feature = data["features"][0]
+                        logger.info(
+                            f"First feature properties: {first_feature.get('properties', {})}"
+                        )
+
                     self._validate_geojson(data)
                     return data
 
@@ -111,6 +152,18 @@ class GeoJSONDataSource(DataSource):
             # Read the file
             with open(temp_path, "r") as f:
                 data = json.load(f)
+
+                # Log more details about the file content for debugging
+                feature_count = len(data.get("features", []))
+                logger.info(f"Loaded streamed GeoJSON with {feature_count} features")
+
+                # Sample the first feature for debugging purposes
+                if feature_count > 0:
+                    first_feature = data["features"][0]
+                    logger.info(
+                        f"First feature properties: {first_feature.get('properties', {})}"
+                    )
+
                 self._validate_geojson(data)
                 return data
 
@@ -133,6 +186,22 @@ class GeoJSONDataSource(DataSource):
 
         if "features" not in data or not isinstance(data["features"], list):
             raise ValueError("Invalid GeoJSON: No features array found")
+
+        # Check for empty features array
+        if len(data["features"]) == 0:
+            logger.warning("GeoJSON contains no features")
+            return
+
+        # Examine the first feature to help with debugging
+        first_feature = data["features"][0]
+        if "properties" not in first_feature:
+            logger.warning("First feature has no properties field")
+        elif not first_feature["properties"]:
+            logger.warning("First feature has empty properties")
+        else:
+            logger.info(
+                f"Available property keys: {list(first_feature['properties'].keys())}"
+            )
 
     def get_source_info(self) -> dict[str, Any]:
         """Get information about the data source."""
