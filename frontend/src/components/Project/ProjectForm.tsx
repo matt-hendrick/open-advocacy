@@ -17,14 +17,13 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { ProjectStatus, EntityStatus, Project, Jurisdiction } from '../../types';
-import { projectService } from '../../services/projects';
+import { ProjectStatus, EntityStatus, Project, ProjectCreateData, Jurisdiction } from '../../types';
 import { jurisdictionService } from '../../services/jurisdictions';
 import { groupService } from '../../services/groups';
 
 interface ProjectFormProps {
   project?: Project;
-  onSubmit?: (project: Project) => void;
+  onSubmit?: (project: ProjectCreateData) => void;
   onCancel?: () => void;
 }
 

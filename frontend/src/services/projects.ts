@@ -1,25 +1,5 @@
 import api from './api';
-import { Project, ProjectStatus, EntityStatus } from '../types';
-
-interface ProjectCreateData {
-  title: string;
-  description?: string;
-  status?: ProjectStatus;
-  active?: boolean;
-  link?: string;
-  preferred_status?: EntityStatus;
-  template_response?: string;
-  jurisdiction_id?: string;
-  group_id?: string;
-}
-
-interface ProjectFilterParams {
-  status?: ProjectStatus;
-  group_id?: string;
-  skip?: number;
-  limit?: number;
-  include_archived?: boolean;
-}
+import { Project, ProjectFilterParams, ProjectCreateData, EntityStatus } from '../types';
 
 export const projectService = {
   async getProjects(filters?: ProjectFilterParams): Promise<{ data: Project[] }> {
