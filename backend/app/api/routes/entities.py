@@ -1,55 +1,62 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
+from typing import List
 
 from app.models.pydantic.models import Entity, EntityCreate, AddressLookupRequest
-from app.db.base import DatabaseProvider
+from app.services.entity_service import EntityService
 from app.db.dependencies import (
     get_entities_provider,
     get_jurisdictions_provider,
     get_districts_provider,
 )
-from typing import List
-from app.geo.geocoding_service import GeocodingService
 from app.geo.provider_factory import get_geo_provider
 
 router = APIRouter()
-geocoding_service = GeocodingService()
+
+
+def get_entity_service(
+    entities_provider=Depends(get_entities_provider),
+    jurisdictions_provider=Depends(get_jurisdictions_provider),
+    districts_provider=Depends(get_districts_provider),
+    geo_provider=Depends(get_geo_provider),
+):
+    """Dependency to get the entity service."""
+    return EntityService(
+        entities_provider=entities_provider,
+        jurisdictions_provider=jurisdictions_provider,
+        districts_provider=districts_provider,
+        geo_provider=geo_provider,
+    )
 
 
 @router.get("/", response_model=list[Entity])
 async def list_entities(
     jurisdiction_id: UUID,
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
-    districts_provider=Depends(get_districts_provider),
+    entity_service: EntityService = Depends(get_entity_service),
 ):
-    entities = await entities_provider.filter(jurisdiction_id=jurisdiction_id)
-    for entity in entities:
-        district = await districts_provider.get(entity.district_id)
-        if district:
-            entity.district_name = district.name
-    return entities
+    """List entities by jurisdiction."""
+    return await entity_service.list_entities(jurisdiction_id=jurisdiction_id)
 
 
 @router.post("/", response_model=Entity)
 async def create_entity(
     entity: EntityCreate,
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
-    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    entity_service: EntityService = Depends(get_entity_service),
 ):
-    # Verify jurisdiction exists
-    jurisdiction = await jurisdictions_provider.get(entity.jurisdiction_id)
-    if not jurisdiction:
-        raise HTTPException(status_code=404, detail="Jurisdiction not found")
-
-    return await entities_provider.create(entity)
+    """Create a new entity."""
+    try:
+        return await entity_service.create_entity(entity)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @router.get("/{entity_id}", response_model=Entity)
 async def get_entity(
     entity_id: UUID,
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    entity_service: EntityService = Depends(get_entity_service),
 ):
-    entity = await entities_provider.get(entity_id)
+    """Get an entity by ID."""
+    entity = await entity_service.get_entity(entity_id)
     if not entity:
         raise HTTPException(status_code=404, detail="Entity not found")
     return entity
@@ -59,51 +66,34 @@ async def get_entity(
 async def update_entity(
     entity_id: UUID,
     entity: EntityCreate,
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    entity_service: EntityService = Depends(get_entity_service),
 ):
-    existing_entity = await entities_provider.get(entity_id)
-    if not existing_entity:
+    """Update an existing entity."""
+    updated_entity = await entity_service.update_entity(entity_id, entity)
+    if not updated_entity:
         raise HTTPException(status_code=404, detail="Entity not found")
-
-    return await entities_provider.update(entity_id, entity)
+    return updated_entity
 
 
 @router.delete("/{entity_id}", response_model=bool)
 async def delete_entity(
     entity_id: UUID,
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    entity_service: EntityService = Depends(get_entity_service),
 ):
-    existing_entity = await entities_provider.get(entity_id)
-    if not existing_entity:
+    """Delete an entity by ID."""
+    deleted = await entity_service.delete_entity(entity_id)
+    if not deleted:
         raise HTTPException(status_code=404, detail="Entity not found")
-
-    return await entities_provider.delete(entity_id)
+    return deleted
 
 
 @router.post("/address_lookup", response_model=List[Entity])
 async def lookup_entities_by_address(
     request: AddressLookupRequest,
-    geo_provider=Depends(get_geo_provider),
-    entities_provider=Depends(get_entities_provider),
-    districts_provider=Depends(get_districts_provider),
+    entity_service: EntityService = Depends(get_entity_service),
 ):
-    """Look up entities for a given address"""
-
-    # 1. Geocode the address to get coordinates
-    lat, lon = await geocoding_service.geocode_address(address=request.address)
-
-    # 2. Find districts containing this point
-    district_ids = await geo_provider.districts_containing_point(lat, lon)
-
-    # 3. Find entities for these districts
-    entities = await entities_provider.filter_multiple(
-        filters={}, in_filters={"district_id": district_ids}
-    )
-
-    # 4. Enhance with district and jurisdiction names
-    for entity in entities:
-        district = await districts_provider.get(entity.district_id)
-        if district:
-            entity.district_name = district.name
-
-    return entities
+    """Look up entities for a given address."""
+    try:
+        return await entity_service.lookup_entities_by_address(request)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

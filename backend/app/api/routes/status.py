@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
 
 from app.models.pydantic.models import EntityStatusRecord
-from app.db.base import DatabaseProvider
+from app.services.status_service import StatusService
 from app.db.dependencies import (
     get_status_records_provider,
     get_projects_provider,
@@ -12,70 +12,50 @@ from app.db.dependencies import (
 router = APIRouter()
 
 
+def get_status_service(
+    status_records_provider=Depends(get_status_records_provider),
+    projects_provider=Depends(get_projects_provider),
+    entities_provider=Depends(get_entities_provider),
+):
+    """Dependency to get the status service."""
+    return StatusService(
+        status_records_provider=status_records_provider,
+        projects_provider=projects_provider,
+        entities_provider=entities_provider,
+    )
+
+
 @router.get("/", response_model=list[EntityStatusRecord] | None)
 async def list_status_records(
     project_id: UUID | None = None,
     entity_id: UUID | None = None,
-    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
+    status_service: StatusService = Depends(get_status_service),
 ):
-    filters = {}
-    in_filters = {}
-
-    if project_id:
-        filters["project_id"] = project_id
-
-    if entity_id:
-        filters["entity_id"] = entity_id
-
-    if filters or in_filters:
-        status_records = await status_records_provider.filter_multiple(
-            filters, in_filters
-        )
-    else:
-        status_records = await status_records_provider.list()
-
-    return status_records
+    """List status records with optional filtering."""
+    return await status_service.list_status_records(
+        project_id=project_id, entity_id=entity_id
+    )
 
 
 @router.post("/", response_model=EntityStatusRecord)
 async def create_status_record(
     status_record: EntityStatusRecord,
-    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
-    projects_provider: DatabaseProvider = Depends(get_projects_provider),
-    entities_provider: DatabaseProvider = Depends(get_entities_provider),
+    status_service: StatusService = Depends(get_status_service),
 ):
-    # Verify project exists
-    project = await projects_provider.get(status_record.project_id)
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    # Verify entity exists
-    entity = await entities_provider.get(status_record.entity_id)
-    if not entity:
-        raise HTTPException(status_code=404, detail="Entity not found")
-
-    # Check if status record already exists for this entity and project
-    existing_records = await status_records_provider.list()
-    for record in existing_records:
-        if (
-            record.entity_id == status_record.entity_id
-            and record.project_id == status_record.project_id
-        ):
-            # Update existing record
-            updated_record = await status_records_provider.update(
-                record.id, status_record
-            )
-            return updated_record
-
-    return await status_records_provider.create(status_record)
+    """Create a new status record."""
+    try:
+        return await status_service.create_status_record(status_record)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @router.get("/{record_id}", response_model=EntityStatusRecord)
 async def get_status_record(
     record_id: UUID,
-    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
+    status_service: StatusService = Depends(get_status_service),
 ):
-    record = await status_records_provider.get(record_id)
+    """Get a status record by ID."""
+    record = await status_service.get_status_record(record_id)
     if not record:
         raise HTTPException(status_code=404, detail="Status record not found")
     return record
@@ -85,22 +65,22 @@ async def get_status_record(
 async def update_status_record(
     record_id: UUID,
     status_record: EntityStatusRecord,
-    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
+    status_service: StatusService = Depends(get_status_service),
 ):
-    existing_record = await status_records_provider.get(record_id)
-    if not existing_record:
+    """Update an existing status record."""
+    updated_record = await status_service.update_status_record(record_id, status_record)
+    if not updated_record:
         raise HTTPException(status_code=404, detail="Status record not found")
-
-    return await status_records_provider.update(record_id, status_record)
+    return updated_record
 
 
 @router.delete("/{record_id}", response_model=bool)
 async def delete_status_record(
     record_id: UUID,
-    status_records_provider: DatabaseProvider = Depends(get_status_records_provider),
+    status_service: StatusService = Depends(get_status_service),
 ):
-    existing_record = await status_records_provider.get(record_id)
-    if not existing_record:
+    """Delete a status record by ID."""
+    deleted = await status_service.delete_status_record(record_id)
+    if not deleted:
         raise HTTPException(status_code=404, detail="Status record not found")
-
-    return await status_records_provider.delete(record_id)
+    return deleted
