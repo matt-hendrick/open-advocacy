@@ -1,23 +1,19 @@
-#!/usr/bin/env python3
 """
 Import Illinois Legislators Script
 
 This script:
 1. Fetches IL representatives data from OpenStates API
 2. Creates entity records for IL legislators
-3. Optionally generates random status records for projects
 
 Usage:
-    python illinois_state_legislators_setup.py [--random-statuses] [--project-ids UUID1 UUID2...]
+    python illinois_state_legislators_setup.py [--random-statuses]
 """
 
 import asyncio
 import argparse
 import logging
 import sys
-import random
 import aiohttp
-from datetime import datetime, timezone
 from uuid import UUID, uuid4
 from typing import List, Dict, Any
 
@@ -41,9 +37,7 @@ try:
     from app.models.orm.models import (
         Entity,
         Jurisdiction,
-        EntityStatusRecord,
         District,
-        Project,
     )
 
     logger.info("Successfully imported application modules")
@@ -464,96 +458,7 @@ async def create_legislator_entities(
         raise
 
 
-async def create_random_status_records(
-    session: AsyncSession, entities: List[Entity], project_ids: List[UUID]
-) -> List[EntityStatusRecord]:
-    """Create random status records for legislators on specified projects."""
-
-    if not project_ids:
-        logger.info("No projects specified for status records, skipping")
-        return []
-
-    logger.info(
-        f"Creating random status records for {len(entities)} legislators on {len(project_ids)} projects..."
-    )
-
-    try:
-        status_options = [
-            "solid_approval",
-            "leaning_approval",
-            "neutral",
-            "leaning_disapproval",
-            "solid_disapproval",
-        ]
-        status_records = []
-
-        for entity in entities:
-            for project_id in project_ids:
-                # Verify project exists
-                project = await session.get(Project, project_id)
-                if not project:
-                    logger.warning(f"Project with ID {project_id} not found, skipping")
-                    continue
-
-                # Check if status record already exists
-                existing_result = await session.execute(
-                    select(EntityStatusRecord).where(
-                        EntityStatusRecord.entity_id == entity.id,
-                        EntityStatusRecord.project_id == project_id,
-                    )
-                )
-                existing_record = existing_result.scalar_one_or_none()
-
-                if existing_record:
-                    logger.info(
-                        f"Status record already exists for {entity.name} on project {project.title}, updating"
-                    )
-                    existing_record.status = random.choice(status_options)
-                    existing_record.updated_at = datetime.now(timezone.utc)
-                    status_records.append(existing_record)
-                else:
-                    # Randomly select a status
-                    status = random.choice(status_options)
-
-                    # Random notes based on status
-                    if status == "solid_approval":
-                        notes = f"Strongly supports the {project.title} initiative and has expressed willingness to advocate for it."
-                    elif status == "leaning_approval":
-                        notes = f"Generally supportive of {project.title} but has some questions about implementation details."
-                    elif status == "neutral":
-                        notes = f"Has not taken a clear position on {project.title} and has requested more information."
-                    elif status == "leaning_disapproval":
-                        notes = f"Has expressed some concerns about {project.title} and its potential impacts."
-                    else:  # solid_disapproval
-                        notes = f"Opposes the {project.title} initiative and has publicly stated concerns."
-
-                    # Create status record
-                    record = EntityStatusRecord(
-                        id=uuid4(),
-                        entity_id=entity.id,
-                        project_id=project_id,
-                        status=status,
-                        notes=notes,
-                        updated_at=datetime.now(timezone.utc),
-                        updated_by="admin",
-                    )
-
-                    status_records.append(record)
-                    session.add(record)
-
-        await session.commit()
-        logger.info(f"Created or updated {len(status_records)} random status records")
-
-        return status_records
-    except SQLAlchemyError as e:
-        logger.error(f"Error creating random status records: {str(e)}")
-        await session.rollback()
-        raise
-
-
 async def import_il_legislators_data(
-    generate_random_statuses: bool = False,
-    project_ids: List[UUID] = None,
     use_geo_endpoint: bool = False,
     latitude: float = None,
     longitude: float = None,
@@ -562,8 +467,6 @@ async def import_il_legislators_data(
     Main function to import Illinois legislators data.
 
     Args:
-        generate_random_statuses: Whether to generate random status records
-        project_ids: List of project IDs to generate status records for
         use_geo_endpoint: Whether to use the geo endpoint instead of fetching all legislators
         latitude: Latitude for geo endpoint (if use_geo_endpoint is True)
         longitude: Longitude for geo endpoint (if use_geo_endpoint is True)
@@ -613,9 +516,7 @@ async def import_il_legislators_data(
                 session, legislators, house_jurisdiction_id, senate_jurisdiction_id
             )
 
-            # Optionally create random status records
-            if generate_random_statuses and project_ids:
-                await create_random_status_records(session, entities, project_ids)
+            logger.info("Created entities", entity_count=len(entities) if entities else 0)
 
         # Clean up
         await engine.dispose()
@@ -630,19 +531,6 @@ async def import_il_legislators_data(
 async def main():
     """Main function to run the script."""
     parser = argparse.ArgumentParser(description="Import Illinois legislators data")
-
-    parser.add_argument(
-        "--random-statuses",
-        action="store_true",
-        help="Assign random statuses for legislators on specified projects",
-    )
-
-    parser.add_argument(
-        "--project-ids",
-        type=str,
-        nargs="+",
-        help="UUIDs of projects to generate status records for (space-separated)",
-    )
 
     parser.add_argument(
         "--use-geo",
@@ -664,15 +552,6 @@ async def main():
 
     args = parser.parse_args()
 
-    # Convert project IDs to UUIDs
-    project_ids = []
-    if args.project_ids:
-        for pid in args.project_ids:
-            try:
-                project_ids.append(UUID(pid))
-            except ValueError:
-                logger.error(f"Invalid project ID: {pid}")
-
     # Validate geo parameters
     use_geo = args.use_geo
     if use_geo and (args.latitude is None or args.longitude is None):
@@ -682,8 +561,6 @@ async def main():
         sys.exit(1)
 
     await import_il_legislators_data(
-        generate_random_statuses=args.random_statuses,
-        project_ids=project_ids,
         use_geo_endpoint=use_geo,
         latitude=args.latitude,
         longitude=args.longitude,
