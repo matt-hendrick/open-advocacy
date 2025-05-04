@@ -17,6 +17,24 @@ Open Advocacy is an open-source web application connecting citizens with represe
 - **Database**: Flexible database layer supporting SQLite (for development) and PostgreSQL (for production)
 - **Containerization**: Docker and Docker Compose for easy deployment
 
+## Data Model
+
+The application uses the following core concepts:
+
+- **Projects**: Advocacy initiatives that can be tracked and monitored
+- **Entities**: Representatives or officials who have a position on projects
+- **Jurisdictions**: Legislative bodies (e.g., City Council, State Senate)
+- **Districts**: Geographic areas represented by entities
+- **Status Records**: Track where entities stand on specific projects
+
+## Backend Architecture
+
+- **API Layer**: FastAPI routes that handle HTTP requests and responses
+- **Service Layer**: Business logic organized by domain entities
+- **Data Access Layer**: Abstract database providers with concrete implementations
+- **Geo Services**: Specialized geographic functionality
+- **Models**: Pydantic models for validation and ORM models for persistence
+
 ## Getting Started
 
 ### Prerequisites
@@ -52,9 +70,9 @@ To populate the database with example data, follow these steps:
     poetry shell
    ```
 
-3. Load Chicago City Council data (with randomized project statuses). This will drop all existing tables:
+3. Load Chicago City Council data (with randomized project statuses):
   ```bash
-  python -m scripts.chicago_city_council_setup --create-tables --random-statuses --drop
+  python -m scripts.chicago_city_council_setup --create-tables --random-statuses
   ```
 
 4. Import Chicago ward geospatial data:
