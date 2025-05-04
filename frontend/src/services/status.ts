@@ -32,7 +32,7 @@ export const statusService = {
   },
 
   async createStatusRecord(data: StatusCreateData): Promise<{ data: EntityStatusRecord }> {
-    return api.post<EntityStatusRecord>('/status', {
+    return api.post<EntityStatusRecord>('/status/', {
       ...data,
       updated_at: new Date().toISOString(),
     });
