@@ -37,3 +37,8 @@ class JurisdictionService:
     async def delete_jurisdiction(self, jurisdiction_id: UUID) -> bool:
         """Delete a jurisdiction by ID."""
         return await self.jurisdictions_provider.delete(jurisdiction_id)
+
+    async def find_by_name(self, name: str) -> Jurisdiction | None:
+        """Find a jurisdiction by name."""
+        jurisdictions = await self.list_jurisdictions()
+        return next((j for j in jurisdictions if j.name == name), None)

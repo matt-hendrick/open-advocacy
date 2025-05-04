@@ -116,15 +116,20 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Clean up existing readmes
 - ✅ Test running the application fresh on another machine to validate instructions are correct
 
-### Phase 13: Add Script to Add in IL Data, Fix Bugs, and add in Service Layer (IN PROGRESS)
+### Phase 13: Add Script to Add in IL Data, Fix Bugs, and add in Service Layer (COMPLETED)
 - ✅ Add script to add IL House/Senate data
 - ✅ Fix a bug with project creation
 - ✅ Create a service layer between routes and the DB logic
-- Clean up and consolidate various utility scripts
+
+### Phase 14: Build a flexible, cleaner import system (IN PROGRESS)
+- ✅ Build an extensible import system
+- ✅ Clean up and consolidate various utility scripts
+- ✅ Fix duplicated districts import bug
+- ✅ FAdd optional image url to entities and display on the frontend
 - Add an in UI means of adding Chicago/IL data
 - Investigate exporting/import project data
 
-### Phase 14: Cleanup Existing Implementation (PLANNED)
+### Phase 15: Cleanup Existing Implementation (PLANNED)
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
@@ -140,7 +145,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
-### Phase 15: Add Auth/Admin System (PLANNED)
+### Phase 16: Add Auth/Admin System (PLANNED)
 - Add authentication and roles system
 - Segment projects by group
 - Allow groups to hide some/all projects

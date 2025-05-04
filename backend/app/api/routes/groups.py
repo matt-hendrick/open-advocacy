@@ -3,18 +3,9 @@ from uuid import UUID
 
 from app.models.pydantic.models import Group, GroupBase
 from app.services.group_service import GroupService
-from app.db.dependencies import get_groups_provider
+from app.services.service_factory import get_group_service
 
 router = APIRouter()
-
-
-def get_group_service(
-    groups_provider=Depends(get_groups_provider),
-):
-    """Dependency to get the group service."""
-    return GroupService(
-        groups_provider=groups_provider,
-    )
 
 
 @router.get("/", response_model=list[Group])

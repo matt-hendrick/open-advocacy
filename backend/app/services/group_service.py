@@ -38,3 +38,13 @@ class GroupService:
             return False
 
         return await self.groups_provider.delete(group_id)
+
+    async def find_or_create_by_name(self, name: str, description: str) -> Group:
+        """Find a group by name or create it if it doesn't exist."""
+        groups = await self.list_groups()
+        existing_group = next((g for g in groups if g.name == name), None)
+
+        if existing_group:
+            return existing_group
+
+        return await self.create_group(GroupBase(name=name, description=description))

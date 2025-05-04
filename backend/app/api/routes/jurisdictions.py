@@ -3,18 +3,9 @@ from uuid import UUID
 
 from app.models.pydantic.models import Jurisdiction, JurisdictionBase
 from app.services.jurisdiction_service import JurisdictionService
-from app.db.dependencies import get_jurisdictions_provider
+from app.services.service_factory import get_jurisdiction_service
 
 router = APIRouter()
-
-
-def get_jurisdiction_service(
-    jurisdictions_provider=Depends(get_jurisdictions_provider),
-):
-    """Dependency to get the jurisdiction service."""
-    return JurisdictionService(
-        jurisdictions_provider=jurisdictions_provider,
-    )
 
 
 @router.get("/", response_model=list[Jurisdiction])

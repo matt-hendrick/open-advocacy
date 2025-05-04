@@ -70,24 +70,19 @@ To populate the database with example data, follow these steps:
     poetry shell
    ```
 
-3. Load Chicago City Council data (with randomized project statuses):
+3. Create necessary database tables
   ```bash
-  python -m scripts.chicago_city_council_setup --create-tables --random-statuses
+    python -m scripts.init_db
   ```
 
-4. Import Chicago ward geospatial data:
+4. Load Chicago City Council data:
   ```bash
-  python -m scripts.import_chicago_ward_geojson data/chicago-wards.geojson
+    python -m scripts.import_data chicago
   ```
 
-5. Import Illinois House and Senate geospatial data:
+5. Import Illinois House and Senate represenative data:
   ```bash
-  python -m scripts.import_illinois_geojson
-  ```
-
-6. Import Illinois House and Senate represenative data:
-  ```bash
-  python -m scripts.illinois_state_legislators_setup
+  python -m scripts.import_data illinois
   ```
 
 

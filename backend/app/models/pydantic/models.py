@@ -31,6 +31,7 @@ class EntityBase(BaseModel):
     address: str | None = None
     jurisdiction_id: UUID
     district_id: UUID
+    image_url: str | None = None
 
 
 class EntityCreate(EntityBase):

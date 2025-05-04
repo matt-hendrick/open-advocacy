@@ -3,32 +3,9 @@ from uuid import UUID
 
 from app.models.pydantic.models import Project, ProjectBase, ProjectStatus
 from app.services.project_service import ProjectService
-from app.db.dependencies import (
-    get_projects_provider,
-    get_status_records_provider,
-    get_jurisdictions_provider,
-    get_entities_provider,
-    get_groups_provider,
-)
+from app.services.service_factory import get_project_service
 
 router = APIRouter()
-
-
-def get_project_service(
-    projects_provider=Depends(get_projects_provider),
-    status_records_provider=Depends(get_status_records_provider),
-    entities_provider=Depends(get_entities_provider),
-    jurisdictions_provider=Depends(get_jurisdictions_provider),
-    groups_provider=Depends(get_groups_provider),
-):
-    """Dependency to get the project service."""
-    return ProjectService(
-        projects_provider=projects_provider,
-        status_records_provider=status_records_provider,
-        entities_provider=entities_provider,
-        jurisdictions_provider=jurisdictions_provider,
-        groups_provider=groups_provider,
-    )
 
 
 @router.get("/", response_model=list[Project])

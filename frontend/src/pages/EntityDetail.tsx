@@ -109,6 +109,7 @@ const EntityDetail: React.FC = () => {
           <Paper sx={{ p: 3, borderRadius: 2, height: '100%' }}>
             <Box display="flex" alignItems="center" mb={2}>
               <Avatar
+                src={entity.image_url}
                 sx={{
                   width: 64,
                   height: 64,
