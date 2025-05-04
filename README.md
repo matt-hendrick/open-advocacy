@@ -83,7 +83,7 @@ open-advocacy/
 │   │   ├── db/             # Database utilities
 │   │   ├── geo/            # Geospatial utilities
 │   │   ├── models/         # Data models
-│   │   └── utils/          # Utility functions
+│   │   └── services/       # Services
 │   ├── data/               # Database and geospatial data
 │   └── scripts/            # Setup and maintenance scripts
 ├── frontend/               # React+TypeScript frontend

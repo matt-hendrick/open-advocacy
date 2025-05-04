@@ -2,34 +2,44 @@ from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
 from app.models.pydantic.models import Group, GroupBase
-from app.db.base import DatabaseProvider
+from app.services.group_service import GroupService
 from app.db.dependencies import get_groups_provider
 
 router = APIRouter()
 
 
+def get_group_service(
+    groups_provider=Depends(get_groups_provider),
+):
+    """Dependency to get the group service."""
+    return GroupService(
+        groups_provider=groups_provider,
+    )
+
+
 @router.get("/", response_model=list[Group])
 async def list_groups(
-    groups_provider: DatabaseProvider = Depends(get_groups_provider),
+    group_service: GroupService = Depends(get_group_service),
 ):
-    groups = await groups_provider.list()
-
-    return groups
+    """List all groups."""
+    return await group_service.list_groups()
 
 
 @router.post("/", response_model=Group)
 async def create_group(
     group: GroupBase,
-    groups_provider: DatabaseProvider = Depends(get_groups_provider),
+    group_service: GroupService = Depends(get_group_service),
 ):
-    return await groups_provider.create(group)
+    """Create a new group."""
+    return await group_service.create_group(group)
 
 
 @router.get("/{group_id}", response_model=Group)
 async def get_group(
-    group_id: UUID, groups_provider: DatabaseProvider = Depends(get_groups_provider)
+    group_id: UUID, group_service: GroupService = Depends(get_group_service)
 ):
-    group = await groups_provider.get(group_id)
+    """Get a group by ID."""
+    group = await group_service.get_group(group_id)
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
     return group
@@ -39,21 +49,21 @@ async def get_group(
 async def update_group(
     group_id: UUID,
     group: GroupBase,
-    groups_provider: DatabaseProvider = Depends(get_groups_provider),
+    group_service: GroupService = Depends(get_group_service),
 ):
-    existing_group = await groups_provider.get(group_id)
-    if not existing_group:
+    """Update an existing group."""
+    updated_group = await group_service.update_group(group_id, group)
+    if not updated_group:
         raise HTTPException(status_code=404, detail="Group not found")
-
-    return await groups_provider.update(group_id, group)
+    return updated_group
 
 
 @router.delete("/{group_id}", response_model=bool)
 async def delete_group(
-    group_id: UUID, groups_provider: DatabaseProvider = Depends(get_groups_provider)
+    group_id: UUID, group_service: GroupService = Depends(get_group_service)
 ):
-    existing_group = await groups_provider.get(group_id)
-    if not existing_group:
+    """Delete a group by ID."""
+    deleted = await group_service.delete_group(group_id)
+    if not deleted:
         raise HTTPException(status_code=404, detail="Group not found")
-
-    return await groups_provider.delete(group_id)
+    return deleted
