@@ -20,6 +20,7 @@ app = FastAPI(
     title="Open Advocacy API",
     description="API for connecting citizens with representatives and tracking advocacy projects",
     version="0.1.0",
+    redirect_slashes=False,  # This has been added as some deployment environments enforce this (so this helps detecting problems in dev)
 )
 
 # Add CORS middleware for development
