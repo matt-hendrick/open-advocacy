@@ -67,7 +67,7 @@ const RepresentativeItem: React.FC<RepresentativeItemProps> = ({
           '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
         }}
       >
-        <Avatar sx={{ mr: 2, bgcolor: theme.palette.primary.main }}>
+        <Avatar src={entity.image_url} sx={{ mr: 2, bgcolor: theme.palette.primary.main }}>
           <PersonIcon />
         </Avatar>
 

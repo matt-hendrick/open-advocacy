@@ -99,6 +99,7 @@ class Entity(Base):
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=False
     )
     district_id = Column(UUID(as_uuid=True), ForeignKey("districts.id"), nullable=False)
+    image_url = Column(String(255), nullable=True)
 
     # Contact info fields
     email = Column(String(255), nullable=True)

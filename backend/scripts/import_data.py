@@ -1,4 +1,3 @@
-# scripts/import_data.py
 import asyncio
 import argparse
 import logging
@@ -131,11 +130,6 @@ def main():
         "--steps",
         nargs="+",
         help="Specific steps to run (by name)",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Test import without making changes to the database",
     )
 
     # Add optional additional parameters

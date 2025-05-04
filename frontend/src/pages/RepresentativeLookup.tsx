@@ -138,7 +138,15 @@ const RepresentativeLookup: React.FC = () => {
               <CardContent sx={{ flexGrow: 1 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
                   <Box display="flex" alignItems="center">
-                    <Avatar sx={{ mr: 2, bgcolor: theme.palette.primary.main }}>
+                    <Avatar
+                      src={rep.image_url}
+                      sx={{
+                        mr: 2,
+                        bgcolor: theme.palette.primary.main,
+                        width: 48,
+                        height: 48,
+                      }}
+                    >
                       <PersonIcon />
                     </Avatar>
                     <Box>

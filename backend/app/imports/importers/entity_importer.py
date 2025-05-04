@@ -109,7 +109,7 @@ class EntityImporter(DataImporter):
                         logger.warning(f"District with code {district_code} not found")
 
                 # Extract optional fields if provided in mapping
-                for field in ["email", "phone", "website", "address"]:
+                for field in ["email", "phone", "website", "address", "image_url"]:
                     if field in mapping:
                         value = self._extract_value(item, mapping[field])
                         if value:

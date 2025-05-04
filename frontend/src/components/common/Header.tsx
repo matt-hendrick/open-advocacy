@@ -18,6 +18,7 @@ import {
   Chip,
   Paper,
   ButtonBase,
+  Avatar,
 } from '@mui/material';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -123,7 +124,19 @@ const Header: React.FC = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <PersonIcon color="primary" fontSize="small" />
+                    {rep.image_url ? (
+                      <Avatar
+                        src={rep.image_url}
+                        sx={{
+                          width: 24,
+                          height: 24,
+                        }}
+                      >
+                        <PersonIcon fontSize="small" />
+                      </Avatar>
+                    ) : (
+                      <PersonIcon color="primary" fontSize="small" />
+                    )}
                   </ListItemIcon>
                   <ListItemText
                     primary={

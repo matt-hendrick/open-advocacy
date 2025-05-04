@@ -49,5 +49,6 @@ export const transformEntityFromApi = (entity: any): Entity => {
     address: entity.address || '',
     district_name: entity.district_name || '',
     jurisdiction_id: entity.jurisdiction_id,
+    image_url: entity.image_url || '',
   };
 };

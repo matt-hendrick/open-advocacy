@@ -124,11 +124,10 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 14: Build a flexible, cleaner import system (IN PROGRESS)
 - ✅ Build an extensible import system
 - ✅ Clean up and consolidate various utility scripts
-- Fix duplicated districts  import bug
+- ✅ Fix duplicated districts import bug
+- ✅ FAdd optional image url to entities and display on the frontend
 - Add an in UI means of adding Chicago/IL data
-- Add optional image url to entities and display on the frontend
 - Investigate exporting/import project data
-
 
 ### Phase 15: Cleanup Existing Implementation (PLANNED)
 - Fix all the frontend typing/linting errors

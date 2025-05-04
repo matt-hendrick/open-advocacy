@@ -31,6 +31,7 @@ export interface Entity {
   address?: string;
   district_name?: string;
   jurisdiction_id: string;
+  image_url?: string;
 }
 
 export interface EntityStatusRecord {
