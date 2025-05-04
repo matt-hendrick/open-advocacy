@@ -3,26 +3,9 @@ from uuid import UUID
 
 from app.models.pydantic.models import EntityStatusRecord
 from app.services.status_service import StatusService
-from app.db.dependencies import (
-    get_status_records_provider,
-    get_projects_provider,
-    get_entities_provider,
-)
+from app.services.service_factory import get_status_service
 
 router = APIRouter()
-
-
-def get_status_service(
-    status_records_provider=Depends(get_status_records_provider),
-    projects_provider=Depends(get_projects_provider),
-    entities_provider=Depends(get_entities_provider),
-):
-    """Dependency to get the status service."""
-    return StatusService(
-        status_records_provider=status_records_provider,
-        projects_provider=projects_provider,
-        entities_provider=entities_provider,
-    )
 
 
 @router.get("/", response_model=list[EntityStatusRecord] | None)

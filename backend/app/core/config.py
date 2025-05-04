@@ -30,6 +30,8 @@ class Settings(BaseSettings):
 
     OPENSTATES_API_KEY: str | None = None
 
+    DATA_DIR: str | None = None
+
     class Config:
         env_file = os.path.join(BASE_DIR, ".env")
         env_file_encoding = "utf-8"

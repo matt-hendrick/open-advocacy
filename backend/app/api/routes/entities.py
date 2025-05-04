@@ -4,29 +4,9 @@ from typing import List
 
 from app.models.pydantic.models import Entity, EntityCreate, AddressLookupRequest
 from app.services.entity_service import EntityService
-from app.db.dependencies import (
-    get_entities_provider,
-    get_jurisdictions_provider,
-    get_districts_provider,
-)
-from app.geo.provider_factory import get_geo_provider
+from app.services.service_factory import get_entity_service
 
 router = APIRouter()
-
-
-def get_entity_service(
-    entities_provider=Depends(get_entities_provider),
-    jurisdictions_provider=Depends(get_jurisdictions_provider),
-    districts_provider=Depends(get_districts_provider),
-    geo_provider=Depends(get_geo_provider),
-):
-    """Dependency to get the entity service."""
-    return EntityService(
-        entities_provider=entities_provider,
-        jurisdictions_provider=jurisdictions_provider,
-        districts_provider=districts_provider,
-        geo_provider=geo_provider,
-    )
 
 
 @router.get("/", response_model=list[Entity])

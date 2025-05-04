@@ -516,7 +516,9 @@ async def import_il_legislators_data(
                 session, legislators, house_jurisdiction_id, senate_jurisdiction_id
             )
 
-            logger.info("Created entities", entity_count=len(entities) if entities else 0)
+            logger.info(
+                "Created entities", entity_count=len(entities) if entities else 0
+            )
 
         # Clean up
         await engine.dispose()

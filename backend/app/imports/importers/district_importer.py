@@ -1,0 +1,285 @@
+# app/imports/importers/district_importer.py
+from uuid import UUID
+from typing import Any
+import logging
+
+from app.imports.base import DataImporter
+from app.services.district_service import DistrictService
+from app.services.jurisdiction_service import JurisdictionService
+from app.models.pydantic.models import DistrictBase
+from app.geo.provider_factory import get_geo_provider
+
+logger = logging.getLogger(__name__)
+
+
+class DistrictImporter(DataImporter):
+    """
+    Importer for district data and boundaries.
+
+    Can import district data from tabular data sources or
+    from GeoJSON with boundary information.
+    """
+
+    def __init__(
+        self,
+        district_service: DistrictService,
+        jurisdiction_service: JurisdictionService,
+        geo_provider=None,
+    ):
+        self.district_service = district_service
+        self.jurisdiction_service = jurisdiction_service
+        self.geo_provider = geo_provider or get_geo_provider()
+
+    async def _get_jurisdiction_id(self, jurisdiction_name: str) -> UUID:
+        """Get jurisdiction ID from name."""
+        jurisdictions = await self.jurisdiction_service.list_jurisdictions()
+        jurisdiction = next(
+            (j for j in jurisdictions if j.name == jurisdiction_name), None
+        )
+        if not jurisdiction:
+            raise ValueError(f"Jurisdiction not found with name: {jurisdiction_name}")
+        return jurisdiction.id
+
+    async def import_data(
+        self,
+        jurisdiction_name: str,
+        data: list[dict[str, Any]] = None,
+        geojson_data: dict[str, Any] = None,
+        name_format: str = "District {code}",
+        code_field: str = "district_number",
+        district_name_property: str = None,
+        district_name_prefix: str = "",
+        **kwargs,
+    ) -> dict[str, Any]:
+        """
+        Import districts from data source, with optional boundary data.
+
+        Args:
+            jurisdiction_name: Name of the parent jurisdiction
+            data: List of district data dictionaries (for tabular data)
+            geojson_data: GeoJSON data (for boundaries)
+            name_format: Format string for district names (e.g., "District {code}")
+            code_field: Field in data that contains the district code
+            district_name_property: Property in GeoJSON that contains district identifier
+            district_name_prefix: Prefix to add to district names (e.g., "Ward ", "District ")
+
+        Returns:
+            Dict with import results
+        """
+        # Lookup jurisdiction ID from name
+        jurisdiction_id = await self._get_jurisdiction_id(jurisdiction_name)
+
+        # Track results
+        created_count = 0
+        updated_count = 0
+        error_count = 0
+        districts = []
+
+        # Handle tabular data import
+        if data:
+            await self._import_from_tabular_data(
+                data=data,
+                jurisdiction_id=jurisdiction_id,
+                name_format=name_format,
+                code_field=code_field,
+                created_count=created_count,
+                updated_count=updated_count,
+                error_count=error_count,
+                districts=districts,
+            )
+
+        # Handle GeoJSON boundary import
+        if geojson_data:
+            await self._import_from_geojson(
+                geojson_data=geojson_data,
+                jurisdiction_id=jurisdiction_id,
+                district_name_property=district_name_property or code_field,
+                district_name_prefix=district_name_prefix,
+                created_count=created_count,
+                updated_count=updated_count,
+                error_count=error_count,
+                districts=districts,
+            )
+
+        return {
+            "districts_created": created_count,
+            "districts_updated": updated_count,
+            "districts_error": error_count,
+            "districts_total": len(districts),
+            "districts": districts,
+        }
+
+    async def _import_from_tabular_data(
+        self,
+        data: list[dict[str, Any]],
+        jurisdiction_id: UUID,
+        name_format: str,
+        code_field: str,
+        created_count: int,
+        updated_count: int,
+        error_count: int,
+        districts: list,
+    ):
+        """Import districts from tabular data."""
+        # Get existing districts for lookup
+        existing_districts = await self.district_service.list_districts(jurisdiction_id)
+        existing_by_code = {d.code: d for d in existing_districts}
+
+        # Process each district
+        for item in data:
+            try:
+                # Extract district code
+                code = str(item.get(code_field))
+                if not code:
+                    logger.warning("Skipping district without code")
+                    error_count += 1
+                    continue
+
+                # Create district name
+                name = name_format.format(code=code)
+
+                # Check if district already exists
+                existing_district = existing_by_code.get(code)
+
+                # Create district object
+                district_data = {
+                    "name": name,
+                    "code": code,
+                    "jurisdiction_id": jurisdiction_id,
+                }
+
+                # Add any additional fields if provided
+                for field in ["description"]:
+                    if field in item:
+                        district_data[field] = item[field]
+
+                district_create = DistrictBase(**district_data)
+
+                if existing_district:
+                    # Update existing district
+                    updated_district = await self.district_service.update_district(
+                        existing_district.id, district_create
+                    )
+                    districts.append(updated_district)
+                    updated_count += 1
+                else:
+                    # Create new district
+                    new_district = await self.district_service.create_district(
+                        district_create
+                    )
+                    districts.append(new_district)
+                    created_count += 1
+
+            except Exception as e:
+                logger.error(
+                    f"Error processing district {item.get(code_field, 'unknown')}: {str(e)}"
+                )
+                error_count += 1
+
+    async def _import_from_geojson(
+        self,
+        geojson_data: dict[str, Any],
+        jurisdiction_id: UUID,
+        district_name_property: str,
+        district_name_prefix: str,
+        created_count: int,
+        updated_count: int,
+        error_count: int,
+        districts: list,
+    ):
+        """Import districts and boundaries from GeoJSON."""
+        # Validate GeoJSON format
+        if (
+            not isinstance(geojson_data, dict)
+            or geojson_data.get("type") != "FeatureCollection"
+        ):
+            raise ValueError("Invalid GeoJSON: Expected a FeatureCollection")
+
+        features = geojson_data.get("features", [])
+        if not features:
+            logger.warning("No features found in GeoJSON")
+            return
+
+        # Get existing districts for lookup
+        existing_districts = await self.district_service.list_districts(jurisdiction_id)
+        existing_by_name = {d.name: d for d in existing_districts}
+
+        # Process each feature
+        for feature in features:
+            try:
+                # Extract district number from properties
+                properties = feature.get("properties", {})
+                district_number = properties.get(district_name_property)
+                if not district_number:
+                    logger.warning("Skipping feature without district number")
+                    error_count += 1
+                    continue
+
+                # Create district name and code
+                district_name = f"{district_name_prefix}{district_number}"
+                district_code = str(district_number)
+
+                # Check if district already exists
+                existing_district = existing_by_name.get(district_name)
+
+                if existing_district:
+                    logger.info(
+                        f"District {district_name} already exists, updating boundary"
+                    )
+                    district_id = existing_district.id
+
+                    # Update boundary in geo provider
+                    await self.geo_provider.store_district_boundary(
+                        district_id, feature
+                    )
+                    districts.append(existing_district)
+                    updated_count += 1
+                else:
+                    logger.info(f"Creating new district: {district_name}")
+
+                    # Create district object
+                    district_data = DistrictBase(
+                        name=district_name,
+                        code=district_code,
+                        jurisdiction_id=jurisdiction_id,
+                    )
+
+                    # Create district in database
+                    new_district = await self.district_service.create_district(
+                        district_data
+                    )
+
+                    # Store boundary in geo provider
+                    await self.geo_provider.store_district_boundary(
+                        new_district.id, feature
+                    )
+
+                    districts.append(new_district)
+                    created_count += 1
+
+            except Exception as e:
+                logger.error(f"Error processing district feature: {str(e)}")
+                error_count += 1
+
+    async def validate_import(self, **kwargs) -> bool:
+        """Validate district import parameters."""
+        if "jurisdiction_name" not in kwargs:
+            logger.error(f"Jurisdiction name not in kwargs: {kwargs}")
+            return False
+
+        # Must have either data or geojson_data
+        if "data" not in kwargs and "geojson_data" not in kwargs:
+            logger.error(f"Data and geojson_data not in kwargs: {kwargs}")
+            return False
+
+        # If using data, must have code_field
+        if "data" in kwargs and "code_field" not in kwargs:
+            logger.error(f"code_field not in kwargs: {kwargs}")
+            return False
+
+        # If using geojson_data, must have district_name_property
+        if "geojson_data" in kwargs and "district_name_property" not in kwargs:
+            logger.error(f"district_name_property not in kwargs: {kwargs}")
+            return False
+
+        return True
