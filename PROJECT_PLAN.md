@@ -118,8 +118,8 @@ Open Advocacy is an open-source platform connecting citizens with representative
 
 ### Phase 13: Add Script to Add in IL Data, Fix Bugs, and add in Service Layer (IN PROGRESS)
 - ✅ Add script to add IL House/Senate data
-- ✅ Fix a bug with project creations
-- Create a service layer between routes and the DB logic
+- ✅ Fix a bug with project creation
+- ✅ Create a service layer between routes and the DB logic
 - Clean up and consolidate various utility scripts
 - Add an in UI means of adding Chicago/IL data
 - Investigate exporting/import project data
