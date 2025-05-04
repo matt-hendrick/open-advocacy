@@ -2,33 +2,47 @@ from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
 from app.models.pydantic.models import Jurisdiction, JurisdictionBase
-from app.db.base import DatabaseProvider
+from app.services.jurisdiction_service import JurisdictionService
 from app.db.dependencies import get_jurisdictions_provider
 
 router = APIRouter()
 
 
+def get_jurisdiction_service(
+    jurisdictions_provider=Depends(get_jurisdictions_provider),
+):
+    """Dependency to get the jurisdiction service."""
+    return JurisdictionService(
+        jurisdictions_provider=jurisdictions_provider,
+    )
+
+
 @router.get("/", response_model=list[Jurisdiction])
 async def list_jurisdictions(
-    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    skip: int = 0,
+    limit: int = 100,
+    jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
 ):
-    return await jurisdictions_provider.list()
+    """List all jurisdictions."""
+    return await jurisdiction_service.list_jurisdictions(skip=skip, limit=limit)
 
 
 @router.post("/", response_model=Jurisdiction)
 async def create_jurisdiction(
     jurisdiction: JurisdictionBase,
-    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
 ):
-    return await jurisdictions_provider.create(jurisdiction)
+    """Create a new jurisdiction."""
+    return await jurisdiction_service.create_jurisdiction(jurisdiction)
 
 
 @router.get("/{jurisdiction_id}", response_model=Jurisdiction)
 async def get_jurisdiction(
     jurisdiction_id: UUID,
-    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
 ):
-    jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+    """Get a jurisdiction by ID."""
+    jurisdiction = await jurisdiction_service.get_jurisdiction(jurisdiction_id)
     if not jurisdiction:
         raise HTTPException(status_code=404, detail="Jurisdiction not found")
     return jurisdiction
@@ -38,22 +52,24 @@ async def get_jurisdiction(
 async def update_jurisdiction(
     jurisdiction_id: UUID,
     jurisdiction: JurisdictionBase,
-    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
 ):
-    existing_jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+    """Update an existing jurisdiction."""
+    existing_jurisdiction = await jurisdiction_service.get_jurisdiction(jurisdiction_id)
     if not existing_jurisdiction:
         raise HTTPException(status_code=404, detail="Jurisdiction not found")
 
-    return await jurisdictions_provider.update(jurisdiction_id, jurisdiction)
+    return await jurisdiction_service.update_jurisdiction(jurisdiction_id, jurisdiction)
 
 
 @router.delete("/{jurisdiction_id}", response_model=bool)
 async def delete_jurisdiction(
     jurisdiction_id: UUID,
-    jurisdictions_provider: DatabaseProvider = Depends(get_jurisdictions_provider),
+    jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
 ):
-    existing_jurisdiction = await jurisdictions_provider.get(jurisdiction_id)
+    """Delete a jurisdiction by ID."""
+    existing_jurisdiction = await jurisdiction_service.get_jurisdiction(jurisdiction_id)
     if not existing_jurisdiction:
         raise HTTPException(status_code=404, detail="Jurisdiction not found")
 
-    return await jurisdictions_provider.delete(jurisdiction_id)
+    return await jurisdiction_service.delete_jurisdiction(jurisdiction_id)
