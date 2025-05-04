@@ -219,6 +219,9 @@ class DistrictImporter(DataImporter):
         existing_by_name = {d.name: d for d in existing_districts}
         existing_by_code = {d.code: d for d in existing_districts}
 
+        # Track already processed districts in this import session
+        processed_districts = set()
+
         # Process each feature
         for feature in features:
             try:
@@ -233,6 +236,14 @@ class DistrictImporter(DataImporter):
                 # Create district name and code
                 district_name = f"{district_name_prefix}{district_number}"
                 district_code = str(district_number)
+
+                # Skip if we've already processed this district in this session
+                if district_name in processed_districts:
+                    logger.info(f"Skipping duplicate district: {district_name}")
+                    continue
+
+                # Add to processed set
+                processed_districts.add(district_name)
 
                 # Check if district already exists
                 existing_district = existing_by_name.get(
