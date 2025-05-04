@@ -111,15 +111,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSubmit, onCancel }
         group_id: groupId || undefined,
       };
 
-      let response;
-      if (project) {
-        response = await projectService.updateProject(project.id, projectData);
-      } else {
-        response = await projectService.createProject(projectData);
-      }
-
       if (onSubmit) {
-        onSubmit(response.data);
+        onSubmit(projectData);
       }
     } catch (err) {
       console.error('Error saving project:', err);

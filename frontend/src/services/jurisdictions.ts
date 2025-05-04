@@ -17,7 +17,7 @@ export const jurisdictionService = {
   },
 
   async createJurisdiction(data: JurisdictionCreateData): Promise<{ data: Jurisdiction }> {
-    return api.post<Jurisdiction>('/jurisdictions', data);
+    return api.post<Jurisdiction>('/jurisdictions/', data);
   },
 
   async updateJurisdiction(

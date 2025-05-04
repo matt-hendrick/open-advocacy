@@ -55,7 +55,7 @@ export const projectService = {
   },
 
   async createProject(project: ProjectCreateData): Promise<{ data: Project }> {
-    return api.post<Project>('/projects', {
+    return api.post<Project>('/projects/', {
       ...project,
       preferred_status: project.preferred_status || EntityStatus.SOLID_APPROVAL,
     });
