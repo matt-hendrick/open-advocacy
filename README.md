@@ -80,9 +80,9 @@ To populate the database with example data, follow these steps:
     python -m scripts.import_data chicago
   ```
 
-5. Import Illinois House and Senate represenative data:
+5. Import Illinois House and Senate representative data:
   ```bash
-  python -m scripts.import_data illinois
+    python -m scripts.import_data illinois
   ```
 
 
@@ -95,6 +95,7 @@ open-advocacy/
 │   │   ├── core/           # Core configuration
 │   │   ├── db/             # Database utilities
 │   │   ├── geo/            # Geospatial utilities
+│   │   ├── imports/        # Import system
 │   │   ├── models/         # Data models
 │   │   └── services/       # Services
 │   ├── data/               # Database and geospatial data
