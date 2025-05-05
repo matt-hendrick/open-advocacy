@@ -110,7 +110,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 11: Actually Deploy this Somewhere (COMPLETED)
 - ✅ Deploy the app according to whatever is determined in the previous step
 
-### Phase 12: Test and Document Deployment (Completed)
+### Phase 12: Test and Document Deployment (COMPLETED)
 - ✅ Test all workflows on the deployed version of the application
 - ✅ Document the current state of the application.
 - ✅ Clean up existing readmes
@@ -125,9 +125,11 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Build an extensible import system
 - ✅ Clean up and consolidate various utility scripts
 - ✅ Fix duplicated districts import bug
-- ✅ FAdd optional image url to entities and display on the frontend
+- ✅ Add optional image url to entities and display on the frontend
+- For script creating example project data, ensure that all associated entities in jurisdiction are tagged as neutral
 - Add an in UI means of adding Chicago/IL data
 - Investigate exporting/import project data
+- Allow editing many statuses at once
 
 ### Phase 15: Cleanup Existing Implementation (PLANNED)
 - Fix all the frontend typing/linting errors
@@ -152,23 +154,8 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Make projects shareable
 
 ## 5. Features To Eventually Add
-- Create an entity detail page that display entity info + associated projects/status
-- Ability to update/display a project timeline and current status (bill timeline)
-- Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
+- Ability to update/display a project timeline and current status (project/bill timeline)
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 - Create add entity page?
 - Create add jurisdiction pages?
-
-
-## 6. Next Steps After Validation
-
-Potential next steps (with rough prioritization)
-
-1. Complete Illinois specific location module
-2. Authentication and authorization system
-3. Additional UI polish
-4. Template response generation
-5. Deployment infrastructure
-6. Containerize things
-
