@@ -126,12 +126,19 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Clean up and consolidate various utility scripts
 - ✅ Fix duplicated districts import bug
 - ✅ Add optional image url to entities and display on the frontend
-- For script creating example project data, ensure that all associated entities in jurisdiction are tagged as neutral
-- Add an in UI means of adding Chicago/IL data
+
+### Phase 15: Add Auth/User/Admin System (PLANNED)
+- Add authentication and roles system
+- Add an in UI means of adding Chicago/IL data for users with the permissions
+- Segment projects by group
+- Allow groups to hide some/all projects
+- Make projects shareable
+
+### Phase 16: Better Bulk Data Management/Import (PLANNED)
 - Investigate exporting/import project data
 - Allow editing many statuses at once
 
-### Phase 15: Cleanup Existing Implementation (PLANNED)
+### Phase 17: Cleanup Existing Implementation (PLANNED)
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
@@ -146,12 +153,6 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Add some core tests to help validate that ensure future changes don't break anything
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
-
-### Phase 16: Add Auth/Admin System (PLANNED)
-- Add authentication and roles system
-- Segment projects by group
-- Allow groups to hide some/all projects
-- Make projects shareable
 
 ## 5. Features To Eventually Add
 - Ability to update/display a project timeline and current status (project/bill timeline)

@@ -6,6 +6,7 @@ from app.models.pydantic.models import (
     EntityStatusRecord,
     Jurisdiction,
     District,
+    User,
 )
 from app.models.orm import models as orm_models
 
@@ -44,3 +45,7 @@ def get_districts_provider():
     return ProviderFactory.get_provider(
         pydantic_model=District, orm_model=orm_models.District
     )
+
+
+def get_users_provider():
+    return ProviderFactory.get_provider(pydantic_model=User, orm_model=orm_models.User)

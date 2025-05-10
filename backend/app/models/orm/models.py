@@ -24,6 +24,9 @@ class Group(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    is_public = Column(
+        Boolean, default=True
+    )  # Are the group's projects public by default
 
     # Relationships
     projects = relationship("Project", back_populates="group")
@@ -50,6 +53,7 @@ class Project(Base):
         UUID(as_uuid=True), ForeignKey("jurisdictions.id"), nullable=True
     )
     group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
+    is_public = Column(Boolean, default=True)
 
     # Relationships
     status_records = relationship("EntityStatusRecord", back_populates="project")
@@ -127,3 +131,22 @@ class EntityStatusRecord(Base):
     # Relationships
     entity = relationship("Entity", back_populates="status_records")
     project = relationship("Project", back_populates="status_records")
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String(255), nullable=False, unique=True, index=True)
+    name = Column(String(255), nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=False)
+    role = Column(
+        String(50), nullable=False
+    )  # super_admin, group_admin, editor, viewer
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    last_login = Column(DateTime(timezone=True), nullable=True)
+
+    # Relationships
+    group = relationship("Group", back_populates="users")
