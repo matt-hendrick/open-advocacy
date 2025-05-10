@@ -21,6 +21,13 @@ class EntityStatus(str, Enum):
     SOLID_DISAPPROVAL = "solid_disapproval"
 
 
+class UserRole(str, Enum):
+    SUPER_ADMIN = "super_admin"
+    GROUP_ADMIN = "group_admin"
+    EDITOR = "editor"
+    VIEWER = "viewer"
+
+
 class EntityBase(BaseModel):
     name: str
     title: str | None = None
@@ -110,6 +117,7 @@ class StatusDistribution(BaseModel):
 class GroupBase(BaseModel):
     name: str
     description: str | None = None
+    is_public: bool = True
 
 
 class Group(GroupBase):
@@ -130,6 +138,7 @@ class ProjectBase(BaseModel):
     template_response: str | None = None
     jurisdiction_id: UUID | None = None
     group_id: UUID | None = None
+    is_public: bool = True
 
 
 class Project(ProjectBase):
@@ -146,3 +155,24 @@ class Project(ProjectBase):
 
 class AddressLookupRequest(BaseModel):
     address: str
+
+
+class UserBase(BaseModel):
+    email: str
+    name: str
+    group_id: UUID
+    role: str  # Enum: "super_admin", "group_admin", "editor", "viewer"
+    is_active: bool = True
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class User(UserBase):
+    id: UUID = Field(default_factory=uuid4)
+    created_at: datetime = Field(default_factory=datetime.now)
+    last_login: datetime | None = None
+
+    class Config:
+        from_attributes = True

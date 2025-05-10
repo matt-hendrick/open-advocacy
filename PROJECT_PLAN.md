@@ -125,11 +125,20 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Build an extensible import system
 - ✅ Clean up and consolidate various utility scripts
 - ✅ Fix duplicated districts import bug
-- ✅ FAdd optional image url to entities and display on the frontend
-- Add an in UI means of adding Chicago/IL data
-- Investigate exporting/import project data
+- ✅ Add optional image url to entities and display on the frontend
 
-### Phase 15: Cleanup Existing Implementation (PLANNED)
+### Phase 15: Add Auth/User/Admin System (PLANNED)
+- Add authentication and roles system
+- Add an in UI means of adding Chicago/IL data for users with the permissions
+- Segment projects by group
+- Allow groups to hide some/all projects
+- Make projects shareable
+
+### Phase 16: Better Bulk Data Management/Import (PLANNED)
+- Investigate exporting/import project data
+- Allow editing statuses in bulk
+
+### Phase 17: Cleanup Existing Implementation (PLANNED)
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
@@ -145,30 +154,11 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - At least a few integration tests.
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
-### Phase 16: Add Auth/Admin System (PLANNED)
-- Add authentication and roles system
-- Segment projects by group
-- Allow groups to hide some/all projects
-- Make projects shareable
-
 ## 5. Features To Eventually Add
-- Create an entity detail page that display entity info + associated projects/status
 - Ability to update/display a project timeline and current status (bill timeline)
-- Display of user's representatives and where they stand on specific issues (entity X opposes project Y)
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 - Create add entity page?
 - Create add jurisdiction pages?
 
-
-## 6. Next Steps After Validation
-
-Potential next steps (with rough prioritization)
-
-1. Complete Illinois specific location module
-2. Authentication and authorization system
-3. Additional UI polish
-4. Template response generation
-5. Deployment infrastructure
-6. Containerize things
 

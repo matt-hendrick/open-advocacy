@@ -8,6 +8,7 @@ from app.db.dependencies import (
     get_status_records_provider,
     get_jurisdictions_provider,
     get_districts_provider,
+    get_users_provider,
 )
 from app.services.project_service import ProjectService
 from app.services.entity_service import EntityService
@@ -15,6 +16,7 @@ from app.services.jurisdiction_service import JurisdictionService
 from app.services.status_service import StatusService
 from app.services.district_service import DistrictService
 from app.services.group_service import GroupService
+from app.services.user_service import UserService
 from app.geo.provider_factory import get_geo_provider
 
 
@@ -91,6 +93,17 @@ def create_group_service(groups_provider=None):
     return GroupService(groups_provider=groups_provider or get_groups_provider())
 
 
+def create_user_service(
+    users_provider=None,
+    groups_provider=None,
+) -> UserService:
+    """Create a UserService instance."""
+    return UserService(
+        users_provider=users_provider or get_users_provider(),
+        groups_provider=groups_provider or get_groups_provider(),
+    )
+
+
 # FastAPI dependency functions that can be used with Depends()
 def get_project_service(
     projects_provider=Depends(get_projects_provider),
@@ -161,6 +174,17 @@ def get_group_service(groups_provider=Depends(get_groups_provider)):
     return GroupService(groups_provider=groups_provider)
 
 
+def get_user_service(
+    users_provider=Depends(get_users_provider),
+    groups_provider=Depends(get_groups_provider),
+) -> UserService:
+    """Get a UserService instance with dependencies injected."""
+    return UserService(
+        users_provider=users_provider,
+        groups_provider=groups_provider,
+    )
+
+
 # Cached singleton versions for script usage to avoid recreating the same service objects repeatedly
 @lru_cache()
 def get_cached_project_service() -> ProjectService:
@@ -196,3 +220,9 @@ def get_cached_district_service() -> DistrictService:
 def get_cached_group_service() -> GroupService:
     """Get a cached singleton GroupService instance."""
     return create_group_service()
+
+
+@lru_cache()
+def get_cached_user_service() -> UserService:
+    """Get a cached singleton UserService instance."""
+    return create_user_service()
