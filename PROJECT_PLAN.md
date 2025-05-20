@@ -127,18 +127,29 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Fix duplicated districts import bug
 - ✅ Add optional image url to entities and display on the frontend
 
-### Phase 15: Add Auth/User/Admin System (PLANNED)
-- Add authentication and roles system
+### Phase 15: Add Auth/User/Admin System (IN PROGRESS)
+- ✅ Add basic authentication and roles system
+- ✅ Create some of the main backend auth endpoints
+- ✅ Create some of the basic frontend auth related code
+- Make functional create user page
+- Ensure created users are associated with groups
+- Create admin page to view users in group
+- Allow admins to edit users roles in group 
+- Allows admin to create users with roles
+- Allow super admin to create other admins
+
+### Phase 16: Allow hiding projects and add in UI means of adding Chicago/IL data (PLANNED)
 - Add an in UI means of adding Chicago/IL data for users with the permissions
 - Segment projects by group
 - Allow groups to hide some/all projects
 - Make projects shareable
 
-### Phase 16: Better Bulk Data Management/Import (PLANNED)
+### Phase 17: Better Bulk Data Management/Import (PLANNED)
 - Investigate exporting/import project data
 - Allow editing statuses in bulk
 
-### Phase 17: Cleanup Existing Implementation (PLANNED)
+### Phase 18: Cleanup Existing Implementation (PLANNED)
+- Improve mobile styling
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
@@ -155,6 +166,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
 ## 5. Features To Eventually Add
+- Investigate other, more robust options for auth
 - Ability to update/display a project timeline and current status (bill timeline)
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
