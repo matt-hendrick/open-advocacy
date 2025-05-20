@@ -103,3 +103,35 @@ export interface Group {
 export interface AddressLookupRequest {
   address: string;
 }
+
+// Auth interfaces
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export interface UserRegisterData {
+  email: string;
+  full_name?: string;
+  password: string;
+  group_id: string;
+  role?: string;
+  is_active?: boolean;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: string;
+  group_id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at?: string;
+  last_login?: string;
+}

@@ -45,9 +45,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 # Authentication dependencies
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    from app.services.user_service import get_user_service
+    from app.services.service_factory import get_cached_user_service
 
-    user_service = get_user_service()
+    user_service = get_cached_user_service()
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
