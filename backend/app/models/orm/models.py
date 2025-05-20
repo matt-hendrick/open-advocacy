@@ -30,6 +30,7 @@ class Group(Base):
 
     # Relationships
     projects = relationship("Project", back_populates="group")
+    users = relationship("User", back_populates="group")
 
 
 class Project(Base):

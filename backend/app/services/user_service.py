@@ -28,9 +28,7 @@ class UserService:
         if not user:
             return None
 
-        # Retrieve the full user object to get the hashed_password
-        user_dict = await self.users_provider.get_with_password(user.id)
-        if not user_dict or not verify_password(password, user_dict["hashed_password"]):
+        if not verify_password(password, user.hashed_password):
             return None
 
         return user

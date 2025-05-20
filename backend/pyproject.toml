@@ -23,6 +23,9 @@ pydantic-settings = "^2.8.1"
 aiohttp = "^3.11.16"
 shapely = "^2.1.0"
 gunicorn = "^23.0.0"
+python-jose = {version = "^3.4.0", extras = ["cryptography"]}
+python-multipart = "^0.0.20"
+bcrypt = "^4.3.0"
 
 
 [build-system]
