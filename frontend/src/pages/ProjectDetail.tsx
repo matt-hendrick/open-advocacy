@@ -102,11 +102,7 @@ const ProjectDetail: React.FC = () => {
       try {
         const response = await entityService.getEntitiesByJurisdictions(project.jurisdiction_id);
         const transformedEntities = response.data.map(transformEntityFromApi);
-        console.log('response', response);
-        console.log('transformedEntities', transformedEntities);
         setEntities(transformedEntities);
-        console.log('Rendering with entities:', entities);
-        console.log('Project jurisdictions:', project.jurisdiction_id, project.jurisdiction_name);
       } catch (err) {
         console.error('Failed to fetch entities:', err);
       } finally {

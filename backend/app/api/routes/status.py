@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
 
-from app.models.pydantic.models import EntityStatusRecord
+from app.models.pydantic.models import EntityStatusRecord, User
 from app.services.status_service import StatusService
 from app.services.service_factory import get_status_service
+from app.core.auth import get_active_user
+
 
 router = APIRouter()
 
@@ -24,6 +26,7 @@ async def list_status_records(
 async def create_status_record(
     status_record: EntityStatusRecord,
     status_service: StatusService = Depends(get_status_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Create a new status record."""
     try:
@@ -49,6 +52,7 @@ async def update_status_record(
     record_id: UUID,
     status_record: EntityStatusRecord,
     status_service: StatusService = Depends(get_status_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Update an existing status record."""
     updated_record = await status_service.update_status_record(record_id, status_record)
@@ -61,6 +65,7 @@ async def update_status_record(
 async def delete_status_record(
     record_id: UUID,
     status_service: StatusService = Depends(get_status_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Delete a status record by ID."""
     deleted = await status_service.delete_status_record(record_id)

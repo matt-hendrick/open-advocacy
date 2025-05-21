@@ -136,9 +136,11 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Create admin page to view users in group
 - ✅ Limit group admins to creating users in their group
 - ✅ Allow admins to edit users roles/password in group 
-- Gate behavior/frontend components/api routes behind auth
-- Add backend guards against what users can do to modify roles/password/permissions
-- Add depends FastAPI function for auth
+- ✅ Add depends FastAPI function for auth
+- ✅ Add backend guards against what users can do to modify roles/password/permissions
+- ✅ Gate api routes behind auth
+- Ensure frontend components that require auth only display to logged in users
+- Display some error message if failed to auth
 
 ### Phase 16: Minor Cosmetic Changes in Response to Feedback (PLANNED) 
 - For status counts, no status should be unknown, not neutral
@@ -175,8 +177,11 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
 ## 5. Features To Eventually Add
+- Investigate data backup options
 - Investigate other, more robust options for auth
-- Ability to update/display a project timeline and current status (bill timeline)
+- Have an environment toggle that enables a demo mode with no auth
+- Ability to update/display a project timeline and current status
+- Track entity status and display that over time
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 - Create add entity page?

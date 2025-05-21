@@ -1,33 +1,34 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import Any
 
 from app.imports.orchestrator import ImportOrchestrator
+from app.models.pydantic.models import User
+from app.core.auth import get_super_admin_user
+from app.imports.locations.chicago import ChicagoLocationConfig
+from app.imports.locations.illinois import IllinoisLocationConfig
+
 
 router = APIRouter()
 
 # Register available locations
-from app.imports.locations.chicago import ChicagoLocationConfig
-# from app.imports.locations.illinois import IllinoisLocationConfig
-
 orchestrator = ImportOrchestrator()
 orchestrator.register_location("chicago", ChicagoLocationConfig)
-# orchestrator.register_location("illinois", IllinoisLocationConfig)
+orchestrator.register_location("illinois", IllinoisLocationConfig)
 
 
-# TODO: Add auth system and a depends function to validate the user has permissions
 @router.get("/locations", response_model=list[dict[str, Any]])
-async def list_locations():
-    """List available locations for import."""
+async def list_locations(current_user: User = Depends(get_super_admin_user)):
+    """List available locations for import. Only accessible by super admins."""
     return await orchestrator.get_available_locations()
 
 
-# TODO: Add auth system and a depends function to validate the user has permissions
 @router.post("/locations/{location_key}", response_model=dict[str, Any])
 async def import_location(
     location_key: str,
     override_params: dict[str, Any] | None = None,
+    current_user: User = Depends(get_super_admin_user),
 ):
-    """Import data for a specific location."""
+    """Import data for a specific location. Only accessible by super admins."""
     try:
         params = override_params or {}
         result = await orchestrator.import_location(location_key, **params)

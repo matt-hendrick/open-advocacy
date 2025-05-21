@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import projects, groups, entities, status, jurisdictions, auth
-from app.api.routes.admin import users
+from app.api.routes.admin import users, imports
 
 import logging
 import time
@@ -84,6 +84,11 @@ app.include_router(
     users.router,
     prefix="/api/users",
     tags=["users"],
+)
+app.include_router(
+    imports.router,
+    prefix="/api/imports",
+    tags=["imports"],
 )
 app.include_router(auth.router, prefix="/api")
 

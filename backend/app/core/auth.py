@@ -95,6 +95,7 @@ async def get_super_admin_user(current_user: User = Depends(get_active_user)):
     return current_user
 
 
+# TODO: Can this can be deleted
 async def get_editor_user(current_user: User = Depends(get_active_user)):
     if current_user.role not in [
         UserRole.SUPER_ADMIN,
