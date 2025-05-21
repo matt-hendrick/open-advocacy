@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
 
-from app.models.pydantic.models import Project, ProjectBase, ProjectStatus
+from app.models.pydantic.models import Project, ProjectBase, ProjectStatus, User
 from app.services.project_service import ProjectService
 from app.services.service_factory import get_project_service
+from app.core.auth import get_active_user
+
 
 router = APIRouter()
 
@@ -26,6 +28,7 @@ async def list_projects(
 async def create_project(
     project: ProjectBase,
     project_service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Create a new project."""
     try:
@@ -51,6 +54,7 @@ async def update_project(
     project_id: UUID,
     project: ProjectBase,
     project_service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Update an existing project."""
     try:
@@ -66,6 +70,7 @@ async def update_project(
 async def delete_project(
     project_id: UUID,
     project_service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Delete a project by ID."""
     deleted = await project_service.delete_project(project_id)

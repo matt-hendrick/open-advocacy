@@ -141,7 +141,7 @@ class ProjectService:
     ) -> StatusDistribution:
         """
         Get status distribution for a project, considering all entities in the project's jurisdiction.
-        Entities without a status record are counted as neutral.
+        Entities without a status record are counted as unknown.
 
         Args:
             project_id: UUID of the project
@@ -185,7 +185,7 @@ class ProjectService:
                 if sr.project_id == project_id and sr.entity_id in entity_ids
             ]
 
-        return self.calculate_status_distribution_with_neutrals(
+        return self.calculate_status_distribution_with_unknowns(
             project_status_records, total_entities
         )
 
@@ -236,7 +236,7 @@ class ProjectService:
 
         return projects
 
-    def calculate_status_distribution_with_neutrals(
+    def calculate_status_distribution_with_unknowns(
         self, status_records: list[EntityStatusRecord], total_entity_count: int
     ) -> StatusDistribution:
         """
@@ -250,9 +250,9 @@ class ProjectService:
         Returns:
             StatusDistribution object
         """
-        # Initialize all entities as neutral
+        # Initialize all entities as unknown
         distribution = StatusDistribution(
-            neutral=total_entity_count,  # Start with all entities as NEUTRAL
+            unknown=total_entity_count,  # Start with all entities as UNKNOWN
             total=total_entity_count,  # Total equals all entities in jurisdiction
         )
 
@@ -261,17 +261,16 @@ class ProjectService:
 
         # Process explicit status records
         for _, status in entity_statuses.items():
-            if status == EntityStatus.NEUTRAL:
-                continue  # Already counted as neutral
-
-            # Decrement the neutral count for non-neutral statuses
-            distribution.neutral -= 1
+            # Decrement the unknown count for non-unknown statuses
+            distribution.unknown -= 1
 
             # Increment the appropriate status count
             if status == EntityStatus.SOLID_APPROVAL:
                 distribution.solid_approval += 1
             elif status == EntityStatus.LEANING_APPROVAL:
                 distribution.leaning_approval += 1
+            elif status == EntityStatus.NEUTRAL:
+                distribution.neutral += 1
             elif status == EntityStatus.LEANING_DISAPPROVAL:
                 distribution.leaning_disapproval += 1
             elif status == EntityStatus.SOLID_DISAPPROVAL:

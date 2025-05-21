@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import projects, groups, entities, status, jurisdictions
+from app.api.routes import projects, groups, entities, status, jurisdictions, auth
+from app.api.routes.admin import users, imports
+
 import logging
 import time
 import os
@@ -87,6 +89,17 @@ app.include_router(status.router, prefix="/api/status", tags=["status"])
 app.include_router(
     jurisdictions.router, prefix="/api/jurisdictions", tags=["jurisdictions"]
 )
+app.include_router(
+    users.router,
+    prefix="/api/users",
+    tags=["users"],
+)
+app.include_router(
+    imports.router,
+    prefix="/api/imports",
+    tags=["imports"],
+)
+app.include_router(auth.router, prefix="/api")
 
 DB_INIT_LOCK_FILE = "/tmp/open_advocacy_db_initialized"
 

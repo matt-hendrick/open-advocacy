@@ -12,9 +12,8 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ **Data Flow**: Initial implementation of frontend-backend connection
 - ✅ **Database**: Setup flexible database provider system that supports Sqlite or postgres
 - ✅ **Representative Lookup Feature**: Users can enter in their address to lookup who their representatives are
+- ✅ **Auth and Admin User Features**: An initial basic auth and user role system has been setup. Ideally, that will be improved in the future.
 - ⏳ **Replicable Deployment Process Setup**: Pending
-- ⏳ **Auth and Admin User Features**: Functionality pending
-
 
 ## 3. Core Concepts & Data Model
 
@@ -36,9 +35,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - **Aggregate Display**: Projects show distribution of entity positions
 
 ### Roles & Permissions
-- **Admin**: Can create/edit projects, update entity statuses, manage system
+- **Admins**: Can create edit/users. Can create/edit projects and statuses
+- **Users**: Can create/edit projects, update entity statuses
 - **Anonymous Users**: Can view projects, lookup representatives, see status distributions
-- **Future**: Entity-specific notes and more granular permission system
 
 ## 4. Initial Development Phases
 
@@ -121,31 +120,53 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Fix a bug with project creation
 - ✅ Create a service layer between routes and the DB logic
 
-### Phase 14: Build a flexible, cleaner import system (IN PROGRESS)
+### Phase 14: Build a flexible, cleaner import system (COMPLETED)
 - ✅ Build an extensible import system
 - ✅ Clean up and consolidate various utility scripts
 - ✅ Fix duplicated districts import bug
 - ✅ Add optional image url to entities and display on the frontend
 
-### Phase 15: Add Auth/User/Admin System (PLANNED)
-- Add authentication and roles system
+### Phase 15: Add Auth/User/Admin System (COMPLETED)
+- ✅ Add basic authentication and roles system
+- ✅ Create some of the main backend auth endpoints
+- ✅ Create some of the basic frontend auth related code
+- ✅ Make functional create user page
+- ✅ Ensure created users are associated with groups and roles
+- ✅ Create admin page to view users in group
+- ✅ Limit group admins to creating users in their group
+- ✅ Allow admins to edit users roles/password in group 
+- ✅ Add depends FastAPI function for auth
+- ✅ Add backend guards against what users can do to modify roles/password/permissions
+- ✅ Gate api routes behind auth
+- ✅ Ensure frontend components that require auth only display to logged in users
+
+### Phase 16: Minor Cosmetic Changes in Response to Feedback (COMPLETED) 
+- ✅ For status counts, no status should be unknown, not neutral
+- ✅ Parameterize site name/title. Perhaps make it group specific instead of deployment specific
+
+### Phase 17: Add in UI means of adding Chicago/IL data and add Github Link + bug report form (IN PROGRESS)
 - Add an in UI means of adding Chicago/IL data for users with the permissions
+- Add something linking to the Github + a bug report button/form
+
+### Phase 18: Better Bulk Data Management/Import (PLANNED)
+- Investigate exporting/import project data
+- Allow editing statuses in bulk
+
+### Phase 19: Better project segmentatio/hiding (PLANNED)
 - Segment projects by group
 - Allow groups to hide some/all projects
 - Make projects shareable
 
-### Phase 16: Better Bulk Data Management/Import (PLANNED)
-- Investigate exporting/import project data
-- Allow editing many statuses at once
-
-### Phase 17: Cleanup Existing Implementation (PLANNED)
+### Phase 20: Cleanup Existing Implementation (PLANNED)
+- Improve mobile styling
+- Display some frontend error message if failed to auth
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
 - Don't reload entire project list on status/search text change
 - Ensure all backend endpoints use DB filter methods (don't use .list)
 - Everything is UTC atm, reconsider that
-- Replace various magic strings with enums
+- Replace various magic strings with enums (ex: UserRole on frontend)
 - Clean up data models (remove any unnecessary optionals or List/Dict)
 - Clean up logic fetching status/jurisdiction for projects (it is duplicated across a couple endpoints)
 - Clean up random console logs and prints
@@ -155,8 +176,14 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Ensure string filtering is done on the backend (atm, I am just filtering on the frontend)
 
 ## 5. Features To Eventually Add
-- Ability to update/display a project timeline and current status (project/bill timeline)
+- Investigate data backup options
+- Investigate other, more robust options for auth
+- Have an environment toggle that enables a demo mode with no auth
+- Ability to update/display a project timeline and current status
+- Track entity status and display that over time
 - Setup "Contact your Rep about this Project" workflow
 - Make entity metadata more flexible. Allowing adding arbitrary contact fields or other data.
 - Create add entity page?
 - Create add jurisdiction pages?
+
+

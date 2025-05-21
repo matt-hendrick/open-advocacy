@@ -161,8 +161,6 @@ Contributions are welcome! If you're interested in contributing, please:
 3. Implement your changes
 4. Submit a pull request
 
-For major changes, please open an issue first to discuss what you would like to change.
-
 ## License
 
 This project is licensed under the MIT License

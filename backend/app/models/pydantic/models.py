@@ -19,6 +19,14 @@ class EntityStatus(str, Enum):
     NEUTRAL = "neutral"
     LEANING_DISAPPROVAL = "leaning_disapproval"
     SOLID_DISAPPROVAL = "solid_disapproval"
+    UNKNOWN = "unknown"
+
+
+class UserRole(str, Enum):
+    SUPER_ADMIN = "super_admin"
+    GROUP_ADMIN = "group_admin"
+    EDITOR = "editor"
+    VIEWER = "viewer"
 
 
 class UserRole(str, Enum):
@@ -95,7 +103,7 @@ class EntityStatusRecord(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     entity_id: UUID
     project_id: UUID
-    status: EntityStatus = EntityStatus.NEUTRAL
+    status: EntityStatus = EntityStatus.UNKNOWN
     notes: str | None = None
     updated_at: datetime = Field(default_factory=datetime.now)
     updated_by: str
@@ -173,6 +181,8 @@ class User(UserBase):
     id: UUID = Field(default_factory=uuid4)
     created_at: datetime = Field(default_factory=datetime.now)
     last_login: datetime | None = None
+    hashed_password: str
 
     class Config:
         from_attributes = True
+        exclude = {"hashed_password"}

@@ -19,8 +19,9 @@ import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 import { projectService } from '../services/projects';
-import { Project, ProjectStatus } from '../types';
+import { Project, ProjectStatus, UserRole } from '../types';
 import ErrorDisplay from '../components/common/ErrorDisplay';
+import ConditionalUI from '../components/auth/ConditionalUI';
 import { transformProjectFromApi } from '../utils/dataTransformers';
 import StatusDistribution from '../components/Status/StatusDistribution';
 import { useDebounce } from '../hooks/useDebounce';
@@ -230,9 +231,18 @@ const ProjectList: React.FC = () => {
             Advocacy Projects
           </Typography>
 
-          <Button variant="contained" color="primary" onClick={() => navigate('/projects/create')}>
-            Create Project
-          </Button>
+          <ConditionalUI
+            requireAuth={true}
+            requiredRoles={[UserRole.EDITOR, UserRole.GROUP_ADMIN, UserRole.SUPER_ADMIN]}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/projects/create')}
+            >
+              Create Project
+            </Button>
+          </ConditionalUI>
         </Box>
 
         <Typography variant="body1" color="text.secondary" mb={4}>

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
-from app.models.pydantic.models import Jurisdiction, JurisdictionBase
+from app.models.pydantic.models import Jurisdiction, JurisdictionBase, User
 from app.services.jurisdiction_service import JurisdictionService
 from app.services.service_factory import get_jurisdiction_service
+from app.core.auth import get_active_user
 
 router = APIRouter()
 
@@ -22,6 +23,7 @@ async def list_jurisdictions(
 async def create_jurisdiction(
     jurisdiction: JurisdictionBase,
     jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Create a new jurisdiction."""
     return await jurisdiction_service.create_jurisdiction(jurisdiction)
@@ -44,6 +46,7 @@ async def update_jurisdiction(
     jurisdiction_id: UUID,
     jurisdiction: JurisdictionBase,
     jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Update an existing jurisdiction."""
     existing_jurisdiction = await jurisdiction_service.get_jurisdiction(jurisdiction_id)
@@ -57,6 +60,7 @@ async def update_jurisdiction(
 async def delete_jurisdiction(
     jurisdiction_id: UUID,
     jurisdiction_service: JurisdictionService = Depends(get_jurisdiction_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Delete a jurisdiction by ID."""
     existing_jurisdiction = await jurisdiction_service.get_jurisdiction(jurisdiction_id)

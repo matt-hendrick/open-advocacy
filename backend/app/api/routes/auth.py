@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 
-from app.models.pydantic.models import User, UserCreate
+from app.models.pydantic.models import User, UserCreate, UserRole
 from app.services.service_factory import get_user_service
 from app.core.auth import (
     create_access_token,
@@ -45,7 +45,7 @@ async def register_user(
 ):
     # Only allow creating users in the admin's group unless super admin
     if (
-        current_user.role != "super_admin"
+        current_user.role != UserRole.SUPER_ADMIN
         and user_create.group_id != current_user.group_id
     ):
         raise HTTPException(

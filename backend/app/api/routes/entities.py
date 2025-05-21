@@ -2,9 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from uuid import UUID
 from typing import List
 
-from app.models.pydantic.models import Entity, EntityCreate, AddressLookupRequest
+from app.models.pydantic.models import Entity, EntityCreate, AddressLookupRequest, User
 from app.services.entity_service import EntityService
 from app.services.service_factory import get_entity_service
+from app.core.auth import get_active_user
 
 router = APIRouter()
 
@@ -22,6 +23,7 @@ async def list_entities(
 async def create_entity(
     entity: EntityCreate,
     entity_service: EntityService = Depends(get_entity_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Create a new entity."""
     try:
@@ -47,6 +49,7 @@ async def update_entity(
     entity_id: UUID,
     entity: EntityCreate,
     entity_service: EntityService = Depends(get_entity_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Update an existing entity."""
     updated_entity = await entity_service.update_entity(entity_id, entity)
@@ -59,6 +62,7 @@ async def update_entity(
 async def delete_entity(
     entity_id: UUID,
     entity_service: EntityService = Depends(get_entity_service),
+    current_user: User = Depends(get_active_user),
 ):
     """Delete an entity by ID."""
     deleted = await entity_service.delete_entity(entity_id)

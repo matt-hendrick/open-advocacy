@@ -19,6 +19,8 @@ import {
   Paper,
   ButtonBase,
   Avatar,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -27,9 +29,16 @@ import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import PersonIcon from '@mui/icons-material/Person';
 import PlaceIcon from '@mui/icons-material/Place';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { useTheme as useCustomTheme } from '../../theme/ThemeProvider';
 import { lightTheme, darkTheme } from '../../theme/themes';
 import { useUserRepresentatives } from '../../contexts/UserRepresentativesContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { appConfig } from '@/utils/config';
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -37,9 +46,12 @@ const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { hasUserRepresentatives, userRepresentatives, userAddress } = useUserRepresentatives();
+  const { user, logout, isAuthenticated, hasAnyRole } = useAuth();
 
   // State for representative popover
   const [repAnchorEl, setRepAnchorEl] = useState<HTMLElement | null>(null);
+  // State for user menu
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleRepClick = (event: React.MouseEvent<HTMLElement>) => {
     setRepAnchorEl(event.currentTarget);
@@ -49,7 +61,22 @@ const Header: React.FC = () => {
     setRepAnchorEl(null);
   };
 
-  const repPopoverOpen = Boolean(repAnchorEl);
+  const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setUserMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleUserMenuClose();
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
+  };
 
   const handleEntityClick = (entityId: string) => {
     navigate(`/representatives/${entityId}`);
@@ -61,6 +88,9 @@ const Header: React.FC = () => {
   const toggleTheme = () => {
     setTheme(currentTheme.name === 'light' ? darkTheme : lightTheme);
   };
+
+  const repPopoverOpen = Boolean(repAnchorEl);
+  const userMenuOpen = Boolean(userMenuAnchorEl);
 
   // Representative badge and popover
   const RepresentativeBadge = () => {
@@ -213,7 +243,7 @@ const Header: React.FC = () => {
               }}
             />
             <Typography
-              variant="h6"
+              variant="h7"
               component={RouterLink}
               to="/"
               sx={{
@@ -223,7 +253,7 @@ const Header: React.FC = () => {
                 letterSpacing: '0.5px',
               }}
             >
-              Open Advocacy
+              {appConfig.name}
             </Typography>
 
             {/* Representative badge with popover - only show if screen is large enough */}
@@ -295,10 +325,7 @@ const Header: React.FC = () => {
           <Box
             sx={{
               display: 'flex',
-              position: { xs: 'absolute', sm: 'static' },
-              right: { xs: '0px', sm: 'auto' },
-              top: { xs: '80%', sm: 'auto' },
-              transform: { xs: 'translateY(-50%)', sm: 'none' },
+              alignItems: 'center',
             }}
           >
             <IconButton
@@ -306,19 +333,120 @@ const Header: React.FC = () => {
               color="inherit"
               sx={{
                 color: theme.palette.text.primary,
-                padding: { xs: '8px', sm: '12px' }, // Smaller padding on mobile
-                fontSize: { xs: '1.2rem', sm: '1.5rem' }, // Smaller icon size on mobile
+                mr: 1,
               }}
               aria-label={
                 currentTheme.name === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
               }
             >
-              {currentTheme.name === 'dark' ? (
-                <Brightness7Icon fontSize="inherit" />
-              ) : (
-                <Brightness4Icon fontSize="inherit" />
-              )}
+              {currentTheme.name === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
+
+            {/* Auth section - conditionally show login button or user menu */}
+            {isAuthenticated ? (
+              <>
+                <Tooltip title="Account settings">
+                  <IconButton
+                    onClick={handleUserMenuOpen}
+                    size="small"
+                    aria-controls={userMenuOpen ? 'account-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={userMenuOpen ? 'true' : undefined}
+                    sx={{
+                      ml: 1,
+                      border: `1px solid ${theme.palette.divider}`,
+                      borderRadius: 2,
+                      padding: '4px 8px',
+                      '&:hover': {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <AccountCircleIcon sx={{ mr: 1 }} />
+                      <Typography
+                        variant="body2"
+                        sx={{ mr: 1, display: { xs: 'none', sm: 'block' } }}
+                      >
+                        {user?.full_name || user?.email || 'User'}
+                      </Typography>
+                    </Box>
+                  </IconButton>
+                </Tooltip>
+
+                <Menu
+                  anchorEl={userMenuAnchorEl}
+                  id="account-menu"
+                  open={userMenuOpen}
+                  onClose={handleUserMenuClose}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                  PaperProps={{
+                    elevation: 3,
+                    sx: {
+                      minWidth: 200,
+                      mt: 1,
+                      '& .MuiMenuItem-root': {
+                        px: 2,
+                        py: 1,
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem onClick={handleUserMenuClose} disabled>
+                    <ListItemIcon>
+                      <AccountCircleIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={user?.full_name || 'User'}
+                      secondary={user?.email}
+                      primaryTypographyProps={{ variant: 'body2' }}
+                      secondaryTypographyProps={{ variant: 'caption' }}
+                    />
+                  </MenuItem>
+
+                  <Divider />
+
+                  {/* Admin menu item - only visible to admins */}
+                  {hasAnyRole(['super_admin', 'group_admin']) && (
+                    <MenuItem component={RouterLink} to="/admin" onClick={handleUserMenuClose}>
+                      <ListItemIcon>
+                        <AdminPanelSettingsIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText primary="Admin User Management" />
+                    </MenuItem>
+                  )}
+
+                  {/* User management - only for admins */}
+                  {hasAnyRole(['super_admin', 'group_admin']) && (
+                    <MenuItem component={RouterLink} to="/register" onClick={handleUserMenuClose}>
+                      <ListItemIcon>
+                        <SupervisorAccountIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText primary="Add User" />
+                    </MenuItem>
+                  )}
+
+                  {/* Logout option */}
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<LoginIcon />}
+                onClick={handleLogin}
+                sx={{ ml: 1 }}
+              >
+                Sign In
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </Container>

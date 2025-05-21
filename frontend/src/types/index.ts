@@ -11,6 +11,13 @@ export enum EntityStatus {
   NEUTRAL = 'neutral',
   LEANING_DISAPPROVAL = 'leaning_disapproval',
   SOLID_DISAPPROVAL = 'solid_disapproval',
+  UNKNOWN = 'unknown',
+}
+
+export enum UserRole {
+  SUPER_ADMIN = 'super_admin',
+  GROUP_ADMIN = 'group_admin',
+  EDITOR = 'editor',
 }
 export interface Jurisdiction {
   id: string;
@@ -102,4 +109,46 @@ export interface Group {
 
 export interface AddressLookupRequest {
   address: string;
+}
+
+// Auth interfaces
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export interface UserRegisterData {
+  email: string;
+  full_name?: string;
+  password: string;
+  group_id: string;
+  role?: string;
+  is_active?: boolean;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name?: string;
+  role: string;
+  group_id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at?: string;
+  last_login?: string;
+}
+
+export interface PasswordChangeData {
+  user_id: string;
+  new_password: string;
+}
+
+export interface UserRoleChangeData {
+  user_id: string;
+  new_role: string;
 }

@@ -1,7 +1,7 @@
 from uuid import UUID
 from datetime import datetime
 
-from app.models.pydantic.models import User, UserCreate
+from app.models.pydantic.models import User, UserCreate, UserRole
 from app.core.auth import get_password_hash, verify_password
 from app.db.base import DatabaseProvider
 
@@ -28,9 +28,7 @@ class UserService:
         if not user:
             return None
 
-        # Retrieve the full user object to get the hashed_password
-        user_dict = await self.users_provider.get_with_password(user.id)
-        if not user_dict or not verify_password(password, user_dict["hashed_password"]):
+        if not verify_password(password, user.hashed_password):
             return None
 
         return user
@@ -56,3 +54,17 @@ class UserService:
     async def update_last_login(self, user_id: UUID) -> None:
         """Update the last login timestamp for a user."""
         await self.users_provider.update(user_id, {"last_login": datetime.utcnow()})
+
+    async def get_users_in_group(self, group_id: UUID) -> list[User]:
+        """Get all users in a group."""
+        return await self.users_provider.filter(group_id=group_id)
+
+    async def update_user_role(self, user_id: UUID, new_role: UserRole) -> User:
+        """Update a user's role."""
+        return await self.users_provider.update(user_id, {"role": new_role})
+
+    async def update_user_password(self, user_id: UUID, new_password: str) -> bool:
+        """Update a user's password."""
+        hashed_password = get_password_hash(new_password)
+        await self.users_provider.update(user_id, {"hashed_password": hashed_password})
+        return True

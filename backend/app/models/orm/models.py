@@ -30,6 +30,7 @@ class Group(Base):
 
     # Relationships
     projects = relationship("Project", back_populates="group")
+    users = relationship("User", back_populates="group")
 
 
 class Project(Base):
@@ -123,7 +124,7 @@ class EntityStatusRecord(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     entity_id = Column(UUID(as_uuid=True), ForeignKey("entities.id"), nullable=False)
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=False)
-    status = Column(String(50), nullable=False, default="neutral")
+    status = Column(String(50), nullable=False, default="unknown")
     notes = Column(Text, nullable=True)
     updated_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     updated_by = Column(String(255), nullable=False)
