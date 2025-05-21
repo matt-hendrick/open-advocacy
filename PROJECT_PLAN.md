@@ -140,17 +140,24 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Add backend guards against what users can do to modify roles/password/permissions
 - Add depends FastAPI function for auth
 
-### Phase 16: Allow hiding projects and add in UI means of adding Chicago/IL data (PLANNED)
+### Phase 16: Minor Cosmetic Changes in Response to Feedback (PLANNED) 
+- For status counts, no status should be unknown, not neutral
+- Parameterize site name/title. Perhaps make it group specific instead of deployment specific
+- Add something linking to the Github + a bug report button/form
+
+### Phase 17: Add in UI means of adding Chicago/IL data (PLANNED)
 - Add an in UI means of adding Chicago/IL data for users with the permissions
+
+### Phase 18: Better Bulk Data Management/Import (PLANNED)
+- Investigate exporting/import project data
+- Allow editing statuses in bulk
+
+### Phase 19: Better project segmentatio/hiding (PLANNED)
 - Segment projects by group
 - Allow groups to hide some/all projects
 - Make projects shareable
 
-### Phase 17: Better Bulk Data Management/Import (PLANNED)
-- Investigate exporting/import project data
-- Allow editing statuses in bulk
-
-### Phase 18: Cleanup Existing Implementation (PLANNED)
+### Phase 20: Cleanup Existing Implementation (PLANNED)
 - Improve mobile styling
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
