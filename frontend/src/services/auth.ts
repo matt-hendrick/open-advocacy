@@ -47,7 +47,6 @@ const authService = {
     }
   },
 
-  // Fetch current user profile
   async fetchUserProfile(): Promise<UserProfile | null> {
     try {
       const token = localStorage.getItem(TOKEN_KEY);

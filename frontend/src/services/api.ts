@@ -15,7 +15,6 @@ const api = axios.create({
 
 // Add request interceptor for debugging
 api.interceptors.request.use(request => {
-  console.log('Starting API request:', request.url);
   return request;
 });
 

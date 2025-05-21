@@ -12,9 +12,8 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ **Data Flow**: Initial implementation of frontend-backend connection
 - ✅ **Database**: Setup flexible database provider system that supports Sqlite or postgres
 - ✅ **Representative Lookup Feature**: Users can enter in their address to lookup who their representatives are
+- ✅ **Auth and Admin User Features**: An initial basic auth and user role system has been setup. Ideally, that will be improved in the future.
 - ⏳ **Replicable Deployment Process Setup**: Pending
-- ⏳ **Auth and Admin User Features**: Functionality pending
-
 
 ## 3. Core Concepts & Data Model
 
@@ -36,9 +35,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - **Aggregate Display**: Projects show distribution of entity positions
 
 ### Roles & Permissions
-- **Admin**: Can create/edit projects, update entity statuses, manage system
+- **Admins**: Can create edit/users. Can create/edit projects and statuses
+- **Users**: Can create/edit projects, update entity statuses
 - **Anonymous Users**: Can view projects, lookup representatives, see status distributions
-- **Future**: Entity-specific notes and more granular permission system
 
 ## 4. Initial Development Phases
 
@@ -127,7 +126,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Fix duplicated districts import bug
 - ✅ Add optional image url to entities and display on the frontend
 
-### Phase 15: Add Auth/User/Admin System (IN PROGRESS)
+### Phase 15: Add Auth/User/Admin System (COMPLETED)
 - ✅ Add basic authentication and roles system
 - ✅ Create some of the main backend auth endpoints
 - ✅ Create some of the basic frontend auth related code
@@ -139,10 +138,9 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Add depends FastAPI function for auth
 - ✅ Add backend guards against what users can do to modify roles/password/permissions
 - ✅ Gate api routes behind auth
-- Ensure frontend components that require auth only display to logged in users
-- Display some error message if failed to auth
+- ✅ Ensure frontend components that require auth only display to logged in users
 
-### Phase 16: Minor Cosmetic Changes in Response to Feedback (PLANNED) 
+### Phase 16: Minor Cosmetic Changes in Response to Feedback (IN PROGRESS) 
 - For status counts, no status should be unknown, not neutral
 - Parameterize site name/title. Perhaps make it group specific instead of deployment specific
 - Add something linking to the Github + a bug report button/form
@@ -161,6 +159,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 
 ### Phase 20: Cleanup Existing Implementation (PLANNED)
 - Improve mobile styling
+- Display some frontend error message if failed to auth
 - Fix all the frontend typing/linting errors
 - Rename frontend components with Representatives to Entities to be more generic
 - Clean up various frontend components that could be further broken up (ex: Header.tsx, UserEntityProjectSection.tsx). 
