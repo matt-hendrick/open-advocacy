@@ -40,6 +40,23 @@ const App: React.FC = () => {
                 <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
                 <Route
+                  path="/projects/create"
+                  element={
+                    <ProtectedRoute requiredRoles={['super_admin', 'group_admin', 'editor']}>
+                      <ProjectFormPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/projects/:id/edit"
+                  element={
+                    <ProtectedRoute requiredRoles={['super_admin', 'group_admin', 'editor']}>
+                      <ProjectFormPage />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
                   path="/register"
                   element={
                     <ProtectedRoute requiredRoles={['super_admin', 'group_admin']}>

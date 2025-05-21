@@ -50,7 +50,6 @@ interface EntityListProps {
   onStatusUpdated: () => void;
 }
 
-// Row component that handles expansion
 const EntityRow = ({
   entity,
   project,
@@ -109,6 +108,39 @@ const EntityRow = ({
       setLoading(false);
     }
   };
+
+  const CurrentStatusInfo = () =>
+    statusRecord ? (
+      <Box width="100%">
+        <Typography variant="subtitle2" gutterBottom>
+          Current Status
+        </Typography>
+        <Box
+          p={2}
+          sx={{
+            width: '100%',
+            bgcolor: 'rgba(0,0,0,0.02)',
+            borderRadius: 1,
+            border: `1px solid ${getStatusColor(statusRecord.status)}`,
+          }}
+        >
+          <Typography fontWeight="600" color={getStatusColor(statusRecord.status)}>
+            {getStatusLabel(statusRecord.status)}
+          </Typography>
+
+          {statusRecord.notes && user && (
+            <>
+              <Divider sx={{ my: 1.5 }} />
+              <Typography variant="body2">{statusRecord.notes}</Typography>
+            </>
+          )}
+
+          <Typography variant="caption" color="text.secondary" display="block" mt={1}>
+            Last updated: {new Date(statusRecord.updated_at).toLocaleString()}
+          </Typography>
+        </Box>
+      </Box>
+    ) : null;
 
   return (
     <>
@@ -170,23 +202,24 @@ const EntityRow = ({
 
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 2 }}>
-              <Grid container spacing={2}>
-                {/* Contact Information */}
-                <Grid size={{ xs: 12, md: 6 }}>
+          <Collapse in={open} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
+            <Box sx={{ margin: 2, width: '100%' }}>
+              <Grid container spacing={2} sx={{ width: '100%' }}>
+                {/* Contact Information - Always shown */}
+                <Grid item xs={12} md={12} sx={{ width: '100%' }}>
                   <Paper
                     elevation={0}
                     sx={{
-                      p: { xs: 1.5, sm: 2 }, // Smaller padding on mobile
+                      p: { xs: 1.5, sm: 2 },
                       bgcolor: 'rgba(0,0,0,0.02)',
                       borderRadius: 1,
+                      width: '100%',
                     }}
                   >
                     <Typography variant="subtitle2" gutterBottom>
                       Contact Information
                     </Typography>
-                    <Box display="flex" flexDirection="column" gap={1} mt={1}>
+                    <Box display="flex" flexDirection="column" gap={1} mt={1} width="100%">
                       {entity.email && (
                         <Box display="flex" alignItems="center" gap={1}>
                           <EmailIcon fontSize="small" color="action" />
@@ -218,7 +251,7 @@ const EntityRow = ({
                       )}
                     </Box>
                   </Paper>
-                  <Box>
+                  <Box mt={1} width="100%">
                     <Button
                       variant="outlined"
                       size="small"
@@ -230,167 +263,143 @@ const EntityRow = ({
                   </Box>
                 </Grid>
 
-                {/* Status Controls*/}
-                <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-                  <ConditionalUI
-                    requireAuth={true}
-                    requiredRoles={[UserRole.EDITOR, UserRole.GROUP_ADMIN, UserRole.SUPER_ADMIN]}
-                  >
-                    <Box sx={{ width: '100%', overflowX: 'hidden' }}>
-                      <Typography variant="subtitle2" gutterBottom>
-                        Update Status
-                      </Typography>
+                {/* Status Controls - Conditionally shown based on auth */}
+                <Grid item xs={12} md={12} sx={{ width: '100%' }}>
+                  <Box display="flex" flexDirection="column" gap={2} width="100%">
+                    {/* Status update form - only for authenticated users */}
+                    <ConditionalUI
+                      requireAuth={true}
+                      requiredRoles={[UserRole.EDITOR, UserRole.GROUP_ADMIN, UserRole.SUPER_ADMIN]}
+                    >
+                      <Box sx={{ width: '100%', overflowX: 'hidden' }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Update Status
+                        </Typography>
 
-                      <FormControl fullWidth sx={{ mb: 2, maxWidth: '100%' }}>
-                        <InputLabel id={`status-select-label-${entity.id}`}>Status</InputLabel>
-                        <Select
-                          labelId={`status-select-label-${entity.id}`}
-                          id={`status-select-${entity.id}`}
-                          value={status}
-                          label="Status"
-                          onChange={handleStatusChange}
-                          disabled={loading}
-                          MenuProps={{
-                            PaperProps: {
-                              sx: {
-                                [`@media (max-width:600px)`]: {
-                                  left: '0 !important',
-                                  maxWidth: '280px !important',
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                          <InputLabel id={`status-select-label-${entity.id}`}>Status</InputLabel>
+                          <Select
+                            labelId={`status-select-label-${entity.id}`}
+                            id={`status-select-${entity.id}`}
+                            value={status}
+                            label="Status"
+                            onChange={handleStatusChange}
+                            disabled={loading}
+                            fullWidth
+                            MenuProps={{
+                              PaperProps: {
+                                sx: {
+                                  [`@media (max-width:600px)`]: {
+                                    left: '0 !important',
+                                    maxWidth: '280px !important',
+                                  },
                                 },
                               },
-                            },
-                            anchorOrigin: {
-                              vertical: 'bottom',
-                              horizontal: 'left',
-                            },
-                            transformOrigin: {
-                              vertical: 'top',
-                              horizontal: 'left',
-                            },
-                          }}
-                        >
-                          <MenuItem value={EntityStatus.SOLID_APPROVAL}>
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <Box
-                                width={12}
-                                height={12}
-                                borderRadius="50%"
-                                bgcolor={getStatusColor(EntityStatus.SOLID_APPROVAL)}
-                              />
-                              Solid Approval
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value={EntityStatus.LEANING_APPROVAL}>
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <Box
-                                width={12}
-                                height={12}
-                                borderRadius="50%"
-                                bgcolor={getStatusColor(EntityStatus.LEANING_APPROVAL)}
-                              />
-                              Leaning Approval
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value={EntityStatus.NEUTRAL}>
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <Box
-                                width={12}
-                                height={12}
-                                borderRadius="50%"
-                                bgcolor={getStatusColor(EntityStatus.NEUTRAL)}
-                              />
-                              Neutral
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <Box
-                                width={12}
-                                height={12}
-                                borderRadius="50%"
-                                bgcolor={getStatusColor(EntityStatus.LEANING_DISAPPROVAL)}
-                              />
-                              Leaning Disapproval
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <Box
-                                width={12}
-                                height={12}
-                                borderRadius="50%"
-                                bgcolor={getStatusColor(EntityStatus.SOLID_DISAPPROVAL)}
-                              />
-                              Solid Disapproval
-                            </Box>
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
+                              anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                              },
+                              transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left',
+                              },
+                            }}
+                          >
+                            <MenuItem value={EntityStatus.SOLID_APPROVAL}>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Box
+                                  width={12}
+                                  height={12}
+                                  borderRadius="50%"
+                                  bgcolor={getStatusColor(EntityStatus.SOLID_APPROVAL)}
+                                />
+                                Solid Approval
+                              </Box>
+                            </MenuItem>
+                            <MenuItem value={EntityStatus.LEANING_APPROVAL}>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Box
+                                  width={12}
+                                  height={12}
+                                  borderRadius="50%"
+                                  bgcolor={getStatusColor(EntityStatus.LEANING_APPROVAL)}
+                                />
+                                Leaning Approval
+                              </Box>
+                            </MenuItem>
+                            <MenuItem value={EntityStatus.NEUTRAL}>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Box
+                                  width={12}
+                                  height={12}
+                                  borderRadius="50%"
+                                  bgcolor={getStatusColor(EntityStatus.NEUTRAL)}
+                                />
+                                Neutral
+                              </Box>
+                            </MenuItem>
+                            <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Box
+                                  width={12}
+                                  height={12}
+                                  borderRadius="50%"
+                                  bgcolor={getStatusColor(EntityStatus.LEANING_DISAPPROVAL)}
+                                />
+                                Leaning Disapproval
+                              </Box>
+                            </MenuItem>
+                            <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Box
+                                  width={12}
+                                  height={12}
+                                  borderRadius="50%"
+                                  bgcolor={getStatusColor(EntityStatus.SOLID_DISAPPROVAL)}
+                                />
+                                Solid Disapproval
+                              </Box>
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
 
-                      <TextField
-                        fullWidth
-                        label="Notes"
-                        multiline
-                        rows={3}
-                        value={notes}
-                        onChange={handleNotesChange}
-                        disabled={loading}
-                        sx={{ mb: 2, maxWidth: '100%' }}
-                      />
-
-                      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={e => {
-                            e.stopPropagation();
-                            handleSubmit();
-                          }}
+                        <TextField
+                          fullWidth
+                          label="Notes"
+                          multiline
+                          rows={3}
+                          value={notes}
+                          onChange={handleNotesChange}
                           disabled={loading}
-                          sx={{ minWidth: 120, alignSelf: 'flex-start' }}
-                        >
-                          {loading ? 'Saving...' : statusRecord ? 'Update' : 'Save'}
-                        </Button>
+                          sx={{ mb: 2 }}
+                        />
 
-                        {error && (
-                          <Typography color="error" sx={{ mt: 1 }}>
-                            {error}
-                          </Typography>
-                        )}
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleSubmit();
+                            }}
+                            disabled={loading}
+                            sx={{ minWidth: 120, alignSelf: 'flex-start' }}
+                          >
+                            {loading ? 'Saving...' : statusRecord ? 'Update' : 'Save'}
+                          </Button>
+
+                          {error && (
+                            <Typography color="error" sx={{ mt: 1 }}>
+                              {error}
+                            </Typography>
+                          )}
+                        </Box>
                       </Box>
-                    </Box>
-                  </ConditionalUI>
+                    </ConditionalUI>
 
-                  {statusRecord && (
-                    <>
-                      <Typography variant="subtitle2" gutterBottom>
-                        Current Status
-                      </Typography>
-                      <Box
-                        p={2}
-                        sx={{
-                          bgcolor: 'rgba(0,0,0,0.02)',
-                          borderRadius: 1,
-                          border: `1px solid ${getStatusColor(statusRecord.status)}`,
-                        }}
-                      >
-                        <Typography fontWeight="600" color={getStatusColor(statusRecord.status)}>
-                          {getStatusLabel(statusRecord.status)}
-                        </Typography>
-
-                        {statusRecord.notes && (
-                          <>
-                            <Divider sx={{ my: 1.5 }} />
-                            <Typography variant="body2">{statusRecord.notes}</Typography>
-                          </>
-                        )}
-
-                        <Typography variant="caption" color="text.secondary" display="block" mt={1}>
-                          Last updated: {new Date(statusRecord.updated_at).toLocaleString()}
-                        </Typography>
-                      </Box>
-                    </>
-                  )}
+                    {/* Status display - always shown if there's a status */}
+                    {statusRecord && <CurrentStatusInfo />}
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
