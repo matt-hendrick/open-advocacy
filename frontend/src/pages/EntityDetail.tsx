@@ -199,7 +199,7 @@ const EntityDetail: React.FC = () => {
             {projects.length === 0 ? (
               <Box py={4} textAlign="center">
                 <Typography variant="body1" color="text.secondary">
-                  This representative is not associated with any projects yet.
+                  No positions of this representative have been reported for any of your projects
                 </Typography>
               </Box>
             ) : (
@@ -209,7 +209,7 @@ const EntityDetail: React.FC = () => {
                     sr => sr.project_id === project.id && sr.entity_id === entity.id
                   );
 
-                  const status = statusRecord?.status || EntityStatus.NEUTRAL;
+                  const status = statusRecord?.status || EntityStatus.UNKNOWN;
 
                   return (
                     <Grid size={{ xs: 12 }} key={project.id} sx={{ width: '100%' }}>

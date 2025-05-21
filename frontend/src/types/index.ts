@@ -11,6 +11,7 @@ export enum EntityStatus {
   NEUTRAL = 'neutral',
   LEANING_DISAPPROVAL = 'leaning_disapproval',
   SOLID_DISAPPROVAL = 'solid_disapproval',
+  UNKNOWN = 'unknown',
 }
 
 export enum UserRole {

@@ -19,6 +19,7 @@ class EntityStatus(str, Enum):
     NEUTRAL = "neutral"
     LEANING_DISAPPROVAL = "leaning_disapproval"
     SOLID_DISAPPROVAL = "solid_disapproval"
+    UNKNOWN = "unknown"
 
 
 class UserRole(str, Enum):
@@ -95,7 +96,7 @@ class EntityStatusRecord(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     entity_id: UUID
     project_id: UUID
-    status: EntityStatus = EntityStatus.NEUTRAL
+    status: EntityStatus = EntityStatus.UNKNOWN
     notes: str | None = None
     updated_at: datetime = Field(default_factory=datetime.now)
     updated_by: str

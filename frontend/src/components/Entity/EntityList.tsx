@@ -62,7 +62,7 @@ const EntityRow = ({
   onStatusUpdated: () => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<EntityStatus>(statusRecord?.status || EntityStatus.NEUTRAL);
+  const [status, setStatus] = useState<EntityStatus>(statusRecord?.status || EntityStatus.UNKNOWN);
   const [notes, setNotes] = useState<string>(statusRecord?.notes || '');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -360,6 +360,17 @@ const EntityRow = ({
                                 Solid Disapproval
                               </Box>
                             </MenuItem>
+                            <MenuItem value={EntityStatus.UNKNOWN}>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Box
+                                  width={12}
+                                  height={12}
+                                  borderRadius="50%"
+                                  bgcolor={getStatusColor(EntityStatus.UNKNOWN)}
+                                />
+                                Unknown
+                              </Box>
+                            </MenuItem>
                           </Select>
                         </FormControl>
 
@@ -453,7 +464,7 @@ const EntityList: React.FC<EntityListProps> = ({
         const statusRecord = statusRecords.find(
           sr => sr.entity_id === entity.id && sr.project_id === project.id
         );
-        const entityStatus = statusRecord?.status || EntityStatus.NEUTRAL;
+        const entityStatus = statusRecord?.status || EntityStatus.UNKNOWN;
         if (entityStatus !== filterStatus) {
           return false;
         }
@@ -516,6 +527,7 @@ const EntityList: React.FC<EntityListProps> = ({
                 <MenuItem value={EntityStatus.NEUTRAL}>Neutral</MenuItem>
                 <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>Leaning Disapproval</MenuItem>
                 <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>Solid Disapproval</MenuItem>
+                <MenuItem value={EntityStatus.UNKNOWN}>Unknown</MenuItem>
               </Select>
             </FormControl>
 

@@ -28,7 +28,7 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
     { status: EntityStatus.NEUTRAL, count: distribution.neutral },
     { status: EntityStatus.LEANING_DISAPPROVAL, count: distribution.leaning_disapproval },
     { status: EntityStatus.SOLID_DISAPPROVAL, count: distribution.solid_disapproval },
-    { status: 'unknown' as EntityStatus, count: distribution.unknown },
+    { status: EntityStatus.UNKNOWN, count: distribution.unknown },
   ];
 
   return (
