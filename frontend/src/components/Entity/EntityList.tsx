@@ -206,7 +206,7 @@ const EntityRow = ({
             <Box sx={{ margin: 2, width: '100%' }}>
               <Grid container spacing={2} sx={{ width: '100%' }}>
                 {/* Contact Information - Always shown */}
-                <Grid item xs={12} md={12} sx={{ width: '100%' }}>
+                <Grid size={{ xs: 12, md: 12 }} sx={{ width: '100%' }}>
                   <Paper
                     elevation={0}
                     sx={{
@@ -264,7 +264,7 @@ const EntityRow = ({
                 </Grid>
 
                 {/* Status Controls - Conditionally shown based on auth */}
-                <Grid item xs={12} md={12} sx={{ width: '100%' }}>
+                <Grid size={{ xs: 12, md: 12 }} sx={{ width: '100%' }}>
                   <Box display="flex" flexDirection="column" gap={2} width="100%">
                     {/* Status update form - only for authenticated users */}
                     <ConditionalUI
