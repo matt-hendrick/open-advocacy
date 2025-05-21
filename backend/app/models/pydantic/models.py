@@ -29,13 +29,6 @@ class UserRole(str, Enum):
     VIEWER = "viewer"
 
 
-class UserRole(str, Enum):
-    SUPER_ADMIN = "super_admin"
-    GROUP_ADMIN = "group_admin"
-    EDITOR = "editor"
-    VIEWER = "viewer"
-
-
 class EntityBase(BaseModel):
     name: str
     title: str | None = None
