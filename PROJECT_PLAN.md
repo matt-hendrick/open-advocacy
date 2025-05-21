@@ -133,10 +133,12 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Create some of the basic frontend auth related code
 - ✅ Make functional create user page
 - ✅ Ensure created users are associated with groups and roles
-- Create admin page to view users in group
-- Allow admins to edit users roles/password in group 
+- ✅ Create admin page to view users in group
+- ✅ Limit group admins to creating users in their group
+- ✅ Allow admins to edit users roles/password in group 
 - Gate behavior/frontend components/api routes behind auth
-- Limit group admins to creating users in their group
+- Add backend guards against what users can do to modify roles/password/permissions
+- Add depends FastAPI function for auth
 
 ### Phase 16: Allow hiding projects and add in UI means of adding Chicago/IL data (PLANNED)
 - Add an in UI means of adding Chicago/IL data for users with the permissions

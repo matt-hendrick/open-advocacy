@@ -135,3 +135,13 @@ export interface UserProfile {
   updated_at?: string;
   last_login?: string;
 }
+
+export interface PasswordChangeData {
+  user_id: string;
+  new_password: string;
+}
+
+export interface UserRoleChangeData {
+  user_id: string;
+  new_role: string;
+}

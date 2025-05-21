@@ -38,7 +38,6 @@ import { useTheme as useCustomTheme } from '../../theme/ThemeProvider';
 import { lightTheme, darkTheme } from '../../theme/themes';
 import { useUserRepresentatives } from '../../contexts/UserRepresentativesContext';
 import { useAuth } from '../../contexts/AuthContext';
-import ConditionalUI from '../auth/ConditionalUI';
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -319,27 +318,6 @@ const Header: React.FC = () => {
               >
                 Find Representatives
               </Button>
-
-              {/* Admin link - only visible to admins */}
-              <ConditionalUI requiredRoles={['super_admin', 'group_admin']}>
-                <Button
-                  color="inherit"
-                  component={RouterLink}
-                  to="/admin"
-                  sx={{
-                    mx: 1,
-                    color: isActive('/admin')
-                      ? theme.palette.primary.main
-                      : theme.palette.text.primary,
-                    fontWeight: isActive('/admin') ? 700 : 500,
-                    '&:hover': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                    },
-                  }}
-                >
-                  Admin
-                </Button>
-              </ConditionalUI>
             </>
           </Box>
 
@@ -434,7 +412,7 @@ const Header: React.FC = () => {
                       <ListItemIcon>
                         <AdminPanelSettingsIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText primary="Admin Panel" />
+                      <ListItemText primary="Admin User Management" />
                     </MenuItem>
                   )}
 

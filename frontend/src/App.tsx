@@ -12,8 +12,11 @@ import ProjectList from './pages/ProjectList';
 import RepresentativeLookup from './pages/RepresentativeLookup';
 import EntityDetail from './pages/EntityDetail';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
+
+// Admin Pages
+import UserManagement from './pages/admin/UserManagementPage';
+import RegisterPage from './pages/admin/RegisterPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
@@ -45,13 +48,11 @@ const App: React.FC = () => {
                   }
                 />
 
-                {/* TODO: Add Admin routes */}
                 <Route
-                  path="/admin/*"
+                  path="/admin"
                   element={
                     <ProtectedRoute requiredRoles={['super_admin', 'group_admin']}>
-                      {/* TODO: Add Admin component */}
-                      <div>Admin Panel</div>
+                      <UserManagement />
                     </ProtectedRoute>
                   }
                 />

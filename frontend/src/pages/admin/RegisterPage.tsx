@@ -11,10 +11,10 @@ import {
   MenuItem,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
-import { groupService } from '../services/groups';
+import { groupService } from '../../services/groups';
 
 interface Group {
   id: string;
