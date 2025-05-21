@@ -1,17 +1,18 @@
 import React from 'react';
 import { Container, Typography, Paper, Button, Box, Grid } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { appConfig } from '@/utils/config';
 
 const HomePage: React.FC = () => {
   return (
     <Container>
       <Box py={8} textAlign="center">
         <Typography variant="h3" component="h1" gutterBottom>
-          Welcome to Open Advocacy
+          {appConfig.name}
         </Typography>
 
         <Typography variant="h5" color="textSecondary" paragraph>
-          Connecting citizens with their representatives and tracking advocacy projects
+          {appConfig.description}
         </Typography>
 
         <Grid container spacing={4} justifyContent="center" mt={4}>

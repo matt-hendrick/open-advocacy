@@ -15,6 +15,7 @@ import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import { appConfig } from '@/utils/config';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -79,7 +80,7 @@ const LoginPage: React.FC = () => {
         <VolunteerActivismIcon color="primary" sx={{ width: 56, height: 56, mb: 2 }} />
 
         <Typography component="h1" variant="h4" gutterBottom>
-          Open Advocacy
+          {appConfig.name}
         </Typography>
 
         <Paper

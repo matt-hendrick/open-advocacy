@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { groupService } from '../../services/groups';
+import { appConfig } from '@/utils/config';
 
 interface Group {
   id: string;
@@ -174,7 +175,7 @@ const RegisterPage: React.FC = () => {
         <VolunteerActivismIcon color="primary" sx={{ width: 56, height: 56, mb: 2 }} />
 
         <Typography component="h1" variant="h4" gutterBottom>
-          Open Advocacy
+          {appConfig.name}
         </Typography>
 
         <Paper

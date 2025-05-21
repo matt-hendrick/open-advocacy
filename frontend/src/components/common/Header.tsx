@@ -38,6 +38,7 @@ import { useTheme as useCustomTheme } from '../../theme/ThemeProvider';
 import { lightTheme, darkTheme } from '../../theme/themes';
 import { useUserRepresentatives } from '../../contexts/UserRepresentativesContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { appConfig } from '@/utils/config';
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -242,7 +243,7 @@ const Header: React.FC = () => {
               }}
             />
             <Typography
-              variant="h6"
+              variant="h7"
               component={RouterLink}
               to="/"
               sx={{
@@ -252,7 +253,7 @@ const Header: React.FC = () => {
                 letterSpacing: '0.5px',
               }}
             >
-              Open Advocacy
+              {appConfig.name}
             </Typography>
 
             {/* Representative badge with popover - only show if screen is large enough */}
