@@ -121,7 +121,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Fix a bug with project creation
 - ✅ Create a service layer between routes and the DB logic
 
-### Phase 14: Build a flexible, cleaner import system (IN PROGRESS)
+### Phase 14: Build a flexible, cleaner import system (COMPLETED)
 - ✅ Build an extensible import system
 - ✅ Clean up and consolidate various utility scripts
 - ✅ Fix duplicated districts import bug
@@ -131,12 +131,12 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Add basic authentication and roles system
 - ✅ Create some of the main backend auth endpoints
 - ✅ Create some of the basic frontend auth related code
-- Make functional create user page
-- Ensure created users are associated with groups
+- ✅ Make functional create user page
+- ✅ Ensure created users are associated with groups and roles
 - Create admin page to view users in group
-- Allow admins to edit users roles in group 
-- Allows admin to create users with roles
-- Allow super admin to create other admins
+- Allow admins to edit users roles/password in group 
+- Gate behavior/frontend components/api routes behind auth
+- Limit group admins to creating users in their group
 
 ### Phase 16: Allow hiding projects and add in UI means of adding Chicago/IL data (PLANNED)
 - Add an in UI means of adding Chicago/IL data for users with the permissions
@@ -156,7 +156,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - Don't reload entire project list on status/search text change
 - Ensure all backend endpoints use DB filter methods (don't use .list)
 - Everything is UTC atm, reconsider that
-- Replace various magic strings with enums
+- Replace various magic strings with enums (ex: UserRole on frontend)
 - Clean up data models (remove any unnecessary optionals or List/Dict)
 - Clean up logic fetching status/jurisdiction for projects (it is duplicated across a couple endpoints)
 - Clean up random console logs and prints

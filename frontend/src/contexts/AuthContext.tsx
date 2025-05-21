@@ -111,7 +111,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const user = await authService.register(userData);
       return user;
     } catch (err) {
-      setError('Registration failed. Please try again later.');
+      const errorMessage =
+        err.response?.data?.detail || 'Registration failed. Please try again later.';
+      setError(errorMessage);
       return null;
     } finally {
       setLoading(false);

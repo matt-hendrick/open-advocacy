@@ -24,18 +24,20 @@ interface Group {
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [groupId, setGroupId] = useState('');
+  const [role, setRole] = useState('editor');
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState<{
     email?: string;
-    fullName?: string;
+    name?: string;
     password?: string;
     confirmPassword?: string;
     groupId?: string;
+    role?: string;
   }>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -75,10 +77,11 @@ const RegisterPage: React.FC = () => {
   const validateForm = (): boolean => {
     const errors: {
       email?: string;
-      fullName?: string;
+      name?: string;
       password?: string;
       confirmPassword?: string;
       groupId?: string;
+      role?: string;
     } = {};
 
     if (!email) {
@@ -87,8 +90,8 @@ const RegisterPage: React.FC = () => {
       errors.email = 'Invalid email format';
     }
 
-    if (!fullName) {
-      errors.fullName = 'Full name is required';
+    if (!name) {
+      errors.name = 'Full name is required';
     }
 
     if (!password) {
@@ -103,6 +106,10 @@ const RegisterPage: React.FC = () => {
 
     if (!groupId) {
       errors.groupId = 'Please select a group';
+    }
+
+    if (!role) {
+      errors.role = 'Please select a role';
     }
 
     setFormErrors(errors);
@@ -122,11 +129,11 @@ const RegisterPage: React.FC = () => {
     try {
       const userData = {
         email,
-        full_name: fullName,
+        name,
         password,
         group_id: groupId,
         is_active: true,
-        role: 'user', // Default role for new users
+        role,
       };
 
       const result = await register(userData);
@@ -135,16 +142,19 @@ const RegisterPage: React.FC = () => {
         setSuccess(true);
         // Reset form
         setEmail('');
-        setFullName('');
+        setName('');
         setPassword('');
         setConfirmPassword('');
         setGroupId('');
+        setRole('editor');
       } else {
         setServerError('Registration failed. Please try again.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      setServerError('An unexpected error occurred. Please try again later.');
+      const errorMessage =
+        error.response?.data?.detail || 'An unexpected error occurred. Please try again later.';
+      setServerError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -233,14 +243,14 @@ const RegisterPage: React.FC = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="fullName"
+                id="name"
                 label="Full Name"
-                name="fullName"
+                name="name"
                 autoComplete="name"
-                value={fullName}
-                onChange={e => setFullName(e.target.value)}
-                error={!!formErrors.fullName}
-                helperText={formErrors.fullName}
+                value={name}
+                onChange={e => setName(e.target.value)}
+                error={!!formErrors.name}
+                helperText={formErrors.name}
                 disabled={loading}
               />
 
@@ -295,6 +305,24 @@ const RegisterPage: React.FC = () => {
                     {group.name}
                   </MenuItem>
                 ))}
+              </TextField>
+
+              <TextField
+                select
+                margin="normal"
+                required
+                fullWidth
+                id="role"
+                label="User Role"
+                name="role"
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                error={!!formErrors.role}
+                helperText={formErrors.role || 'Select the role for this user'}
+                disabled={loading}
+              >
+                <MenuItem value="group_admin">Group Admin</MenuItem>
+                <MenuItem value="editor">Editor</MenuItem>
               </TextField>
 
               <Button

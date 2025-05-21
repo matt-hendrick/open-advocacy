@@ -127,7 +127,7 @@ export interface AuthResponse {
 export interface UserProfile {
   id: string;
   email: string;
-  full_name?: string;
+  name?: string;
   role: string;
   group_id: string;
   is_active: boolean;
