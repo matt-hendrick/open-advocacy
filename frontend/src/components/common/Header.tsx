@@ -243,7 +243,7 @@ const Header: React.FC = () => {
               }}
             />
             <Typography
-              variant="h7"
+              variant="h6"
               component={RouterLink}
               to="/"
               sx={{
@@ -251,6 +251,7 @@ const Header: React.FC = () => {
                 textDecoration: 'none',
                 fontWeight: 700,
                 letterSpacing: '0.5px',
+                fontSize: '1em',
               }}
             >
               {appConfig.name}
@@ -368,7 +369,7 @@ const Header: React.FC = () => {
                         variant="body2"
                         sx={{ mr: 1, display: { xs: 'none', sm: 'block' } }}
                       >
-                        {user?.full_name || user?.email || 'User'}
+                        {user?.name || user?.email || 'User'}
                       </Typography>
                     </Box>
                   </IconButton>
@@ -398,7 +399,7 @@ const Header: React.FC = () => {
                       <AccountCircleIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText
-                      primary={user?.full_name || 'User'}
+                      primary={user?.name || 'User'}
                       secondary={user?.email}
                       primaryTypographyProps={{ variant: 'body2' }}
                       secondaryTypographyProps={{ variant: 'caption' }}

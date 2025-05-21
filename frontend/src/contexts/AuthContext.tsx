@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import authService, { UserProfile, LoginCredentials, RegisterData } from '../services/auth';
+import authService from '../services/auth';
+import { UserProfile, LoginCredentials, UserRegisterData } from '@/types/index';
 import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
@@ -8,7 +9,7 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   login: (credentials: LoginCredentials) => Promise<boolean>;
-  register: (userData: RegisterData) => Promise<UserProfile | null>;
+  register: (userData: UserRegisterData) => Promise<UserProfile | null>;
   logout: () => void;
   clearError: () => void;
   hasRole: (role: string) => boolean;
@@ -103,7 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (userData: RegisterData): Promise<UserProfile | null> => {
+  const register = async (userData: UserRegisterData): Promise<UserProfile | null> => {
     setLoading(true);
     setError(null);
 
