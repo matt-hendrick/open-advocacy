@@ -12,6 +12,12 @@ export enum EntityStatus {
   LEANING_DISAPPROVAL = 'leaning_disapproval',
   SOLID_DISAPPROVAL = 'solid_disapproval',
 }
+
+export enum UserRole {
+  SUPER_ADMIN = 'super_admin',
+  GROUP_ADMIN = 'group_admin',
+  EDITOR = 'editor',
+}
 export interface Jurisdiction {
   id: string;
   name: string;

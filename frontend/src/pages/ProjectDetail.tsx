@@ -22,11 +22,12 @@ import { entityService } from '../services/entities';
 import { projectService } from '../services/projects';
 import { statusService } from '../services/status';
 import { jurisdictionService } from '../services/jurisdictions';
-import { Project, Jurisdiction, Entity, EntityStatusRecord } from '../types';
+import { Project, Jurisdiction, Entity, EntityStatusRecord, UserRole } from '../types';
 import StatusDistribution from '../components/Status/StatusDistribution';
 import EntityList from '../components/Entity/EntityList';
 import UserEntityProjectSection from '../components/Entity/UserEntityProjectSection';
 import ErrorDisplay from '../components/common/ErrorDisplay';
+import ConditionalUI from '../components/auth/ConditionalUI';
 import { transformEntityFromApi } from '../utils/dataTransformers';
 
 interface TabPanelProps {
@@ -62,7 +63,6 @@ const ProjectDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
-  const isAdmin = true; // TODO: Replace with actual admin check
 
   useEffect(() => {
     const fetchData = async () => {
@@ -189,7 +189,10 @@ const ProjectDetail: React.FC = () => {
             </Box>
           </Box>
 
-          {isAdmin && (
+          <ConditionalUI
+            requireAuth={true}
+            requiredRoles={[UserRole.EDITOR, UserRole.GROUP_ADMIN, UserRole.SUPER_ADMIN]}
+          >
             <Button
               variant="outlined"
               startIcon={<EditIcon />}
@@ -197,7 +200,7 @@ const ProjectDetail: React.FC = () => {
             >
               Edit Project
             </Button>
-          )}
+          </ConditionalUI>
         </Box>
 
         <Typography variant="body1" color="text.secondary" paragraph mt={2}>
@@ -265,7 +268,6 @@ const ProjectDetail: React.FC = () => {
                 project={project}
                 statusRecords={statusRecords}
                 onStatusUpdated={refreshStatusRecords}
-                isAdmin={isAdmin}
               />
             )}
           </TabPanel>
