@@ -140,13 +140,13 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ Gate api routes behind auth
 - ✅ Ensure frontend components that require auth only display to logged in users
 
-### Phase 16: Minor Cosmetic Changes in Response to Feedback (IN PROGRESS) 
-- For status counts, no status should be unknown, not neutral
-- Parameterize site name/title. Perhaps make it group specific instead of deployment specific
-- Add something linking to the Github + a bug report button/form
+### Phase 16: Minor Cosmetic Changes in Response to Feedback (COMPLETED) 
+- ✅ For status counts, no status should be unknown, not neutral
+- ✅ Parameterize site name/title. Perhaps make it group specific instead of deployment specific
 
-### Phase 17: Add in UI means of adding Chicago/IL data (PLANNED)
+### Phase 17: Add in UI means of adding Chicago/IL data and add Github Link + bug report form (IN PROGRESS)
 - Add an in UI means of adding Chicago/IL data for users with the permissions
+- Add something linking to the Github + a bug report button/form
 
 ### Phase 18: Better Bulk Data Management/Import (PLANNED)
 - Investigate exporting/import project data
