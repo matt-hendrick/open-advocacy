@@ -79,7 +79,7 @@ const LoginPage: React.FC = () => {
       >
         <VolunteerActivismIcon color="primary" sx={{ width: 56, height: 56, mb: 2 }} />
 
-        <Typography component="h1" variant="h4" gutterBottom>
+        <Typography component="h1" variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
           {appConfig.name}
         </Typography>
 
