@@ -251,11 +251,12 @@ const Header: React.FC = () => {
                 textDecoration: 'none',
                 fontWeight: 700,
                 letterSpacing: '0.5px',
-                fontSize: '.8em',
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '1rem' },
               }}
             >
               {appConfig.name}
             </Typography>
+            
 
             {/* Representative badge with popover - only show if screen is large enough */}
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
