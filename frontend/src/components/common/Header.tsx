@@ -251,7 +251,7 @@ const Header: React.FC = () => {
                 textDecoration: 'none',
                 fontWeight: 700,
                 letterSpacing: '0.5px',
-                fontSize: '1em',
+                fontSize: '.8em',
               }}
             >
               {appConfig.name}
