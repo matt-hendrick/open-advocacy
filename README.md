@@ -9,6 +9,7 @@ Open Advocacy is an open-source web application connecting citizens with represe
 - **Status Visualization**: See color-coded representations of where representatives stand on issues
 - **Geographic Integration**: Utilizes geospatial data to accurately match addresses to districts (if the geojson data has been imported into the DB)
 - **Authentication & User Management**: Role-based access control with user registration, login, and admin functionality
+- **Flexible Data Import System**: Extensible framework for importing location-specific data from various sources
 
 ## Tech Stack
 
@@ -42,6 +43,7 @@ The application uses the following core concepts:
 - **Data Access Layer**: Abstract database providers with concrete implementations
 - **Authentication Layer**: JWT-based auth with role-based access control
 - **Geo Services**: Specialized geographic functionality
+- **Import System**: Modular framework for importing location-specific data
 - **Models**: Pydantic models for validation and ORM models for persistence
 
 ## Getting Started
@@ -70,34 +72,49 @@ Once running, you can access:
 To populate the database with example data, follow these steps:
 
 1. Navigate to the backend directory:
-  ```bash
-  cd backend
-  ```
+   ```bash
+   cd backend
+   ```
 
 2. Activate the Poetry shell:
-  ```bash
-  poetry shell
-  ```
+   ```bash
+   poetry shell
+   ```
 
-3. Create necessary database tables
-  ```bash
-  python -m scripts.init_db
-  ```
+3. Create necessary database tables:
+   ```bash
+   python -m scripts.init_db
+   ```
 
-4. Load Chicago City Council data:
-  ```bash
-  python -m scripts.import_data chicago
-  ```
+4. Import Chicago data (City Council, wards, and alderpersons):
+   ```bash
+   python -m scripts.import_data chicago
+   ```
 
-5. Import Illinois House and Senate representative data:
-  ```bash
-  python -m scripts.import_data illinois
-  ```
+5. Import Illinois data (House/Senate districts and legislators):
+   ```bash
+   python -m scripts.import_data illinois
+   ```
 
 6. Create a super admin user (required for accessing admin features):
-  ```bash  
-  python -m scripts.add_super_admin
-  ```
+   ```bash  
+   python -m scripts.add_super_admin
+   ```
+
+#### Import System Options
+
+The import system is flexible and allows selective importing:
+
+```bash
+# Import only specific steps for a location
+python -m scripts.import_data chicago --steps "Import Chicago City Council jurisdiction" "Import Chicago Alderpersons"
+
+# Import Illinois with custom GeoJSON paths
+python -m scripts.import_data illinois --geojson-path /path/to/custom/districts.geojson
+
+# Import only jurisdictions and districts (skip entities)
+python -m scripts.import_data chicago --steps "Import Chicago City Council jurisdiction" "Import Chicago Wards GeoJSON"
+```
 
 ## Project Structure
 ```
@@ -121,6 +138,20 @@ open-advocacy/
 │   │   ├── db/                  # Database utilities
 │   │   ├── geo/                 # Geospatial utilities
 │   │   ├── imports/             # Import system
+│   │   │   ├── base.py          # Base classes for imports
+│   │   │   ├── orchestrator.py  # Import orchestration
+│   │   │   ├── importers/       # Specific data importers
+│   │   │   │   ├── jurisdiction_importer.py
+│   │   │   │   ├── district_importer.py
+│   │   │   │   └── entity_importer.py
+│   │   │   ├── locations/       # Location-specific configurations
+│   │   │   │   ├── base.py      # Base location config
+│   │   │   │   ├── chicago.py   # Chicago import configuration
+│   │   │   │   └── illinois.py  # Illinois import configuration
+│   │   │   └── sources/         # Data source implementations
+│   │   │       ├── chicago_alderpersons.py
+│   │   │       ├── geojson.py   # GeoJSON file handler
+│   │   │       └── openstates.py # OpenStates API integration
 │   │   ├── models/              # Data models
 │   │   │   ├── orm/             # SQLAlchemy ORM models
 │   │   │   └── pydantic/        # Pydantic validation models
@@ -134,7 +165,7 @@ open-advocacy/
 │   ├── data/                    # Database and geospatial data
 │   └── scripts/                 # Setup and maintenance scripts
 │       ├── add_super_admin.py   # Create super admin user
-│       ├── import_data.py       # Data import utilities
+│       ├── import_data.py       # Main data import script
 │       └── init_db.py           # Database initialization
 ├── frontend/                    # React+TypeScript frontend
 │   ├── public/                  # Static assets
@@ -172,6 +203,34 @@ open-advocacy/
 └── docker-compose.yaml          # Docker Compose configuration
 ```
 
+## Import System Architecture
+
+The application features a modular import system designed to handle location-specific data from various sources:
+
+### Key Components
+
+- **Data Sources**: Abstract interfaces for fetching data from APIs, files, or databases
+- **Importers**: Specialized classes for importing specific types of data (jurisdictions, districts, entities)
+- **Location Configs**: Configuration classes that define import steps for specific locations
+- **Orchestrator**: Coordinates the import process and handles step dependencies
+
+### Supported Data Sources
+
+- **Chicago Open Data API**: Official alderperson data
+- **OpenStates API**: State legislator information with configurable API key
+- **GeoJSON Files**: District boundary data with automatic validation
+- **Custom APIs**: Extensible framework for additional data sources
+
+### Adding New Locations
+
+To add a new location:
+
+1. Create a location configuration in `app/imports/locations/`
+2. Define the import steps (jurisdictions, districts, entities)
+3. Configure data sources (APIs, files, etc.)
+4. Register the location in the import orchestrator
+5. Run: `python -m scripts.import_data your_location`
+
 ## Configuration
 
 The application can be configured through environment variables. The primary configurations are:
@@ -179,22 +238,25 @@ The application can be configured through environment variables. The primary con
 - `DATABASE_PROVIDER`: Database backend to use (`sqlite` or `postgres`)
 - `DATABASE_URL`: Connection string for the database
 - `AUTH_SECRET_KEY`: Secret key for JWT token generation
+- `OPENSTATES_API_KEY`: API key for OpenStates data (required for state legislature imports)
+- `DATA_DIR`: Directory containing data files (defaults to `data/`)
 
 See `backend/app/core/config.py` for all available configuration options.
 
 ## Development Status
-This project is currently in active development. The implementation plan in PROJECT_PLAN.md tracks completed and upcoming features.
-Currently completed:
 
+This project is currently in active development. The implementation plan in PROJECT_PLAN.md tracks completed and upcoming features.
+
+Currently completed:
 - ✅ Core backend and frontend implementation
 - ✅ Project and representative lookup functionality
 - ✅ Database integration with SQLite and PostgreSQL support
 - ✅ Representative lookup with geographic data integration using Nominatim/OpenStreetMap
 - ✅ Authentication, user management, and role-based access control system
+- ✅ Extensible data import system with support for multiple locations and data sources
 
 Planned additional work:
-
-- Improved bulk data management and import/export functionality via admin ui
+- Improved bulk data management and import/export functionality via admin UI
 - Better project segmentation and sharing capabilities
 - Enhanced mobile styling and user experience
 - Test coverage
@@ -213,7 +275,6 @@ Planned additional work:
 
 ### Representatives Page
 ![Representative Page](./screenshots/representative.png)
-
 
 ## Contributing
 
