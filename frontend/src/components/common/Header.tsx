@@ -235,28 +235,48 @@ const Header: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <VolunteerActivismIcon
-              sx={{
-                mr: 1.5,
-                color: theme.palette.primary.main,
-                fontSize: 28,
-              }}
-            />
-            <Typography
-              variant="h6"
+            <Box
               component={RouterLink}
               to="/"
               sx={{
-                color: theme.palette.text.primary,
+                display: 'flex',
+                alignItems: 'center',
                 textDecoration: 'none',
-                fontWeight: 700,
-                letterSpacing: '0.5px',
-                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '.9rem' },
+                '&:hover': {
+                  '& .logo-icon': {
+                    color: theme.palette.primary.dark,
+                  },
+                  '& .logo-text': {
+                    color: theme.palette.primary.main,
+                  },
+                },
               }}
             >
-              {appConfig.name}
-            </Typography>
-            
+              <VolunteerActivismIcon
+                className="logo-icon"
+                sx={{
+                  mr: 1.5,
+                  color: theme.palette.primary.main,
+                  fontSize: 28,
+                  transition: 'color 0.2s ease',
+                }}
+              />
+              <Typography
+                className="logo-text"
+                variant="h6"
+                sx={{
+                  color: theme.palette.text.primary,
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  letterSpacing: '0.5px',
+                  fontSize: { xs: '0.7rem' },
+                  transition: 'color 0.2s ease',
+                }}
+              >
+                {appConfig.name}
+              </Typography>
+            </Box>
+
             {/* Representative badge with popover - only show if screen is large enough */}
             <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
               <RepresentativeBadge />
