@@ -144,20 +144,24 @@ Open Advocacy is an open-source platform connecting citizens with representative
 - ✅ For status counts, no status should be unknown, not neutral
 - ✅ Parameterize site name/title. Perhaps make it group specific instead of deployment specific
 
-### Phase 17: Add in UI means of adding Chicago/IL data and add Github Link + bug report form (IN PROGRESS)
-- Add an in UI means of adding Chicago/IL data for users with the permissions
-- Add something linking to the Github + a bug report button/form
+### Phase 17: Improve Railway Deployment Process/Ensure Data Persistence (PLANNED)
+- Simplify deployment process 
+- Alter database setup process to ensure that backend does not wipe data/ensure data is persisted.
 
 ### Phase 18: Better Bulk Data Management/Import (PLANNED)
 - Investigate exporting/import project data
 - Allow editing statuses in bulk
 
-### Phase 19: Better project segmentatio/hiding (PLANNED)
+### Phase 19: Add in UI means of adding Chicago/IL data and add Github Link + bug report form (IN PROGRESS)
+- Add an in UI means of adding Chicago/IL data for users with the permissions
+- Add something linking to the Github + a bug report button/form
+
+### Phase 20: Better project segmentatio/hiding (PLANNED)
 - Segment projects by group
 - Allow groups to hide some/all projects
 - Make projects shareable
 
-### Phase 20: Cleanup Existing Implementation (PLANNED)
+### Phase 21: Cleanup Existing Implementation (PLANNED)
 - Improve mobile styling
 - Display some frontend error message if failed to auth
 - Fix all the frontend typing/linting errors
