@@ -84,7 +84,7 @@ async def import_adu_project_data():
             entity_id=entity.id,
             project_id=project.id,
             status=status,
-            notes=f"Ward {ward_number} opted in for ADU" if is_opt_in else "No opt-in record",
+            notes=f"Ward {ward_number} opted in to allow ADUs to be built in the ward" if is_opt_in else "No opt-in record",
             updated_by="admin",
         )
         await status_service.create_status_record(status_record)
