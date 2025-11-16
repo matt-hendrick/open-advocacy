@@ -16,6 +16,11 @@ export const jurisdictionService = {
     return api.get<Jurisdiction>(`/jurisdictions/${id}`);
   },
 
+  async getDistrictGeoJSON(jurisdictionId: string): Promise<{ [districtId: string]: any }> {
+    const res = await api.get(`/jurisdictions/${jurisdictionId}/geojson`);
+    return res.data;
+  },
+
   async createJurisdiction(data: JurisdictionCreateData): Promise<{ data: Jurisdiction }> {
     return api.post<Jurisdiction>('/jurisdictions/', data);
   },

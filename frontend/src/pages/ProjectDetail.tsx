@@ -28,6 +28,7 @@ import EntityList from '../components/Entity/EntityList';
 import UserEntityProjectSection from '../components/Entity/UserEntityProjectSection';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import ConditionalUI from '../components/auth/ConditionalUI';
+import EntityDistrictMap from '../components/Entity/EntityDistrictMap';
 import { transformEntityFromApi } from '../utils/dataTransformers';
 
 interface TabPanelProps {
@@ -63,6 +64,7 @@ const ProjectDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
+  const [geojsonByDistrict, setGeojsonByDistrict] = useState<{ [districtId: string]: any }>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,6 +113,19 @@ const ProjectDetail: React.FC = () => {
     };
 
     fetchEntities();
+  }, [project?.jurisdiction_id]);
+
+  useEffect(() => {
+    const fetchGeoJSON = async () => {
+      if (!project?.jurisdiction_id) return;
+      try {
+        const data = await jurisdictionService.getDistrictGeoJSON(project.jurisdiction_id);
+        setGeojsonByDistrict(data);
+      } catch (err) {
+        console.error('Failed to fetch district geojson:', err);
+      }
+    };
+    fetchGeoJSON();
   }, [project?.jurisdiction_id]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -209,7 +224,8 @@ const ProjectDetail: React.FC = () => {
 
         <UserEntityProjectSection project={project} statusRecords={statusRecords} />
 
-        {project.jurisdiction_id && (
+        {/* TODO: Potentially cut this jurisdiction display */}
+        {/* {project.jurisdiction_id && (
           <Box mt={2}>
             <Typography variant="subtitle2" gutterBottom>
               Jurisdictions:
@@ -222,6 +238,19 @@ const ProjectDetail: React.FC = () => {
                 variant="outlined"
               />
             </Box>
+          </Box>
+        )} */}
+
+        {Object.keys(geojsonByDistrict).length > 0 && entities.length > 0 && (
+          <Box mt={3}>
+            <Typography variant="h6" gutterBottom>
+              District Map
+            </Typography>
+            <EntityDistrictMap
+              entities={entities}
+              statusRecords={statusRecords}
+              geojsonByDistrict={geojsonByDistrict}
+            />
           </Box>
         )}
 
