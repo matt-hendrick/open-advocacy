@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, GeoJSON, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Entity, EntityStatus, EntityStatusRecord } from '../../types';
 import { getStatusColor } from '@/utils/statusColors';
@@ -48,7 +48,7 @@ const EntityDistrictMap: React.FC<EntityDistrictMapProps> = ({
   }
 
   return (
-    <MapContainer center={centerPoint} zoom={10} style={{ height: 400, width: '100%' }}>
+    <MapContainer center={centerPoint} zoom={11} style={{ height: 600, width: '100%' }}>
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

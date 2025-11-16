@@ -13,7 +13,7 @@ OPT_IN_WARDS = [
     1, 4, 6, 12, 14, 22, 25, 26, 27, 29, 30, 32, 33, 35, 40, 43, 44, 46, 47, 49
 ]
 
-PROJECT_TITLE = "ADU Opt-In"
+PROJECT_TITLE = "ADU Opt-In Dashboard"
 PROJECT_DESCRIPTION = (
     "Tracking Chicago alderpersons who have opted in to support Accessory Dwelling Units (ADUs). "
     "Alders who opted in are marked as strongly agree; others are marked as neutral."
@@ -40,7 +40,6 @@ async def import_adu_project_data():
         "Empowers neighborhoods to incrementally build a more financially resilient city.",
     )
 
-    # Create the ADU Opt-In project
     project = await project_service.create_project(
         ProjectBase(
             title=PROJECT_TITLE,

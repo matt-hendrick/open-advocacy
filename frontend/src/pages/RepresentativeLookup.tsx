@@ -34,6 +34,9 @@ import PublicIcon from '@mui/icons-material/Public';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import { Entity } from '../types';
 import { entityService } from '../services/entities';
 import { useNavigate } from 'react-router-dom';
@@ -54,6 +57,7 @@ const RepresentativeLookup: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
+  const [showBackModal, setShowBackModal] = useState(false);
 
   const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(event.target.value);
@@ -87,6 +91,7 @@ const RepresentativeLookup: React.FC = () => {
       // Show success toast
       setToastMessage(`Found ${reps.length} representatives for your address`);
       setShowToast(true);
+      setShowBackModal(true);
     } catch (err) {
       setError('Failed to find representatives. Please try again.');
       console.error('Error fetching representatives:', err);
@@ -441,6 +446,24 @@ const RepresentativeLookup: React.FC = () => {
           {toastMessage}
         </MuiAlert>
       </Snackbar>
+
+      <Dialog open={showBackModal} onClose={() => setShowBackModal(false)}>
+        <DialogTitle>Done viewing your representatives?</DialogTitle>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setShowBackModal(false);
+              navigate(-1);
+            }}
+            color="primary"
+          >
+            Go Back
+          </Button>
+          <Button onClick={() => setShowBackModal(false)} color="secondary">
+            Stay
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

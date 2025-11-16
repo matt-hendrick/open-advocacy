@@ -53,8 +53,19 @@ const TabPanel = (props: TabPanelProps) => {
   );
 };
 
-const ProjectDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+interface ProjectDetailProps {
+  projectId?: string;
+  statusDisplayNames?: Record<string, string>;
+  isDashboard?: boolean;
+}
+
+const ProjectDetail: React.FC<ProjectDetailProps> = ({
+  projectId,
+  statusDisplayNames,
+  isDashboard = false,
+}) => {
+  const { id: routeId } = useParams<{ id: string }>();
+  const id = projectId || routeId;
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [jurisdictions, setJurisdictions] = useState<Jurisdiction[]>([]);
@@ -172,9 +183,15 @@ const ProjectDetail: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box mb={4}>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/projects')} sx={{ mb: 2 }}>
-          Back to Projects
-        </Button>
+        {isDashboard && (
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate('/projects')}
+            sx={{ mb: 2 }}
+          >
+            Back to Projects
+          </Button>
+        )}
 
         <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box>
@@ -224,28 +241,8 @@ const ProjectDetail: React.FC = () => {
 
         <UserEntityProjectSection project={project} statusRecords={statusRecords} />
 
-        {/* TODO: Potentially cut this jurisdiction display */}
-        {/* {project.jurisdiction_id && (
-          <Box mt={2}>
-            <Typography variant="subtitle2" gutterBottom>
-              Jurisdictions:
-            </Typography>
-            <Box display="flex" gap={1} flexWrap="wrap">
-              <Chip
-                key={project.jurisdiction_id}
-                label={project.jurisdiction_name || project.jurisdiction_id}
-                size="small"
-                variant="outlined"
-              />
-            </Box>
-          </Box>
-        )} */}
-
         {Object.keys(geojsonByDistrict).length > 0 && entities.length > 0 && (
           <Box mt={3}>
-            <Typography variant="h6" gutterBottom>
-              District Map
-            </Typography>
             <EntityDistrictMap
               entities={entities}
               statusRecords={statusRecords}

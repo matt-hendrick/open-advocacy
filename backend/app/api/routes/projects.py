@@ -23,6 +23,17 @@ async def list_projects(
         skip=skip, limit=limit, status=status, group_id=group_id
     )
 
+@router.get("/by-name/{name}", response_model=Project)
+async def get_project_by_name(
+    name: str,
+    project_service: ProjectService = Depends(get_project_service),
+):
+    """Get a project by its title/name."""
+    project = await project_service.get_project_by_name(name)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+
 
 @router.post("/", response_model=Project, status_code=status.HTTP_201_CREATED)
 async def create_project(

@@ -30,6 +30,10 @@ export const projectService = {
     return api.get<Project[]>(url);
   },
 
+  async getProjectByName(name: string): Promise<{ data: Project }> {
+    return api.get<Project>(`/projects/by-name/${encodeURIComponent(name)}`);
+  },
+
   async getProject(id: string): Promise<{ data: Project }> {
     return api.get<Project>(`/projects/${id}`);
   },

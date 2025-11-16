@@ -14,6 +14,9 @@ import EntityDetail from './pages/EntityDetail';
 import LoginPage from './pages/LoginPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
+// Custom Project Pages
+import AduOptInDashboard from './pages/CustomProjects/AduOptInDashboard';
+
 // Admin Pages
 import UserManagement from './pages/admin/UserManagementPage';
 import RegisterPage from './pages/admin/RegisterPage';
@@ -26,7 +29,8 @@ const App: React.FC = () => {
       <ThemeProvider>
         <AuthProvider>
           <UserRepresentativesProvider>
-            <Header />
+            {/* TODO: Conditionally display header depending on state */}
+            {/* <Header /> */}
             <main>
               <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -36,6 +40,7 @@ const App: React.FC = () => {
                 <Route path="/projects/:id" element={<ProjectDetail />} />
                 <Route path="/representatives" element={<RepresentativeLookup />} />
                 <Route path="/representatives/:id" element={<EntityDetail />} />
+                <Route path="/adu-opt-in-dashboard" element={<AduOptInDashboard />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
