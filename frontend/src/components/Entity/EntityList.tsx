@@ -37,7 +37,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 import { Entity, Project, EntityStatus, EntityStatusRecord, UserRole } from '../../types';
 import { statusService } from '../../services/status';
-import { getStatusColor, getStatusLabel } from '../../utils/statusColors';
+import { getStatusColor, getStatusLabel as getStatusLabelDefault } from '../../utils/statusColors';
 import { useAuth } from '../../contexts/AuthContext';
 import ConditionalUI from '../auth/ConditionalUI';
 
@@ -48,6 +48,7 @@ interface EntityListProps {
   project: Project;
   statusRecords: EntityStatusRecord[];
   onStatusUpdated: () => void;
+  getStatusLabel?: (status: string) => string;
 }
 
 const EntityRow = ({
@@ -55,11 +56,13 @@ const EntityRow = ({
   project,
   statusRecord,
   onStatusUpdated,
+  getStatusLabel = getStatusLabelDefault,
 }: {
   entity: Entity;
   project: Project;
   statusRecord?: EntityStatusRecord;
   onStatusUpdated: () => void;
+  getStatusLabel?: (status: string) => string;
 }) => {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<EntityStatus>(statusRecord?.status || EntityStatus.UNKNOWN);
@@ -426,6 +429,7 @@ const EntityList: React.FC<EntityListProps> = ({
   project,
   statusRecords,
   onStatusUpdated,
+  getStatusLabel = getStatusLabelDefault,
 }) => {
   // State for filtering and sorting
   const [order, setOrder] = useState<Order>('asc');
@@ -522,12 +526,24 @@ const EntityList: React.FC<EntityListProps> = ({
                 label="Status"
               >
                 <MenuItem value="all">All Statuses</MenuItem>
-                <MenuItem value={EntityStatus.SOLID_APPROVAL}>Solid Approval</MenuItem>
-                <MenuItem value={EntityStatus.LEANING_APPROVAL}>Leaning Approval</MenuItem>
-                <MenuItem value={EntityStatus.NEUTRAL}>Neutral</MenuItem>
-                <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>Leaning Disapproval</MenuItem>
-                <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>Solid Disapproval</MenuItem>
-                <MenuItem value={EntityStatus.UNKNOWN}>Unknown</MenuItem>
+                <MenuItem value={EntityStatus.SOLID_APPROVAL}>
+                  {getStatusLabel(EntityStatus.SOLID_APPROVAL)}
+                </MenuItem>
+                <MenuItem value={EntityStatus.LEANING_APPROVAL}>
+                  {getStatusLabel(EntityStatus.LEANING_APPROVAL)}
+                </MenuItem>
+                <MenuItem value={EntityStatus.NEUTRAL}>
+                  {getStatusLabel(EntityStatus.NEUTRAL)}
+                </MenuItem>
+                <MenuItem value={EntityStatus.LEANING_DISAPPROVAL}>
+                  {getStatusLabel(EntityStatus.LEANING_DISAPPROVAL)}
+                </MenuItem>
+                <MenuItem value={EntityStatus.SOLID_DISAPPROVAL}>
+                  {getStatusLabel(EntityStatus.SOLID_DISAPPROVAL)}
+                </MenuItem>
+                <MenuItem value={EntityStatus.UNKNOWN}>
+                  {getStatusLabel(EntityStatus.UNKNOWN)}
+                </MenuItem>
               </Select>
             </FormControl>
 
@@ -615,6 +631,7 @@ const EntityList: React.FC<EntityListProps> = ({
                       sr => sr.entity_id === entity.id && sr.project_id === project.id
                     )}
                     onStatusUpdated={onStatusUpdated}
+                    getStatusLabel={getStatusLabel}
                   />
                 ))
               )}

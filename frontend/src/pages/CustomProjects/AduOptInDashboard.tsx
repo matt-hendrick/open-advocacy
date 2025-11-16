@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { projectService } from '../../services/projects';
 import ProjectDetail from '../ProjectDetail';
-import { Project } from '../../types';
 
 const STATUS_DISPLAY_NAMES: Record<string, string> = {
   solid_approval: 'Opted In',
   leaning_approval: 'Not Eligible',
-  neutral: 'Neutral',
+  neutral: 'Not Opted In',
   leaning_disapproval: 'Leaning Disagree',
   solid_disapproval: 'Strongly Opposed',
   unknown: 'Unknown',
@@ -41,6 +40,8 @@ const AduOptInDashboard: React.FC = () => {
     fetchProjectId();
   }, []);
 
+  const getCustomStatusLabel = (status: string) => STATUS_DISPLAY_NAMES[status] || 'Unknown';
+
   if (loading) {
     return <div>Loading dashboard...</div>;
   }
@@ -55,11 +56,7 @@ const AduOptInDashboard: React.FC = () => {
   }
 
   return (
-    <ProjectDetail
-      projectId={projectId}
-      statusDisplayNames={STATUS_DISPLAY_NAMES}
-      isDashboard={true}
-    />
+    <ProjectDetail projectId={projectId} getStatusLabel={getCustomStatusLabel} isDashboard={true} />
   );
 };
 

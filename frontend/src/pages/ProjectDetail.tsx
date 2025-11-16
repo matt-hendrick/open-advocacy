@@ -55,13 +55,13 @@ const TabPanel = (props: TabPanelProps) => {
 
 interface ProjectDetailProps {
   projectId?: string;
-  statusDisplayNames?: Record<string, string>;
+  getStatusLabel?: (status: string) => string;
   isDashboard?: boolean;
 }
 
 const ProjectDetail: React.FC<ProjectDetailProps> = ({
   projectId,
-  statusDisplayNames,
+  getStatusLabel,
   isDashboard = false,
 }) => {
   const { id: routeId } = useParams<{ id: string }>();
@@ -183,7 +183,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box mb={4}>
-        {isDashboard && (
+        {!isDashboard && (
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/projects')}
@@ -239,7 +239,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
           {project.description}
         </Typography>
 
-        <UserEntityProjectSection project={project} statusRecords={statusRecords} />
+        <UserEntityProjectSection
+          project={project}
+          statusRecords={statusRecords}
+          getStatusLabel={getStatusLabel}
+        />
 
         {Object.keys(geojsonByDistrict).length > 0 && entities.length > 0 && (
           <Box mt={3}>
@@ -247,6 +251,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               entities={entities}
               statusRecords={statusRecords}
               geojsonByDistrict={geojsonByDistrict}
+              getStatusLabel={getStatusLabel}
             />
           </Box>
         )}
@@ -259,6 +264,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               showPercentages
               showCounts
               showLabels
+              getStatusLabel={getStatusLabel}
             />
           ) : (
             <Typography variant="body2" color="text.secondary">
@@ -294,6 +300,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                 project={project}
                 statusRecords={statusRecords}
                 onStatusUpdated={refreshStatusRecords}
+                getStatusLabel={getStatusLabel}
               />
             )}
           </TabPanel>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
 import { StatusDistribution as StatusDistributionType, EntityStatus } from '../../types';
-import { getStatusColor, getStatusLabel } from '../../utils/statusColors';
+import { getStatusColor, getStatusLabel as getStatusLabelDefault } from '../../utils/statusColors';
 
 interface StatusBarProps {
   distribution: StatusDistributionType;
@@ -9,6 +9,7 @@ interface StatusBarProps {
   showLabels?: boolean;
   showPercentages?: boolean;
   showCounts?: boolean;
+  getStatusLabel?: (status: string) => string;
 }
 
 const StatusDistribution: React.FC<StatusBarProps> = ({
@@ -17,6 +18,7 @@ const StatusDistribution: React.FC<StatusBarProps> = ({
   showLabels = false,
   showPercentages = false,
   showCounts = false,
+  getStatusLabel = getStatusLabelDefault,
 }) => {
   const total = distribution.total || 1;
   const barHeight = size === 'small' ? 8 : size === 'medium' ? 16 : 24;

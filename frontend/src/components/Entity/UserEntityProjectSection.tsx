@@ -22,18 +22,20 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
 import { useUserRepresentatives } from '../../contexts/UserRepresentativesContext';
 import { Project, EntityStatusRecord, EntityStatus, Entity } from '../../types';
-import { getStatusColor, getStatusLabel } from '../../utils/statusColors';
+import { getStatusColor, getStatusLabel as getStatusLabelDefault } from '../../utils/statusColors';
 
 interface RepresentativeItemProps {
   entity: Entity;
   statusRecord?: EntityStatusRecord;
   project: Project;
+  getStatusLabel?: (status: string) => string;
 }
 
 const RepresentativeItem: React.FC<RepresentativeItemProps> = ({
   entity,
   statusRecord,
   project,
+  getStatusLabel = getStatusLabelDefault,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
@@ -189,11 +191,13 @@ const RepresentativeItem: React.FC<RepresentativeItemProps> = ({
 interface UserEntityProjectSectionProps {
   project: Project;
   statusRecords: EntityStatusRecord[];
+  getStatusLabel?: (status: string) => string;
 }
 
 const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
   project,
   statusRecords,
+  getStatusLabel = getStatusLabelDefault,
 }) => {
   const navigate = useNavigate();
   const { userRepresentatives, hasUserRepresentatives } = useUserRepresentatives();
@@ -271,6 +275,7 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
             entity={entity}
             statusRecord={statusMap[entity.id]}
             project={project}
+            getStatusLabel={getStatusLabel}
           />
         ))}
       </List>

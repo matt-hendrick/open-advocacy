@@ -2,12 +2,13 @@ import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Entity, EntityStatus, EntityStatusRecord } from '../../types';
-import { getStatusColor } from '@/utils/statusColors';
+import { getStatusColor, getStatusLabel as getStatusLabelDefault } from '@/utils/statusColors';
 
 interface EntityDistrictMapProps {
   entities: Entity[];
   statusRecords: EntityStatusRecord[];
   geojsonByDistrict: { [districtName: string]: any };
+  getStatusLabel?: (status: string) => string;
   centerPoint?: [number, number];
 }
 
@@ -15,6 +16,7 @@ const EntityDistrictMap: React.FC<EntityDistrictMapProps> = ({
   entities,
   statusRecords,
   geojsonByDistrict,
+  getStatusLabel = getStatusLabelDefault,
   centerPoint = [41.8781, -87.6298],
 }) => {
   const statusMap = statusRecords.reduce(
@@ -42,7 +44,7 @@ const EntityDistrictMap: React.FC<EntityDistrictMapProps> = ({
     const status = entity ? statusMap[entity.id] : EntityStatus.NEUTRAL;
     let tooltipContent = `<strong>${districtName || 'Unknown Ward'}</strong>`;
     if (entity) {
-      tooltipContent += `<br/>${entity.name} (${entity.title || ''})<br/>Status: ${status}`;
+      tooltipContent += `<br/>${entity.name} (${entity.title || ''})<br/>Status: ${getStatusLabel(status)}`;
     }
     layer.bindTooltip(tooltipContent, { sticky: true });
   }
