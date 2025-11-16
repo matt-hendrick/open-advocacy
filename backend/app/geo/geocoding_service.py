@@ -34,8 +34,8 @@ class GeocodingService:
                         "q": address,
                         "format": "json",
                         "limit": 1,
-                        "user-agent": "open-advocacy-platform",
                     },
+                    headers={"User-Agent": "open-advocacy-platform"},
                     timeout=10.0,
                 )
 
