@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { projectService } from '../../services/projects';
 import ProjectDetail from '../ProjectDetail';
 
@@ -43,7 +44,22 @@ const AduOptInDashboard: React.FC = () => {
   const getCustomStatusLabel = (status: string) => STATUS_DISPLAY_NAMES[status] || 'Unknown';
 
   if (loading) {
-    return <div>Loading dashboard...</div>;
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '50vh',
+        }}
+      >
+        <CircularProgress size={48} />
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Loading ADU Opt-In Dashboard...
+        </Typography>
+      </Box>
+    );
   }
 
   if (error || !projectId) {

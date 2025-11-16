@@ -15,10 +15,9 @@ OPT_IN_WARDS = [
 
 PROJECT_TITLE = "ADU Opt-In Dashboard"
 PROJECT_DESCRIPTION = (
-    "Tracking Chicago alderpersons who have opted in to support Accessory Dwelling Units (ADUs). "
-    "Alders who opted in are marked as strongly agree; others are marked as neutral."
+    "Tracking Chicago alderpersons who have opted in to allow building Accessory Dwelling Units (ADUs) in their wards. "
 )
-PROJECT_LINK = None 
+PROJECT_LINK = "https://www.strongtownschicago.org/milestones/adu-legalization-win" 
 
 async def import_adu_project_data():
     logging.basicConfig(level=logging.INFO)
