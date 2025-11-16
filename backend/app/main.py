@@ -7,7 +7,7 @@ import logging
 import time
 
 from app.core.config import settings
-from app.db.session import create_tables, init_postgis
+from scripts.initialize_app import initialize_application
 
 
 logging.basicConfig(
@@ -22,14 +22,17 @@ app = FastAPI(
     title="Open Advocacy API",
     description="API for connecting citizens with representatives and tracking advocacy projects",
     version="0.1.0",
+    root_path="/",
     redirect_slashes=False,  # This has been added as some deployment environments enforce this (so this helps detecting problems in dev)
 )
 
-# Add CORS middleware for development
-origins = [
-    "http://localhost:3000",
-    "http://localhost:5173",  # Default Vite dev server port
-]
+if settings.ALLOWED_ORIGIN:
+    origins = settings.ALLOWED_ORIGIN
+else:
+    origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",  # Default Vite dev server port
+    ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -68,6 +71,7 @@ async def log_requests(request: Request, call_next):
         raise
 
 
+# TODO: Remove this
 @app.get("/")
 async def root():
     return {"message": "Welcome to Open Advocacy API"}
@@ -95,16 +99,20 @@ app.include_router(auth.router, prefix="/api")
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database and load sample data on startup."""
+    """Initialize database and load data on startup, ensuring it happens only once."""
     logger.info(
         f"Starting application with {settings.DATABASE_PROVIDER} database provider"
     )
+    
     try:
-        await init_postgis()
-
-        await create_tables()
-    except Exception:
-        logger.exception("Error initializing postgis or creating initial tables.")
+        initialized = await initialize_application()
+        if initialized:
+            logger.info("Application initialization completed")
+        else:
+            logger.info("Application initialization skipped (already initialized)")
+    except Exception as e:
+        logger.error(f"Application initialization failed: {str(e)}")
+        raise
 
 
 if __name__ == "__main__":

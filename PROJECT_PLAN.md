@@ -109,7 +109,7 @@ Open Advocacy is an open-source platform connecting citizens with representative
 ### Phase 11: Actually Deploy this Somewhere (COMPLETED)
 - ✅ Deploy the app according to whatever is determined in the previous step
 
-### Phase 12: Test and Document Deployment (Completed)
+### Phase 12: Test and Document Deployment (COMPLETED)
 - ✅ Test all workflows on the deployed version of the application
 - ✅ Document the current state of the application.
 - ✅ Clean up existing readmes

@@ -21,8 +21,6 @@ services:
       - DATABASE_URL=postgresql+asyncpg://openadvocacy:devpassword@postgres:5432/openadvocacy
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
 
   frontend:
     build: ./frontend
