@@ -71,12 +71,6 @@ async def log_requests(request: Request, call_next):
         raise
 
 
-# TODO: Remove this
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Open Advocacy API"}
-
-
 app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
 app.include_router(groups.router, prefix="/api/groups", tags=["groups"])
 app.include_router(entities.router, prefix="/api/entities", tags=["entities"])

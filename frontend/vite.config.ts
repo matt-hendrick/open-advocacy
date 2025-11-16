@@ -11,22 +11,12 @@ export default defineConfig({
     },
   },
   server: {
-    // listen on all addresses (so Railway’s hostname can reach it)
-    host: true,
-    // explicitly allow our deployed domain
-    allowedHosts: ['frontend-production-575a.up.railway.app','open-advocacy.com'],
     port: 3000,
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:8000',
-    //     changeOrigin: true,
-    //   },
-    // },
-  },
-  // if we're using `vite preview` on Railway, mirror the same settings:
-  preview: {
-    host: true,
-    allowedHosts: ['frontend-production-575a.up.railway.app', 'open-advocacy.com'],
-    port: 8080,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+    },
   },
 });
