@@ -56,12 +56,14 @@ const TabPanel = (props: TabPanelProps) => {
 interface ProjectDetailProps {
   projectId?: string;
   getStatusLabel?: (status: string) => string;
+  representativeTitle?: string;
   isDashboard?: boolean;
 }
 
 const ProjectDetail: React.FC<ProjectDetailProps> = ({
   projectId,
   getStatusLabel,
+  representativeTitle = 'Representative',
   isDashboard = false,
 }) => {
   const { id: routeId } = useParams<{ id: string }>();
@@ -243,6 +245,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
           project={project}
           statusRecords={statusRecords}
           getStatusLabel={getStatusLabel}
+          representativeTitle={representativeTitle}
         />
 
         {Object.keys(geojsonByDistrict).length > 0 && entities.length > 0 && (

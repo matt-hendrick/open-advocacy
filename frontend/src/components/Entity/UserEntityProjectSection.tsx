@@ -192,12 +192,14 @@ interface UserEntityProjectSectionProps {
   project: Project;
   statusRecords: EntityStatusRecord[];
   getStatusLabel?: (status: string) => string;
+  representativeTitle?: string;
 }
 
 const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
   project,
   statusRecords,
   getStatusLabel = getStatusLabelDefault,
+  representativeTitle = 'Representative',
 }) => {
   const navigate = useNavigate();
   const { userRepresentatives, hasUserRepresentatives } = useUserRepresentatives();
@@ -220,10 +222,10 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
     return (
       <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Your Representatives
+          Your {representativeTitle}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Find your representatives to see where they stand on this project.
+          Find your {representativeTitle.toLowerCase()} to see where they stand on this project.
         </Typography>
         <Button
           variant="outlined"
@@ -232,7 +234,7 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
           onClick={() => navigate('/representatives')}
           sx={{ mt: 2 }}
         >
-          Find Representatives
+          Find Your {representativeTitle}
         </Button>
       </Paper>
     );
@@ -242,10 +244,10 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
     return (
       <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Your Representatives
+          Your {representativeTitle}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          None of your saved representatives are involved with this project.
+          None of your saved {representativeTitle.toLowerCase()} are involved with this project.
         </Typography>
         <Button
           variant="outlined"
@@ -264,8 +266,8 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
     <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
       <Typography variant="h6" gutterBottom>
         {relevantEntities?.length == 1
-          ? 'Where Your Representative Stands'
-          : 'Where Your Representatives Stand'}
+          ? `Where Your ${representativeTitle} Stands`
+          : `Where Your ${representativeTitle}s Stand`}
       </Typography>
 
       <List disablePadding sx={{ mt: 2 }}>
@@ -287,7 +289,7 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
           onClick={() => navigate(`/contact?project=${project.id}`)}
           sx={{ mt: 1 }}
         >
-          Contact All Your Representatives
+          Contact All Your {representativeTitle}s
         </Button>
       )}
     </Paper>

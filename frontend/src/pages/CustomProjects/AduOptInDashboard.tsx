@@ -72,7 +72,12 @@ const AduOptInDashboard: React.FC = () => {
   }
 
   return (
-    <ProjectDetail projectId={projectId} getStatusLabel={getCustomStatusLabel} isDashboard={true} />
+    <ProjectDetail
+      projectId={projectId}
+      getStatusLabel={getCustomStatusLabel}
+      representativeTitle="Alderperson"
+      isDashboard={true}
+    />
   );
 };
 
