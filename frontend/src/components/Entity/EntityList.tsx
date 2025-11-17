@@ -131,7 +131,7 @@ const EntityRow = ({
             {getStatusLabel(statusRecord.status)}
           </Typography>
 
-          {statusRecord.notes && user && (
+          {statusRecord.notes && (
             <>
               <Divider sx={{ my: 1.5 }} />
               <Typography variant="body2">{statusRecord.notes}</Typography>

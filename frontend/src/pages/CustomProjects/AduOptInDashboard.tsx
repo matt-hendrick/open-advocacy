@@ -5,8 +5,8 @@ import { projectService } from '../../services/projects';
 import ProjectDetail from '../ProjectDetail';
 
 const STATUS_DISPLAY_NAMES: Record<string, string> = {
-  solid_approval: 'Opted In',
-  leaning_approval: 'Not Eligible',
+  solid_approval: 'Fully Opted In',
+  leaning_approval: 'Partially Opted In',
   neutral: 'Not Opted In',
   leaning_disapproval: 'Leaning Disagree',
   solid_disapproval: 'Strongly Opposed',

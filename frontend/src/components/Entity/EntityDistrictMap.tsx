@@ -34,17 +34,29 @@ const EntityDistrictMap: React.FC<EntityDistrictMapProps> = ({
     }
   });
 
-  // TODO: Make this more generic to things beyond wards
   function onEachFeature(feature: any, layer: any) {
-    // Get ward number from geojson
     const wardNumber = feature.properties?.ward;
-    // Build the district name string to match your entities
     const districtName = wardNumber ? `Ward ${wardNumber}` : undefined;
     const entity = districtName ? entityByDistrict[districtName] : undefined;
     const status = entity ? statusMap[entity.id] : EntityStatus.NEUTRAL;
+
+    let notes = '';
+    if (entity) {
+      const statusRecord = statusRecords.find(record => record.entity_id === entity.id);
+      if (statusRecord && statusRecord.notes) {
+        const maxLen = 60;
+        const rawNotes = statusRecord.notes;
+        notes =
+          rawNotes.length > maxLen
+            ? `<br/><em>${rawNotes.slice(0, maxLen)}...</em>`
+            : `<br/><em>${rawNotes}</em>`;
+      }
+    }
+
     let tooltipContent = `<strong>${districtName || 'Unknown Ward'}</strong>`;
     if (entity) {
       tooltipContent += `<br/>${entity.name} (${entity.title || ''})<br/>Status: ${getStatusLabel(status)}`;
+      tooltipContent += notes;
     }
     layer.bindTooltip(tooltipContent, { sticky: true });
   }

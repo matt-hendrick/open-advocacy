@@ -9,15 +9,44 @@ from app.services.service_factory import (
 )
 from app.models.pydantic.models import ProjectBase, EntityStatusRecord, EntityStatus
 
-OPT_IN_WARDS = [
-    1, 4, 6, 12, 14, 22, 25, 26, 27, 29, 30, 32, 33, 35, 40, 43, 44, 46, 47, 49
-]
+WARD_OPT_IN_INFO = {
+    1:  {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    4:  {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    6:  {"type": "full", "notes": "Whole ward (including the part currently in the pilot)", "block_limits": True, "homeowner_req": True, "admin_adj": True},
+    12: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    14: {"type": "partial", "notes": "Partial. Only precincts 1, 4, 9, and 15", "block_limits": True, "homeowner_req": True, "admin_adj": True},
+    22: {"type": "full", "block_limits": True, "homeowner_req": True, "admin_adj": True},
+    25: {"type": "full", "block_limits": True, "homeowner_req": True, "admin_adj": True},
+    26: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    27: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    29: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    30: {"type": "partial", "notes": "Partial. Whole ward except for precincts 1, 4, 9, and 21.", "block_limits": True, "homeowner_req": True, "admin_adj": True},
+    32: {"type": "full", "block_limits": True, "homeowner_req": True, "admin_adj": True},
+    33: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    35: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    40: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    43: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    44: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    46: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    47: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    49: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+}
 
 PROJECT_TITLE = "ADU Opt-In Dashboard"
 PROJECT_DESCRIPTION = (
     "Tracking Chicago alderpersons who have opted in to allow building Accessory Dwelling Units (ADUs) in their wards. "
 )
-PROJECT_LINK = "https://www.strongtownschicago.org/milestones/adu-legalization-win" 
+PROJECT_LINK = "https://www.strongtownschicago.org/milestones/adu-legalization-win"
+
+def format_restriction_notes(info):
+    restrictions = []
+    if info["block_limits"]:
+        restrictions.append("Block limits apply")
+    if info["homeowner_req"]:
+        restrictions.append("Homeowner requirement applies")
+    if info["admin_adj"]:
+        restrictions.append("Administrative adjustment applies")
+    return "; ".join(restrictions)
 
 async def import_adu_project_data():
     logging.basicConfig(level=logging.INFO)
@@ -54,16 +83,12 @@ async def import_adu_project_data():
     )
     logger.info(f"Created project: {project.title}")
 
-    # Get all alderperson entities for Chicago
     entities = await entity_service.list_entities(jurisdiction_id=jurisdiction.id)
     logger.info(f"Found {len(entities)} alderpersons.")
 
-    # Set status for each alderperson
     for entity in entities:
-        # Try to get ward number from district code or name
         ward_number = None
         if hasattr(entity, "district_name") and entity.district_name:
-            # Expecting format "Ward 1", "Ward 4", etc.
             if entity.district_name.lower().startswith("ward "):
                 try:
                     ward_number = int(entity.district_name.split(" ")[1])
@@ -75,18 +100,31 @@ async def import_adu_project_data():
             except Exception:
                 pass
 
-        is_opt_in = ward_number in OPT_IN_WARDS if ward_number is not None else False
-        status = EntityStatus.SOLID_APPROVAL if is_opt_in else EntityStatus.NEUTRAL
+        info = WARD_OPT_IN_INFO.get(ward_number)
+        notes = None
+        if info:
+            status = (
+                EntityStatus.SOLID_APPROVAL
+                if info["type"] == "full"
+                else EntityStatus.LEANING_APPROVAL
+            )
+            if "notes" in info:
+                notes = info["notes"]
+                restriction_notes = format_restriction_notes(info)
+                if restriction_notes:
+                    notes = f"{notes}. Restrictions: {restriction_notes}"
+        else:
+            status = EntityStatus.NEUTRAL
 
         status_record = EntityStatusRecord(
             entity_id=entity.id,
             project_id=project.id,
             status=status,
-            notes=f"Ward {ward_number} opted in to allow ADUs to be built in the ward" if is_opt_in else "No opt-in record",
+            notes=notes,
             updated_by="admin",
         )
         await status_service.create_status_record(status_record)
-        logger.info(f"Set status for {entity.name} (Ward {ward_number}): {status}")
+        logger.info(f"Set status for {entity.name} (Ward {ward_number}): {status} | {notes}")
 
     logger.info("ADU Opt-In project import completed.")
 
