@@ -201,10 +201,24 @@ const EntityRow = ({
             }}
           />
         </TableCell>
+        <TableCell
+          sx={{
+            maxWidth: 220,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {statusRecord?.notes
+            ? statusRecord.notes.length > 175
+              ? statusRecord.notes.slice(0, 175) + '...'
+              : statusRecord.notes
+            : ''}
+        </TableCell>
       </TableRow>
 
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
             <Box sx={{ margin: 2, width: '100%' }}>
               <Grid container spacing={2} sx={{ width: '100%' }}>
@@ -610,6 +624,7 @@ const EntityList: React.FC<EntityListProps> = ({
                   </TableSortLabel>
                 </TableCell>
                 <TableCell align="right">Status</TableCell>
+                <TableCell>Notes</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
