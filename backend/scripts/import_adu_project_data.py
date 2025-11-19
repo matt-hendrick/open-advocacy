@@ -34,7 +34,12 @@ WARD_OPT_IN_INFO = {
 
 PROJECT_TITLE = "ADU Opt-In Dashboard"
 PROJECT_DESCRIPTION = (
-    "Tracking Chicago alderpersons who have opted in to allow building Accessory Dwelling Units (ADUs) in their wards. "
+    "The City Council’s September 2025 ADU ordinance re-legalized accessory dwelling units (coach houses, basement apartments, granny flats), "
+    "but each alderperson must opt in their ward.\n\n"
+    "This dashboard tracks opt-ins and gives you tools to contact your alderperson if your ward hasn’t opted in yet.\n\n"
+    "For more on how this change came about, see the "
+    "[Strong Towns ADU legalization win page](https://www.strongtownschicago.org/milestones/adu-legalization-win) "
+    "or the [Abundant Housing Illinois ADU FAQ](https://abundanthousingillinois.org/resources/accessory-dwelling-units-faq/)."
 )
 PROJECT_LINK = "https://www.strongtownschicago.org/milestones/adu-legalization-win"
 

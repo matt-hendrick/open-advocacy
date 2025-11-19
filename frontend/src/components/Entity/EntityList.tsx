@@ -624,7 +624,7 @@ const EntityList: React.FC<EntityListProps> = ({
                   </TableSortLabel>
                 </TableCell>
                 <TableCell align="right">Status</TableCell>
-                <TableCell>Notes</TableCell>
+                <TableCell align="center">Notes</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

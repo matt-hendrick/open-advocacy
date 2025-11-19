@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import {
   Container,
   Typography,
@@ -238,7 +239,16 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
         </Box>
 
         <Typography variant="body1" color="text.secondary" paragraph mt={2}>
-          {project.description}
+          <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => (
+                <Link {...props} target="_blank" rel="noopener noreferrer" color="primary" />
+              ),
+              p: ({ node, ...props }) => <span {...props} />,
+            }}
+          >
+            {project.description}
+          </ReactMarkdown>
         </Typography>
 
         <UserEntityProjectSection
