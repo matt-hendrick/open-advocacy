@@ -198,9 +198,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
 
         <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box>
-            <Typography variant="h4" component="h1" fontWeight="700" color="text.primary">
-              {project.title}
-            </Typography>
+            {!isDashboard && (
+              <Typography variant="h4" component="h1" fontWeight="700" color="text.primary">
+                {project.title}
+              </Typography>
+            )}
 
             <Box display="flex" alignItems="center" gap={1} my={1}>
               <Chip
@@ -238,18 +240,20 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
           </ConditionalUI>
         </Box>
 
-        <Typography variant="body1" color="text.secondary" paragraph mt={2}>
-          <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                <Link {...props} target="_blank" rel="noopener noreferrer" color="primary" />
-              ),
-              p: ({ node, ...props }) => <span {...props} />,
-            }}
-          >
-            {project.description}
-          </ReactMarkdown>
-        </Typography>
+        {!isDashboard && (
+          <Typography variant="body1" color="text.secondary" paragraph mt={2}>
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <Link {...props} target="_blank" rel="noopener noreferrer" color="primary" />
+                ),
+                p: ({ node, ...props }) => <span {...props} />,
+              }}
+            >
+              {project.description}
+            </ReactMarkdown>
+          </Typography>
+        )}
 
         <UserEntityProjectSection
           project={project}

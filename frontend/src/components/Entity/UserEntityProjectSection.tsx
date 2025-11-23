@@ -247,7 +247,12 @@ const UserEntityProjectSection: React.FC<UserEntityProjectSectionProps> = ({
           Your {representativeTitle}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          None of your saved {representativeTitle.toLowerCase()} are involved with this project.
+          Your saved{' '}
+          {userRepresentatives?.length > 1
+            ? representativeTitle.toLowerCase() + 's are '
+            : representativeTitle.toLowerCase()}
+          {' is '}
+          not involved with this project.
         </Typography>
         <Button
           variant="outlined"
