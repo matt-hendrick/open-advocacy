@@ -7,9 +7,9 @@ export const getStatusColor = (status: EntityStatus): string => {
     case EntityStatus.LEANING_APPROVAL:
       return '#66bb6a'; // Light green
     case EntityStatus.NEUTRAL:
-      return '#ffb74d'; // Orange
+      return '#bbb8b8ff'; // Grey
     case EntityStatus.LEANING_DISAPPROVAL:
-      return '#ef5350'; // Light red
+      return '#ffb74d'; // Orange
     case EntityStatus.SOLID_DISAPPROVAL:
       return '#c62828'; // Dark red
     default:

@@ -23,8 +23,10 @@ WARD_OPT_IN_INFO = {
     30: {"type": "partial", "notes": "Partial. Whole ward except for precincts 1, 4, 9, and 21.", "block_limits": True, "homeowner_req": True, "admin_adj": True},
     32: {"type": "full", "block_limits": True, "homeowner_req": True, "admin_adj": True},
     33: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    34: {"type": "not_eligible", "block_limits": False, "homeowner_req": False, "admin_adj": False, "notes": "not eligible (no SFH zoning to opt-in)"},
     35: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
     40: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    42: {"type": "not_eligible", "block_limits": False, "homeowner_req": False, "admin_adj": False, "notes": "not eligible (no SFH zoning to opt-in)"},
     43: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
     44: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
     46: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
@@ -107,19 +109,21 @@ async def import_adu_project_data():
 
         info = WARD_OPT_IN_INFO.get(ward_number)
         notes = None
+        status = None
         if info:
-            status = (
-                EntityStatus.SOLID_APPROVAL
-                if info["type"] == "full"
-                else EntityStatus.LEANING_APPROVAL
-            )
+            if info["type"] == "not_eligible":
+                status = EntityStatus.NEUTRAL
+            elif info["type"] == "full":
+                status = EntityStatus.SOLID_APPROVAL
+            elif info["type"] == "partial":
+                status = EntityStatus.LEANING_APPROVAL
             if "notes" in info:
                 notes = info["notes"]
                 restriction_notes = format_restriction_notes(info)
                 if restriction_notes:
                     notes = f"{notes}. Restrictions: {restriction_notes}"
         else:
-            status = EntityStatus.NEUTRAL
+            status = EntityStatus.LEANING_DISAPPROVAL
 
         status_record = EntityStatusRecord(
             entity_id=entity.id,

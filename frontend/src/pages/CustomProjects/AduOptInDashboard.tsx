@@ -7,8 +7,8 @@ import ProjectDetail from '../ProjectDetail';
 const STATUS_DISPLAY_NAMES: Record<string, string> = {
   solid_approval: 'Fully Opted In',
   leaning_approval: 'Partially Opted In',
-  neutral: 'Not Opted In',
-  leaning_disapproval: 'Leaning Disagree',
+  neutral: 'Not Eligible',
+  leaning_disapproval: 'Not Opted In',
   solid_disapproval: 'Strongly Opposed',
   unknown: 'Unknown',
 };
