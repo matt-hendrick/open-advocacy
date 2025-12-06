@@ -31,6 +31,7 @@ WARD_OPT_IN_INFO = {
     44: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
     46: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
     47: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
+    48: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
     49: {"type": "full", "block_limits": False, "homeowner_req": False, "admin_adj": False},
 }
 
